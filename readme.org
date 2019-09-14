@@ -1,0 +1,16 @@
+
+* features
+
+** select stock using the screener
+
+** TODO get the historical balance sheet from moneycontrol website
+   DEADLINE: <2019-09-22 Sun>
+
+** TODO make tables in the org file
+   DEADLINE: <2019-09-29 Sun>
+
+** TODO plot and save values using org-plot/gnuplot
+   DEADLINE: <2019-10-06 Sun>
+
+
+
