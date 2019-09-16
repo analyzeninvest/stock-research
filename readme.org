@@ -1,16 +1,17 @@
 
-* features
+* select stock using the screener
+currently this can be done using the tradingview screener or the yahoo finance screener or msn money screener.
+https://in.tradingview.com/screener/
+https://www.msn.com/en-in/money/stockscreener
 
-** select stock using the screener
+* TODO get the historical balance sheet from moneycontrol website
+  DEADLINE: <2019-09-22 Sun>
 
-** TODO get the historical balance sheet from moneycontrol website
-   DEADLINE: <2019-09-22 Sun>
+* TODO make tables in the org file
+  DEADLINE: <2019-09-29 Sun>
 
-** TODO make tables in the org file
-   DEADLINE: <2019-09-29 Sun>
-
-** TODO plot and save values using org-plot/gnuplot
-   DEADLINE: <2019-10-06 Sun>
+* TODO plot and save values using org-plot/gnuplot
+  DEADLINE: <2019-10-06 Sun>
 
 
 
