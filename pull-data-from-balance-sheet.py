@@ -100,19 +100,58 @@ def pull_10y_data_from_screener(stock):
     count      = 15
     page       = requests.get(url)
     soup       = BeautifulSoup(page.content, 'html.parser')
-    all_tables = soup.find_all('table')
-    for table in all_tables:
-        td = table.find_all('th')
-        for each_td in td:
-            # this has issues , need to find a way to search only after certain tag
-            match = re.search('([Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec]+ [0-9]+)',str(each_td))
-            if match and count != 0:
-                if count <= 12:
-                    print(match.group(1))
-                flag = True
-                count -= 1
-            if count == 0:
-                flag = False
+    # all_tables = soup.find_all('table')
+    # for table in all_tables:
+    #     td = table.find_all('th')
+    #     for each_td in td:
+    #         # this has issues , need to find a way to search only after certain tag
+    #         match = re.search('([Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec]+ [0-9]+)',str(each_td))
+    #         if match and count != 0:
+    #             if count <= 12:
+    #                 print(match.group(1))
+    #             flag = True
+    #             count -= 1
+    #         if count == 0:
+    #             flag = False
+    headers = soup.find_all('h2')
+    for header in headers:
+        if header.find(text=re.compile("Profit & Loss")):
+            thelink = header
+            break
+    # print(thelink)
+    years_tr_tag = thelink.findNext('tr')
+    ths = years_tr_tag.find_all('th')
+    for th in ths:
+        # print(th)
+        match = re.search('([Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec]+ [0-9]+)',str(th))
+        if match:
+            print("Reported Month / Year in Profit & Loss: " + match.group(1))
+    headers = soup.find_all('h2')
+    for header in headers:
+        if header.find(text=re.compile("Balance Sheet")):
+            thelink = header
+            break
+    # print(thelink)
+    years_tr_tag = thelink.findNext('tr')
+    ths = years_tr_tag.find_all('th')
+    for th in ths:
+        # print(th)
+        match = re.search('([Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec]+ [0-9]+)',str(th))
+        if match:
+            print("Reported Month / Year in Balance Sheet: " + match.group(1))
+    for header in headers:
+        if header.find(text=re.compile("Cash Flow")):
+            thelink = header
+            break
+    # print(thelink)
+    years_tr_tag = thelink.findNext('tr')
+    ths = years_tr_tag.find_all('th')
+    for th in ths:
+        # print(th)
+        match = re.search('([Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec]+ [0-9]+)',str(th))
+        if match:
+            print("Reported Month / Year in Cash Flow: " + match.group(1))
+
 
 
 
