@@ -1,0 +1,179 @@
+* CMI
+
+** Standalone Profit & Loss account
+
+***  INCOME 				
+  |                                                             |  Mar 19 |  Mar 18 |  Mar 17 |  Mar 16 |  Mar 15 |
+  |                                                             | 12 mths | 12 mths | 12 mths | 12 mths | 12 mths |
+  | Revenue From Operations [Gross]                             |  637.30 |  394.65 |  343.80 |  269.91 |  150.76 |
+  | Less: Excise/Sevice Tax/Other Levies                        |    0.00 |   11.18 |   36.57 |   29.69 |   15.01 |
+  | Revenue From Operations [Net]                               |  637.30 |  383.47 |  307.23 |  240.22 |  135.76 |
+  | Total Operating Revenues                                    |  637.30 |  383.47 |  307.23 |  240.22 |  135.76 |
+  | Other Income                                                |   14.20 |    7.40 |    5.30 |    1.48 |    1.53 |
+  | Total Revenue                                               |  651.50 |  390.87 |  312.53 |  241.71 |  137.28 |
+*** EXPENSES
+  | Cost Of Materials Consumed                                  |  468.96 |  279.76 |  245.26 |  196.48 |  109.85 |
+  | Purchase Of Stock-In Trade                                  |   60.00 |   38.01 |   10.60 |    0.24 |    0.20 |
+  | Operating And Direct Expenses                               |    0.00 |    8.93 |    9.18 |    8.06 |    4.88 |
+  | Changes In Inventories Of FG,WIP And Stock-In Trade         |  -28.18 |  -10.31 |  -12.46 |   -5.48 |   -1.26 |
+  | Employee Benefit Expenses                                   |   20.41 |    4.79 |    4.23 |    3.07 |    2.41 |
+  | Finance Costs                                               |   33.74 |   20.70 |   13.64 |    8.43 |    5.90 |
+  | Depreciation And Amortisation Expenses                      |   11.82 |    1.40 |    1.34 |    1.28 |    0.88 |
+  | Other Expenses                                              |   43.28 |   12.03 |    7.27 |    5.16 |    5.28 |
+  | Total Expenses                                              |  610.03 |  355.31 |  279.06 |  217.24 |  128.15 |
+  |                                                             |  Mar 19 |  Mar 18 |  Mar 17 |  Mar 16 |  Mar 15 |
+  |                                                             | 12 mths | 12 mths | 12 mths | 12 mths | 12 mths |
+  | Profit/Loss Before Exceptional, ExtraOrdinary Items And Tax |   41.47 |   35.56 |   33.47 |   24.46 |    9.13 |
+  | Exceptional Items                                           |   -0.03 |    0.00 |    0.01 |    0.06 |    0.00 |
+  | Profit/Loss Before Tax                                      |   41.44 |   35.56 |   33.48 |   24.52 |    9.13 |
+****  Tax Expenses-Continued Operations
+   | Current Tax                                                 |   -3.50 |   11.77 |   10.31 |    8.62 |    3.47 |
+   | Deferred Tax                                                |    0.00 |    0.88 |    0.72 |   -1.10 |   -0.64 |
+   | Total Tax Expenses                                          |   -3.50 |   12.66 |   11.03 |    7.52 |    2.83 |
+   | Profit/Loss After Tax And Before ExtraOrdinary Items        |   44.94 |   22.91 |   22.44 |   17.00 |    6.30 |
+   | Profit/Loss From Continuing Operations                      |   44.94 |   22.91 |   22.44 |   17.00 |    6.30 |
+   | Profit/Loss For The Period                                  |   44.94 |   22.91 |   22.44 |   17.00 |    6.30 |
+   |                                                             |  Mar 19 |  Mar 18 |  Mar 17 |  Mar 16 |  Mar 15 |
+   |                                                             | 12 mths | 12 mths | 12 mths | 12 mths | 12 mths |
+*** OTHER ADDITIONAL INFORMATION
+**** EARNINGS PER SHARE                                          |         |         |         |         |         |
+   | Basic EPS (Rs.)                                             |   29.91 |   15.26 |   15.46 |   13.39 |    7.29 |
+   | Diluted EPS (Rs.)                                           |   29.91 |   15.26 |   15.39 |   13.10 |    7.27 |
+**** VALUE OF IMPORTED AND INDIGENIOUS RAW MATERIALS
+   | Imported Raw Materials                                      |    0.00 |    0.00 |    0.00 |   35.90 |   20.40 |
+   | Indigenous Raw Materials                                    |    0.00 |    0.00 |    0.00 |  192.69 |   87.94 |
+**** STORES, SPARES AND LOOSE TOOLS
+   | Indigenous Stores And Spares                                |    0.00 |    0.00 |    0.00 |    3.00 |    2.46 |
+**** DIVIDEND AND DIVIDEND PERCENTAGE
+   | Equity Share Dividend                                       |    0.00 |    1.81 |    0.00 |    1.34 |    0.00 |
+   | Tax On Dividend                                             |    0.00 |    0.00 |    0.00 |    0.27 |    0.00 |
+   | Equity Dividend Rate (%)                                    |   10.00 |   10.00 |   10.00 |   10.00 |    0.00 |
+	
+** Standalone Balance Sheet
+*** EQUITIES AND LIABILITIES
+**** SHAREHOLDER'S FUNDS    
+   |                                                 |  Mar 19 |  Mar 18 |  Mar 17 |  Mar 16 |  Mar 15 |
+   |                                                 | 12 mths | 12 mths | 12 mths | 12 mths | 12 mths |
+   | Equity Share Capital                            |   15.03 |   15.03 |   14.78 |   14.08 |   11.46 |
+   | Total Share Capital                             |   15.03 |   15.03 |   14.78 |   14.08 |   11.46 |
+   | Reserves and Surplus                            |  298.38 |  119.23 |   90.91 |   63.72 |   24.44 |
+   | Total Reserves and Surplus                      |  298.38 |  119.23 |   90.91 |   63.72 |   24.44 |
+   | Money Received Against Share Warrants           |    0.00 |    0.00 |    0.00 |    1.12 |    1.12 |
+   | Total Shareholders Funds                        |  313.42 |  134.26 |  105.70 |   78.92 |   37.02 |
+**** NON-CURRENT LIABILITIES
+   | Long Term Borrowings                            |   53.83 |    8.10 |    9.97 |   62.58 |    2.84 |
+   | Other Long Term Liabilities                     |    0.00 |    3.02 |    3.38 |    0.00 |    0.00 |
+   | Long Term Provisions                            |    0.83 |    0.65 |    0.79 |    0.00 |    0.00 |
+   | Total Non-Current Liabilities                   |   54.66 |   11.77 |   14.14 |   62.58 |    2.84 |
+**** CURRENT LIABILITIES    
+   | Short Term Borrowings                           |  221.70 |  132.46 |   78.62 |   47.30 |   30.15 |
+   | Trade Payables                                  |  103.30 |   64.30 |   69.55 |   34.97 |   16.66 |
+   | Other Current Liabilities                       |   23.18 |   39.85 |   26.77 |    7.18 |    4.78 |
+   | Short Term Provisions                           |    0.26 |    0.43 |    0.36 |    8.94 |    3.44 |
+   | Total Current Liabilities                       |  348.44 |  237.04 |  175.31 |   98.39 |   55.02 |
+   | Total Capital And Liabilities                   |  716.52 |  383.07 |  295.14 |  239.89 |   94.87 |
+***  ASSETS
+**** NON-CURRENT ASSETS
+   | Tangible Assets                                 |  168.76 |   10.47 |    7.17 |   16.26 |    7.57 |
+   | Intangible Assets                               |    0.00 |    0.16 |    0.34 |    0.51 |    0.66 |
+   | Capital Work-In-Progress                        |    0.00 |    0.00 |    2.35 |    2.21 |    0.00 |
+   | Other Assets                                    |    0.00 |    9.46 |    9.51 |    0.00 |    0.00 |
+   | Fixed Assets                                    |  168.76 |   20.09 |   19.36 |   18.98 |    8.22 |
+   | Non-Current Investments                         |    0.00 |   12.26 |   12.17 |    0.49 |    0.00 |
+   | Deferred Tax Assets [Net]                       |   20.78 |    1.52 |    2.38 |    1.97 |    0.87 |
+   | Long Term Loans And Advances                    |    1.16 |   46.53 |   44.05 |   97.71 |    1.33 |
+   | Other Non-Current Assets                        |   10.60 |    0.39 |    0.53 |    0.00 |    0.00 |
+   | Total Non-Current Assets                        |  201.30 |   80.78 |   78.50 |  119.14 |   10.42 |
+**** CURRENT ASSETS
+   | Inventories                                     |  161.73 |   87.93 |   65.87 |   45.13 |   34.78 |
+   | Trade Receivables                               |  273.72 |  134.94 |  113.21 |   64.20 |   36.57 |
+   | Cash And Cash Equivalents                       |   23.18 |   10.19 |    8.02 |    4.98 |    3.05 |
+   | Short Term Loans And Advances                   |    2.96 |   48.94 |   20.12 |    6.18 |    9.94 |
+   | OtherCurrentAssets                              |   53.63 |   20.28 |    9.43 |    0.25 |    0.11 |
+   | Total Current Assets                            |  515.22 |  302.28 |  216.64 |  120.74 |   84.45 |
+   | Total Assets                                    |  716.52 |  383.07 |  295.14 |  239.89 |   94.87 |
+*** OTHER ADDITIONAL INFORMATION        
+**** CONTINGENT LIABILITIES, COMMITMENTS
+   | Contingent Liabilities                          |    0.00 |  109.39 |   98.99 |   14.36 |   10.35 |
+**** CIF VALUE OF IMPORTS
+   | Raw Materials                                   |    0.00 |    2.79 |   11.63 |   36.37 |   20.40 |
+**** EXPENDITURE IN FOREIGN EXCHANGE
+   | Expenditure In Foreign Currency                 |    0.00 |    0.00 |    0.00 |    0.02 |    0.02 |
+**** REMITTANCES IN FOREIGN CURRENCIES FOR DIVIDENDS
+   | Dividend Remittance In Foreign Currency         |       - |       - |       - |       - |       - |
+**** EARNINGS IN FOREIGN EXCHANGE
+   | FOB Value Of Goods                              |       - |       - |       - |       - |       - |
+   | Other Earnings                                  |       - |    0.04 |    0.52 |    2.78 |    0.08 |
+**** BONUS DETAILS
+   | Bonus Equity Share Capital                      |       - |       - |       - |       - |       - |
+**** NON-CURRENT INVESTMENTS
+   | Non-Current Investments Quoted Market Value     |       - |    0.00 |    0.00 |    0.00 |    1.11 |
+   | Non-Current Investments Unquoted Book Value     |       - |   12.26 |   12.17 |    0.49 |       - |
+**** CURRENT INVESTMENTS
+   | Current Investments Quoted Market Value         |       - |       - |       - |       - |       - |
+   | Current Investments Unquoted Book Value         |       - |       - |       - |       - |       - |
+** Cash Flow
+|                                                    |  Mar 19 |  Mar 18 |  Mar 18 |  Mar 17 |  Mar 16 |
+|                                                    | 12 mths | 12 mths | 12 mths | 12 mths | 12 mths |
+| Net Profit/Loss Before Extraordinary Items And Tax |    0.00 |   22.91 |    0.00 |   22.44 |   17.00 |
+| Net CashFlow From Operating Activities             |    0.00 |  -37.30 |    0.00 |  -16.87 |  -79.25 |
+| Net Cash Used In Investing Activities              |    0.00 |    1.42 |    0.00 |   48.07 |  -12.19 |
+| Net Cash Used From Financing Activities            |    0.00 |   36.96 |    0.00 |  -31.06 |   93.37 |
+| Net Inc/Dec In Cash And Cash Equivalents           |    0.00 |    1.09 |    0.00 |    0.14 |    1.93 |
+| Cash And Cash Equivalents Begin of Year            |    0.00 |    0.28 |    0.00 |    0.14 |    3.05 |
+| Cash And Cash Equivalents End Of Year              |    0.00 |    1.37 |    0.00 |    0.28 |    4.98 |
+** Key Financial Ratios
+
+*** Investment Valuation Ratios
+  |                                                | Mar '19 | Mar '18 | Mar '17 | Mar '16 | Mar '15 |
+  | Face Value                                     |   10.00 |   10.00 |   10.00 |   10.00 |   10.00 |
+  | Dividend Per Share                             |    1.00 |    1.00 |    1.00 |    1.00 |      -- |
+  | Operating Profit Per Share (Rs)                |   48.45 |   33.45 |   30.65 |   23.22 |   12.56 |
+  | Net Operating Profit Per Share (Rs)            |  424.00 |  255.18 |  218.24 |  170.64 |  118.55 |
+  | Free Reserves Per Share (Rs)                   |      -- |      -- |      -- |      -- |      -- |
+  | Bonus in Equity Capital                        |      -- |      -- |      -- |      -- |      -- |
+*** Profitability Ratios
+  | Operating Profit Margin(%)                     |   11.42 |   13.10 |   14.04 |   13.60 |   10.59 |
+  | Profit Before Interest And Tax Margin(%)       |    9.36 |   12.50 |   13.37 |   12.99 |    9.84 |
+  | Gross Profit Margin(%)                         |    9.57 |   12.74 |   13.60 |   13.07 |    9.95 |
+  | Cash Profit Margin(%)                          |    8.71 |    6.21 |    7.60 |    7.53 |    5.23 |
+  | Adjusted Cash Margin(%)                        |    8.71 |    6.21 |    7.60 |    7.53 |    5.23 |
+  | Net Profit Margin(%)                           |    7.05 |    5.97 |    7.30 |    7.07 |    4.64 |
+  | Adjusted Net Profit Margin(%)                  |    6.89 |    5.86 |    7.18 |    7.03 |    4.59 |
+  | Return On Capital Employed(%)                  |   12.77 |   20.47 |   24.24 |   17.42 |   21.48 |
+  | Return On Net Worth(%)                         |   14.33 |   17.06 |   21.23 |   21.84 |   17.56 |
+  | Adjusted Return on Net Worth(%)                |   14.34 |   17.06 |   21.22 |   21.77 |   17.56 |
+  | Return on Assets Excluding Revaluations        |  208.52 |   89.34 |   75.08 |   55.27 |   31.34 |
+  | Return on Assets Including Revaluations        |  208.52 |   89.34 |   75.08 |   55.27 |   31.34 |
+  | Return on Long Term Funds(%)                   |   20.47 |   39.52 |   40.73 |   23.43 |   38.82 |
+*** Liquidity And Solvency Ratios
+  | Current Ratio                                  |    0.96 |    0.99 |    1.11 |    1.68 |    1.21 |
+  | Quick Ratio                                    |    2.86 |    2.41 |    1.94 |    3.39 |    2.05 |
+  | Debt Equity Ratio                              |    0.88 |    1.05 |    0.84 |    1.41 |    0.92 |
+  | Long Term Debt Equity Ratio                    |    0.17 |    0.06 |    0.09 |    0.80 |    0.08 |
+*** Debt Coverage Ratios
+  | Interest Cover                                 |    2.23 |    2.72 |    3.45 |    3.90 |    2.55 |
+  | Total Debt to Owners Fund                      |    0.88 |    1.05 |    0.84 |    1.41 |    0.92 |
+  | Financial Charges Coverage Ratio               |    2.58 |    2.79 |    3.55 |    4.05 |    2.70 |
+  | Financial Charges Coverage Ratio Post Tax      |    2.68 |    2.17 |    2.74 |    3.17 |    2.22 |
+*** Management Efficiency Ratios
+  | Inventory Turnover Ratio                       |    3.94 |    4.49 |    5.22 |    5.98 |    4.33 |
+  | Debtors Turnover Ratio                         |    3.12 |    3.09 |    3.46 |    4.77 |    4.52 |
+  | Investments Turnover Ratio                     |    3.94 |    4.49 |    5.22 |    5.98 |    4.33 |
+  | Fixed Assets Turnover Ratio                    |    3.78 |   11.84 |   10.98 |    9.03 |    5.90 |
+  | Total Assets Turnover Ratio                    |    1.08 |    1.40 |    1.58 |    1.29 |    1.96 |
+  | Asset Turnover Ratio                           |    1.48 |    1.63 |    1.60 |    1.86 |    2.25 |
+  | Average Raw Material Holding                   |      -- |      -- |      -- |      -- |      -- |
+  | Average Finished Goods Held                    |      -- |      -- |      -- |      -- |      -- |
+  | Number of Days In Working Capital              |  191.95 |  209.66 |  178.67 |  253.89 |  163.45 |
+*** Profit & Loss Account Ratios
+  | Material Cost Composition                      |   83.00 |   82.86 |   83.27 |   81.89 |   81.06 |
+  | Imported Composition of Raw Materials Consumed |      -- |      -- |      -- |   15.70 |   18.83 |
+  | Selling Distribution Cost Composition          |      -- |      -- |      -- |      -- |      -- |
+  | Expenses as Composition of Total Sales         |      -- |      -- |    0.16 |    1.15 |    0.06 |
+  | Cash Flow Indicator Ratios                     |         |         |         |         |         |
+  | Dividend Payout Ratio Net Profit               |      -- |    7.89 |      -- |    7.87 |      -- |
+  | Dividend Payout Ratio Cash Profit              |      -- |    7.44 |      -- |    7.32 |      -- |
+  | Earning Retention Ratio                        |  100.00 |   92.11 |  100.00 |   92.11 |  100.00 |
+  | Cash Earning Retention Ratio                   |  100.00 |   92.56 |  100.00 |   92.66 |  100.00 |
+  | AdjustedCash Flow Times                        |    4.85 |    5.78 |    3.73 |    6.03 |    4.59 |

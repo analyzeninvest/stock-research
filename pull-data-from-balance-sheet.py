@@ -16,13 +16,14 @@ def pull_10y_data_from_screener(stock):
     ###########################################################################
     #                           Initilize variables                           #
     ###########################################################################
-    url     = 'https://www.screener.in/company/'+stock+'/consolidated/'
-    page    = requests.get(url)
-    soup    = BeautifulSoup(page.content, 'html.parser')
-    headers = soup.find_all('h2')
-    eps     = []
-    year    = []
-    debt    = []
+    url      = 'https://www.screener.in/company/'+stock+'/consolidated/'
+    page     = requests.get(url)
+    soup     = BeautifulSoup(page.content, 'html.parser')
+    headers  = soup.find_all('h2')
+    eps      = []
+    year     = []
+    debt     = []
+    dividend = []
     ###########################################################################
     #                     Profit & Loss / Income Statement                    #
     ###########################################################################
@@ -35,7 +36,7 @@ def pull_10y_data_from_screener(stock):
     for th in ths:
         match = re.search('([Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec]+ [0-9]+)',str(th))
         if match:
-            print("Reported Month / Year in Profit & Loss: " + match.group(1))
+            #print("Reported Month / Year in Profit & Loss: " + match.group(1))
             year.append(match.group(1))
     next_table = header.findNext('table')
     trs = next_table.find_all('tr')
@@ -46,8 +47,16 @@ def pull_10y_data_from_screener(stock):
             for i in range(len(year)+1):
                 match = re.search('([0-9]+[.][0-9]+)',str(td))
                 eps.append(match.group(1))
-                print("EPS: "+eps[i])
-                td = td.findNext('td')                
+                #print("EPS: "+eps[i])
+                td = td.findNext('td')
+        match = re.search('Dividend Payout',str(tr))
+        if match:
+            td = tr.findNext('td').findNext('td')
+            for i in range(len(year)+1):
+                match = re.search('([0-9]+)',str(td))
+                dividend.append(match.group(1))
+                #print("EPS: "+eps[i])
+                td = td.findNext('td')
     ###################################################################
     #                          Balance Sheet                          #
     ###################################################################
@@ -60,7 +69,8 @@ def pull_10y_data_from_screener(stock):
     for th in ths:
         match = re.search('([Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec]+ [0-9]+)',str(th))
         if match:
-            print("Reported Month / Year in Balance Sheet: " + match.group(1))
+            #print("Reported Month / Year in Balance Sheet: " + match.group(1))
+            False
     ###################################################################
     #                            Cash Flow                            #
     ###################################################################
@@ -75,8 +85,11 @@ def pull_10y_data_from_screener(stock):
         # print(th)
         match = re.search('([Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec]+ [0-9]+)',str(th))
         if match:
-            print("Reported Month / Year in Cash Flow: " + match.group(1))
-
+            #print("Reported Month / Year in Cash Flow: " + match.group(1))
+            False
+    print(year)
+    print(eps)
+    print(dividend)
 
 
 
@@ -84,3 +97,5 @@ print('INFOSYS')
 pull_10y_data_from_screener('INFY')
 print('AMBUJA CEMENT')    
 pull_10y_data_from_screener('AMBUJACEM')
+
+
