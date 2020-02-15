@@ -177,3 +177,6 @@
   | Earning Retention Ratio                        |  100.00 |   92.11 |  100.00 |   92.11 |  100.00 |
   | Cash Earning Retention Ratio                   |  100.00 |   92.56 |  100.00 |   92.66 |  100.00 |
   | AdjustedCash Flow Times                        |    4.85 |    5.78 |    3.73 |    6.03 |    4.59 |
+
+
+

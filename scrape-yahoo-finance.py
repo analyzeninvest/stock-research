@@ -39,6 +39,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
         order = False
         skip = 0
         data = False
+        estimate = False
     elif attribute in ['revenue', 'netIncome', 'ebit', 'interestExpense']:
         page = requests.get(income_statement_url)
         order = False
@@ -66,21 +67,37 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
     elif attribute in ['revenueEstimate']:
         page = requests.get(analysis_url)
         order = False
-        skip = 0
+        skip = 2
         data = False
         estimate = True
     
     soup = BeautifulSoup(page.text, 'html.parser')
-    match_string = '"'+attribute+'":{"raw":([0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"}'
-    
+    if not estimate:
+        match_string = '"'+attribute+'":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"}'
+    else:
+       match_string = '"'+attribute+'":{"avg":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"},"low":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"},"high":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"}'
+        
     pattern = re.compile(match_string, re.MULTILINE )
-    script = statistics_soup.find('script', text=pattern)
-    match = pattern.search(script.text)
-    attribute_value = match.group(1)
-    print(attribute_value)
-    
-    
+    script = soup.find('script', text=pattern)
+    if script:
+        match = pattern.search(script.text)
+        attribute_value = match.group(1)
+    else:
+        attribute_value = "0"
+    print(stock_ticker + " has " +attribute + " " + attribute_value)
 
+pull_attribute_from_yahoo('AAPL', 'beta')
+pull_attribute_from_yahoo('AAPL', 'marketCap')
+pull_attribute_from_yahoo('AAPL', 'sharesOutstanding')
+pull_attribute_from_yahoo('AAPL', 'revenue')
+pull_attribute_from_yahoo('AAPL', 'netIncome')
+pull_attribute_from_yahoo('AAPL', 'ebit')
+pull_attribute_from_yahoo('AAPL', 'incomeBeforeTax')
+pull_attribute_from_yahoo('AAPL', 'incomeTaxExpense')
+pull_attribute_from_yahoo('AAPL', 'totalCurrentAssets')
+pull_attribute_from_yahoo('AAPL', 'totalCurrentLiabilities')
+pull_attribute_from_yahoo('AAPL', 'longTermDebt')
+pull_attribute_from_yahoo('AAPL', 'depreciation')
+pull_attribute_from_yahoo('AAPL', 'capitalExpenditures')
+pull_attribute_from_yahoo('AAPL', 'revenueEstimate')
 
-
-pull_attribute_from_yahoo('FB', 'sharesOutstanding')

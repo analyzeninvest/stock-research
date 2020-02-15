@@ -15,3 +15,59 @@ https://www.msn.com/en-in/money/stockscreener
 
 
 
+* add following from the yahoo Finance
+
+** table for attributes
+
+ |-----------------------------+-------------------------+------------------+--------+--------------------+------+----------+------------|
+ | attribute                   | scrape                  | page             | Status | Cronological Order | skip | estimate | Date Range |
+ |-----------------------------+-------------------------+------------------+--------+--------------------+------+----------+------------|
+ | shares outstanding          | sharesoutstanding       | statistics       | done   | False              |    0 | False    | False      |
+ | beta                        | beta                    | statistics       | done   | False              |    0 | False    | False      |
+ | total market capital        | marketcap               | statistics       | done   | False              |    0 | False    | False      |
+ | total revenue               | revenue                 | Income Statement |        | False              |    0 | False    | True       |
+ | net income                  | netincome               | Income Statement |        | True               |    0 | False    | Ture       |
+ | EBITDA                      | ebit                    | Income Statement |        | True               |    0 | False    | True       |
+ | income before tax           | incomebeforetax         | Income Statement |        | True               |    4 | False    | True       |
+ | income tax expenses         | incometaxexpense        | Income Statement |        | True               |    4 | False    | True       |
+ | Interest Expenses           | interestexpense         | Income Statement |        | True               |    0 | False    | True       |
+ | Current Assets              | totalcurrentassets      | Balance Sheet    |        | True               |    0 | False    | True       |
+ | Current Liabilities         | totalcurrentliabilities | Balance Sheet    |        | True               |    0 | False    | True       |
+ | Long Term Loans             | longtermdebt            | Balance Sheet    |        | True               |    0 | False    | True       |
+ | Depreciation & Amortization | depreciation            | Cash Flow        |        | True               |    0 | False    | True       |
+ | Capital Expenditure         | capitalexpenditures     | Cash Flow        |        | True               |    0 | False    | True       |
+ | Estimated total Revenue     | revenueestimate         | Analysis         |        | False              |    2 | True     | False      |
+ |-----------------------------+-------------------------+------------------+--------+--------------------+------+----------+------------|
+
+** actual web page contents
+
+   "beta":{"raw":1.075971,"fmt":"1.08"}
+   "marketCap":{"raw":584459354112,"fmt":"584.46B","longFmt":"584,459,354,112"}
+   "sharesOutstanding":{"raw":2405750016,"fmt":"2.41B","longFmt":"2,405,750,016"}
+   "financialsChart":{"yearly":[{"date":2016,"revenue":{"raw":8830669000,"fmt":"8.83B","longFmt":"8,830,669,000"} 
+   --- this is captured with date, reverse cronological order
+   "netIncome":{"raw":1866916000,"fmt":"1.87B","longFmt":"1,866,916,000"}
+   --- this is in cronological order, first occurance is latest year, 4 year then 4 Q
+   "ebit":{"raw":458512000,"fmt":"458.51M","longFmt":"458,512,000"},"endDate":{"raw":1577750400,"fmt":"2019-12-31"},
+   --- EBIRDA is not mentioned, EBIT is, which is what I needed, same order as netIncome
+   "incomeBeforeTax":{"raw":2062231000,"fmt":"2.06B","longFmt":"2,062,231,000"}
+   --- first 4 are for Quarterly report, then 5th is lastest year & so on for next 3 years
+   "incomeTaxExpense":{"raw":195315000,"fmt":"195.31M","longFmt":"195,315,000"}
+   --- order same as incomeBeforeTax
+   "interestExpense":{"raw":-626023000,"fmt":"-626.02M","longFmt":"-626,023,000"}
+   --- order same as incomeBeforeTax
+   "totalCurrentAssets":{"raw":6178504000,"fmt":"6.18B","longFmt":"6,178,504,000"},
+   --- cronological oder 
+   "totalCurrentLiabilities":{"raw":6855696000,"fmt":"6.86B","longFmt":"6,855,696,000"},
+   --- cronological oder 
+   "longTermDebt":{"raw":14759260000,"fmt":"14.76B","longFmt":"14,759,260,000"}
+   --- cronological oder 
+   "depreciation":{"raw":103579000,"fmt":"103.58M","longFmt":"103,579,000"}
+   --- cronological oder , both D&A are mentioned
+   "capitalExpenditures":{"raw":-253035000,"fmt":"-253.03M","longFmt":"-253,035,000"}},
+   --- cronological oder 
+   "revenueEstimate":{"avg":{"raw":24372500000,"fmt":"24.37B","longFmt":"24,372,500,000"},
+   "low":{"raw":23579400000,"fmt":"23.58B","longFmt":"23,579,400,000"},"high":{"raw":25161000000,"fmt":"25.16B","longFmt":"25,161,000,000"}
+   --- first 2 are Quarterly estimate, then yearly, all 3 types in same
+
+* add feature to add in the google sheets 
