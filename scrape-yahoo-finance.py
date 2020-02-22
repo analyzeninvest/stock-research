@@ -2,7 +2,7 @@
 
 def pull_attribute_from_yahoo(stock_ticker, attribute):
     """
-    This function is for pulling the data from yahoo finance.
+    This function is for pulling the data_range from yahoo finance.
     Idea is to pass the argument & find it from the website.
     Following Data are needed for the FCF Calculation:
     |-------------------------+------------------|
@@ -33,59 +33,209 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
     balance_sheet_url = 'https://finance.yahoo.com/quote/'+stock_ticker+'/balance-sheet?p='+stock_ticker+''
     cash_flow_url = 'https://finance.yahoo.com/quote/'+stock_ticker+'/cash-flow?p='+stock_ticker+''
     analysis_url = 'https://finance.yahoo.com/quote/'+stock_ticker+'/analysis?p='+stock_ticker+''
-
+    attribute_value = []
+    year_range = []
+    today = date.today()
+    current_year = today.year
     if attribute in ['beta', 'marketCap', 'sharesOutstanding']:
         page = requests.get(statistics_url)
-        order = False
-        skip = 0
-        data = False
-        estimate = False
+        soup = BeautifulSoup(page.text, 'html.parser')
+        match_string = '"'+attribute+'":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"}'
+        pattern = re.compile(match_string, re.MULTILINE )
+        script = soup.find('script', text=pattern)
+        if script:
+            match = pattern.search(script.text)
+            if match:
+                attribute_value.append(match.group(1))
+            else:
+                attribute_value.append(str(0))
+        else:
+            attribute_value.append(str(0))
+        for value in attribute_value:
+            print(stock_ticker + " has " +attribute + " of for year " + str(current_year) + " :  " + value)
     elif attribute in ['revenue', 'netIncome', 'ebit', 'interestExpense']:
         page = requests.get(income_statement_url)
-        order = False
-        skip = 0
-        data = False
-        estimate = False
+        soup = BeautifulSoup(page.text, 'html.parser')
+        match_string = '"cashflowStatements":[[].*"'+attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+'":{"raw":([-]?[0-9.]+).*}.*[]]'
+        #match_string = '"cashflowStatements":[[].*[]]'
+        #print(match_string)
+        pattern = re.compile(match_string, re.MULTILINE )
+        #print(pattern)
+        script = soup.find('script', text=pattern)
+        if script:
+            #print("script found")
+            match = pattern.search(script.text)
+            if match:
+                #print("match found")
+                attribute_value.append(match.group(1))
+                attribute_value.append(match.group(2))
+                attribute_value.append(match.group(3))
+                attribute_value.append(match.group(4))
+            else:
+                #print("match not found")
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+        else:
+            #print("script not found")
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -1) + " as :"  + attribute_value[0])
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -2) + " as :"  + attribute_value[1])
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -3) + " as :"  + attribute_value[2])
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -4) + " as :"  + attribute_value[3])
     elif attribute in ['incomeBeforeTax', 'incomeTaxExpense']:
         page = requests.get(income_statement_url)
-        order = False
-        skip = 4
-        data = False        
-        estimate = False
+        soup = BeautifulSoup(page.text, 'html.parser')
+        match_string = '"cashflowStatements":[[].*"'+attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+'":{"raw":([-]?[0-9.]+).*}.*[]]'
+        #match_string = '"cashflowStatements":[[].*[]]'
+        #print(match_string)
+        pattern = re.compile(match_string, re.MULTILINE )
+        #print(pattern)
+        script = soup.find('script', text=pattern)
+        if script:
+            #print("script found")
+            match = pattern.search(script.text)
+            if match:
+                #print("match found")
+                attribute_value.append(match.group(1))
+                attribute_value.append(match.group(2))
+                attribute_value.append(match.group(3))
+                attribute_value.append(match.group(4))
+            else:
+                #print("match not found")
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+        else:
+            #print("script not found")
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -1) + " as :"  + attribute_value[0])
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -2) + " as :"  + attribute_value[1])
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -3) + " as :"  + attribute_value[2])
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -4) + " as :"  + attribute_value[3])
     elif attribute in ['totalCurrentAssets', 'totalCurrentLiabilities', 'longTermDebt']:
         page = requests.get(balance_sheet_url)
-        order = True
-        skip = 0
-        data = True
-        estimate = False
+        soup = BeautifulSoup(page.text, 'html.parser')
+        match_string = '"cashflowStatements":[[].*"'+attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+'":{"raw":([-]?[0-9.]+).*}.*[]]'
+        #match_string = '"cashflowStatements":[[].*[]]'
+        #print(match_string)
+        pattern = re.compile(match_string, re.MULTILINE )
+        #print(pattern)
+        script = soup.find('script', text=pattern)
+        if script:
+            #print("script found")
+            match = pattern.search(script.text)
+            if match:
+                #print("match found")
+                attribute_value.append(match.group(1))
+                attribute_value.append(match.group(2))
+                attribute_value.append(match.group(3))
+                attribute_value.append(match.group(4))
+            else:
+                #print("match not found")
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+        else:
+            #print("script not found")
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -1) + " as :"  + attribute_value[0])
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -2) + " as :"  + attribute_value[1])
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -3) + " as :"  + attribute_value[2])
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -4) + " as :"  + attribute_value[3])
     elif attribute in ['depreciation', 'capitalExpenditures']:
         page = requests.get(cash_flow_url)
-        order = True
-        skip = 0
-        data = True
-        estimate = False
+        soup = BeautifulSoup(page.text, 'html.parser')
+        match_string = '"cashflowStatements":[[].*"'+attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+'":{"raw":([-]?[0-9.]+).*}.*[]]'
+        #match_string = '"cashflowStatements":[[].*[]]'
+        #print(match_string)
+        pattern = re.compile(match_string, re.MULTILINE )
+        #print(pattern)
+        script = soup.find('script', text=pattern)
+        if script:
+            #print("script found")
+            match = pattern.search(script.text)
+            if match:
+                #print("match found")
+                attribute_value.append(match.group(1))
+                attribute_value.append(match.group(2))
+                attribute_value.append(match.group(3))
+                attribute_value.append(match.group(4))
+            else:
+                #print("match not found")
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+        else:
+            #print("script not found")
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -1) + " as :"  + attribute_value[0])
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -2) + " as :"  + attribute_value[1])
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -3) + " as :"  + attribute_value[2])
+        print(stock_ticker + " has " +attribute + " for "+ str(current_year -4) + " as :"  + attribute_value[3])
+                
     elif attribute in ['revenueEstimate']:
         page = requests.get(analysis_url)
-        order = False
-        skip = 2
-        data = False
-        estimate = True
-    
-    soup = BeautifulSoup(page.text, 'html.parser')
-    if not estimate:
-        match_string = '"'+attribute+'":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"}'
-    else:
-       match_string = '"'+attribute+'":{"avg":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"},"low":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"},"high":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"}'
-        
-    pattern = re.compile(match_string, re.MULTILINE )
-    script = soup.find('script', text=pattern)
-    if script:
-        match = pattern.search(script.text)
-        attribute_value = match.group(1)
-    else:
-        attribute_value = "0"
-    print(stock_ticker + " has " +attribute + " " + attribute_value)
+        soup = BeautifulSoup(page.text, 'html.parser')
+        match_string = attribute+'.*'+attribute+'.*"'+attribute+'":{"avg":{"raw":([-]?[0-9.]+).*?"low":{"raw":([-]?[0-9.]+).*?"high":{"raw":([-]?[0-9.]+),.*'+attribute+ '":{"avg":{"raw":([-]?[0-9.]+).*"low":{"raw":([-]?[0-9.]+).*"high":{"raw":([-]?[0-9.]+),.*'+attribute+'.*'+attribute
+        #print(match_string)
+        pattern = re.compile(match_string, re.MULTILINE )
+        #print(pattern)
+        script = soup.find('script', text=pattern)
+        if script:
+            #print("script found")
+            match = pattern.search(script.text)
+            if match:
+                #print("match found")
+                attribute_value.append(match.group(1))
+                attribute_value.append(match.group(2))
+                attribute_value.append(match.group(3))
+                attribute_value.append(match.group(4))
+                attribute_value.append(match.group(5))
+                attribute_value.append(match.group(6))
+            else:
+                #print("match not found")
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+                attribute_value.append(str(0))
+        else:
+            #print("script not found")
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+            attribute_value.append(str(0))
+        print(stock_ticker + " has " +attribute + " of for "+ str(current_year) + " avg: "  + attribute_value[0])
+        print(stock_ticker + " has " +attribute + " of for "+ str(current_year) + " low: "  + attribute_value[1])
+        print(stock_ticker + " has " +attribute + " of for "+ str(current_year) + " high: " + attribute_value[2])
+        next_year = current_year + 1
+        print(stock_ticker + " has " +attribute + " of for "+ str(next_year) + " avg: "  + attribute_value[3])
+        print(stock_ticker + " has " +attribute + " of for "+ str(next_year) + " low: "  + attribute_value[4])
+        print(stock_ticker + " has " +attribute + " of for "+ str(next_year) + " high: " + attribute_value[5])
 
+
+
+# testing the code :
 pull_attribute_from_yahoo('AAPL', 'beta')
 pull_attribute_from_yahoo('AAPL', 'marketCap')
 pull_attribute_from_yahoo('AAPL', 'sharesOutstanding')
