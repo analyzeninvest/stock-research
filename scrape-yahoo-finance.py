@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 def pull_attribute_from_yahoo(stock_ticker, attribute):
     """
     This function is for pulling the data_range from yahoo finance.
@@ -53,45 +54,10 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
             attribute_value.append(str(0))
         for value in attribute_value:
             print(stock_ticker + " has " +attribute + " of for year " + str(current_year) + " :  " + value)
-    elif attribute in ['revenue', 'netIncome', 'ebit', 'interestExpense']:
+    elif attribute in ['totalRevenue', 'netIncome', 'ebit', 'interestExpense', 'incomeBeforeTax', 'incomeTaxExpense']:
         page = requests.get(income_statement_url)
         soup = BeautifulSoup(page.text, 'html.parser')
-        match_string = '"cashflowStatements":[[].*"'+attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+'":{"raw":([-]?[0-9.]+).*}.*[]]'
-        #match_string = '"cashflowStatements":[[].*[]]'
-        #print(match_string)
-        pattern = re.compile(match_string, re.MULTILINE )
-        #print(pattern)
-        script = soup.find('script', text=pattern)
-        if script:
-            #print("script found")
-            match = pattern.search(script.text)
-            if match:
-                #print("match found")
-                attribute_value.append(match.group(1))
-                attribute_value.append(match.group(2))
-                attribute_value.append(match.group(3))
-                attribute_value.append(match.group(4))
-            else:
-                #print("match not found")
-                attribute_value.append(str(0))
-                attribute_value.append(str(0))
-                attribute_value.append(str(0))
-                attribute_value.append(str(0))
-        else:
-            #print("script not found")
-            attribute_value.append(str(0))
-            attribute_value.append(str(0))
-            attribute_value.append(str(0))
-            attribute_value.append(str(0))
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -1) + " as :"  + attribute_value[0])
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -2) + " as :"  + attribute_value[1])
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -3) + " as :"  + attribute_value[2])
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -4) + " as :"  + attribute_value[3])
-    elif attribute in ['incomeBeforeTax', 'incomeTaxExpense']:
-        page = requests.get(income_statement_url)
-        soup = BeautifulSoup(page.text, 'html.parser')
-        match_string = '"cashflowStatements":[[].*"'+attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+'":{"raw":([-]?[0-9.]+).*}.*[]]'
-        #match_string = '"cashflowStatements":[[].*[]]'
+        match_string = '"incomeStatementHistory":[[].*"'+attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+'":{"raw":([-]?[0-9.]+).*}.*[]]'
         #print(match_string)
         pattern = re.compile(match_string, re.MULTILINE )
         #print(pattern)
@@ -124,8 +90,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
     elif attribute in ['totalCurrentAssets', 'totalCurrentLiabilities', 'longTermDebt']:
         page = requests.get(balance_sheet_url)
         soup = BeautifulSoup(page.text, 'html.parser')
-        match_string = '"cashflowStatements":[[].*"'+attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+'":{"raw":([-]?[0-9.]+).*}.*[]]'
-        #match_string = '"cashflowStatements":[[].*[]]'
+        match_string = '"balanceSheetHistory":."balanceSheetStatements":[[].*"'+attribute+ '":."raw":([-]?[0-9.]+).*"' +attribute+ '":."raw":([-]?[0-9.]+).*"' +attribute+ '":."raw":([-]?[0-9.]+).*,"' +attribute+'":."raw":([-]?[0-9.]+).*[]]'
         #print(match_string)
         pattern = re.compile(match_string, re.MULTILINE )
         #print(pattern)
@@ -239,7 +204,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
 pull_attribute_from_yahoo('AAPL', 'beta')
 pull_attribute_from_yahoo('AAPL', 'marketCap')
 pull_attribute_from_yahoo('AAPL', 'sharesOutstanding')
-pull_attribute_from_yahoo('AAPL', 'revenue')
+pull_attribute_from_yahoo('AAPL', 'totalRevenue')
 pull_attribute_from_yahoo('AAPL', 'netIncome')
 pull_attribute_from_yahoo('AAPL', 'ebit')
 pull_attribute_from_yahoo('AAPL', 'incomeBeforeTax')
@@ -250,4 +215,66 @@ pull_attribute_from_yahoo('AAPL', 'longTermDebt')
 pull_attribute_from_yahoo('AAPL', 'depreciation')
 pull_attribute_from_yahoo('AAPL', 'capitalExpenditures')
 pull_attribute_from_yahoo('AAPL', 'revenueEstimate')
+
+pull_attribute_from_yahoo('FB', 'beta')
+pull_attribute_from_yahoo('FB', 'marketCap')
+pull_attribute_from_yahoo('FB', 'sharesOutstanding')
+pull_attribute_from_yahoo('FB', 'totalRevenue')
+pull_attribute_from_yahoo('FB', 'netIncome')
+pull_attribute_from_yahoo('FB', 'ebit')
+pull_attribute_from_yahoo('FB', 'incomeBeforeTax')
+pull_attribute_from_yahoo('FB', 'incomeTaxExpense')
+pull_attribute_from_yahoo('FB', 'totalCurrentAssets')
+pull_attribute_from_yahoo('FB', 'totalCurrentLiabilities')
+pull_attribute_from_yahoo('FB', 'longTermDebt')
+pull_attribute_from_yahoo('FB', 'depreciation')
+pull_attribute_from_yahoo('FB', 'capitalExpenditures')
+pull_attribute_from_yahoo('FB', 'revenueEstimate')
+
+pull_attribute_from_yahoo('GOOG', 'beta')
+pull_attribute_from_yahoo('GOOG', 'marketCap')
+pull_attribute_from_yahoo('GOOG', 'sharesOutstanding')
+pull_attribute_from_yahoo('GOOG', 'totalRevenue')
+pull_attribute_from_yahoo('GOOG', 'netIncome')
+pull_attribute_from_yahoo('GOOG', 'ebit')
+pull_attribute_from_yahoo('GOOG', 'incomeBeforeTax')
+pull_attribute_from_yahoo('GOOG', 'incomeTaxExpense')
+pull_attribute_from_yahoo('GOOG', 'totalCurrentAssets')
+pull_attribute_from_yahoo('GOOG', 'totalCurrentLiabilities')
+pull_attribute_from_yahoo('GOOG', 'longTermDebt')
+pull_attribute_from_yahoo('GOOG', 'depreciation')
+pull_attribute_from_yahoo('GOOG', 'capitalExpenditures')
+pull_attribute_from_yahoo('GOOG', 'revenueEstimate')
+
+pull_attribute_from_yahoo('AMZN', 'beta')
+pull_attribute_from_yahoo('AMZN', 'marketCap')
+pull_attribute_from_yahoo('AMZN', 'sharesOutstanding')
+pull_attribute_from_yahoo('AMZN', 'totalRevenue')
+pull_attribute_from_yahoo('AMZN', 'netIncome')
+pull_attribute_from_yahoo('AMZN', 'ebit')
+pull_attribute_from_yahoo('AMZN', 'incomeBeforeTax')
+pull_attribute_from_yahoo('AMZN', 'incomeTaxExpense')
+pull_attribute_from_yahoo('AMZN', 'totalCurrentAssets')
+pull_attribute_from_yahoo('AMZN', 'totalCurrentLiabilities')
+pull_attribute_from_yahoo('AMZN', 'longTermDebt')
+pull_attribute_from_yahoo('AMZN', 'depreciation')
+pull_attribute_from_yahoo('AMZN', 'capitalExpenditures')
+pull_attribute_from_yahoo('AMZN', 'revenueEstimate')
+
+pull_attribute_from_yahoo('NFLX', 'beta')
+pull_attribute_from_yahoo('NFLX', 'marketCap')
+pull_attribute_from_yahoo('NFLX', 'sharesOutstanding')
+pull_attribute_from_yahoo('NFLX', 'totalRevenue')
+pull_attribute_from_yahoo('NFLX', 'netIncome')
+pull_attribute_from_yahoo('NFLX', 'ebit')
+pull_attribute_from_yahoo('NFLX', 'incomeBeforeTax')
+pull_attribute_from_yahoo('NFLX', 'incomeTaxExpense')
+pull_attribute_from_yahoo('NFLX', 'totalCurrentAssets')
+pull_attribute_from_yahoo('NFLX', 'totalCurrentLiabilities')
+pull_attribute_from_yahoo('NFLX', 'longTermDebt')
+pull_attribute_from_yahoo('NFLX', 'depreciation')
+pull_attribute_from_yahoo('NFLX', 'capitalExpenditures')
+pull_attribute_from_yahoo('NFLX', 'revenueEstimate')
+
+
 
