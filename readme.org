@@ -19,25 +19,24 @@ https://www.msn.com/en-in/money/stockscreener
 
 ** table for attributes
 
- |-----------------------------+-------------------------+------------------+--------------------+------+----------+------------|
- | attribute                   | scrape                  | page             | Cronological Order | skip | estimate | Date Range |
- |-----------------------------+-------------------------+------------------+--------------------+------+----------+------------|
- | shares outstanding          | sharesoutstanding       | statistics       | False              |    0 | False    | False      |
- | beta                        | beta                    | statistics       | False              |    0 | False    | False      |
- | total market capital        | marketcap               | statistics       | False              |    0 | False    | False      |
- | total revenue               | revenue                 | Income Statement | False              |    0 | False    | True       |
- | net income                  | netincome               | Income Statement | True               |    0 | False    | Ture       |
- | EBITDA                      | ebit                    | Income Statement | True               |    0 | False    | True       |
- | income before tax           | incomebeforetax         | Income Statement | True               |    4 | False    | True       |
- | income tax expenses         | incometaxexpense        | Income Statement | True               |    4 | False    | True       |
- | Interest Expenses           | interestexpense         | Income Statement | True               |    0 | False    | True       |
- | Current Assets              | totalcurrentassets      | Balance Sheet    | True               |    0 | False    | True       |
- | Current Liabilities         | totalcurrentliabilities | Balance Sheet    | True               |    0 | False    | True       |
- | Long Term Loans             | longtermdebt            | Balance Sheet    | True               |    0 | False    | True       |
- | Depreciation & Amortization | depreciation            | Cash Flow        | True               |    0 | False    | True       |
- | Capital Expenditure         | capitalexpenditures     | Cash Flow        | True               |    0 | False    | True       |
- | Estimated total Revenue     | revenueestimate         | Analysis         | False              |    2 | True     | True       |
- |-----------------------------+-------------------------+------------------+--------------------+------+----------+------------|
+ |-----------------------------+-------------------------+------------------|
+ | attribute                   | scrape                  | page             |
+ |-----------------------------+-------------------------+------------------|
+ | shares outstanding          | sharesoutstanding       | statistics       |
+ | beta                        | beta                    | statistics       |
+ | total market capital        | marketcap               | statistics       |
+ | total revenue               | revenue                 | Income Statement |
+ | net income                  | netincome               | Income Statement |
+ | income before tax           | incomebeforetax         | Income Statement |
+ | income tax expenses         | incometaxexpense        | Income Statement |
+ | Interest Expenses           | interestexpense         | Income Statement |
+ | Current Assets              | totalcurrentassets      | Balance Sheet    |
+ | Current Liabilities         | totalcurrentliabilities | Balance Sheet    |
+ | Long Term Loans             | longtermdebt            | Balance Sheet    |
+ | Depreciation & Amortization | depreciation            | Cash Flow        |
+ | Capital Expenditure         | capitalexpenditures     | Cash Flow        |
+ | Estimated total Revenue     | revenueestimate         | Analysis         |
+ |-----------------------------+-------------------------+------------------|
 
 ** actual web page contents
 
@@ -48,8 +47,6 @@ https://www.msn.com/en-in/money/stockscreener
    --- this is captured with date, reverse cronological order
    "netIncome":{"raw":1866916000,"fmt":"1.87B","longFmt":"1,866,916,000"}
    --- this is in cronological order, first occurance is latest year, 4 year then 4 Q
-   "ebit":{"raw":458512000,"fmt":"458.51M","longFmt":"458,512,000"},"endDate":{"raw":1577750400,"fmt":"2019-12-31"},
-   --- EBIRDA is not mentioned, EBIT is, which is what I needed, same order as netIncome
    "incomeBeforeTax":{"raw":2062231000,"fmt":"2.06B","longFmt":"2,062,231,000"}
    --- first 4 are for Quarterly report, then 5th is lastest year & so on for next 3 years
    "incomeTaxExpense":{"raw":195315000,"fmt":"195.31M","longFmt":"195,315,000"}
@@ -500,295 +497,31 @@ https://www.msn.com/en-in/money/stockscreener
 ,"growth":{}
 }
 
-** output of test
-
->>> AAPL has beta of for year 2020 :  1.277385
-AAPL has marketCap of for year 2020 :  1309603004416
-AAPL has sharesOutstanding of for year 2020 :  4375479808
-AAPL has totalRevenue for 2019 as :260174000000
-AAPL has totalRevenue for 2018 as :265595000000
-AAPL has totalRevenue for 2017 as :229234000000
-AAPL has totalRevenue for 2016 as :215639000000
-AAPL has netIncome for 2019 as :22236000000
-AAPL has netIncome for 2018 as :13686000000
-AAPL has netIncome for 2017 as :10044000000
-AAPL has netIncome for 2016 as :11561000000
-AAPL has ebit for 2019 as :63930000000
-AAPL has ebit for 2018 as :70898000000
-AAPL has ebit for 2017 as :61344000000
-AAPL has ebit for 2016 as :60024000000
-AAPL has incomeBeforeTax for 2019 as :65737000000
-AAPL has incomeBeforeTax for 2018 as :72903000000
-AAPL has incomeBeforeTax for 2017 as :64089000000
-AAPL has incomeBeforeTax for 2016 as :61372000000
-AAPL has incomeTaxExpense for 2019 as :10481000000
-AAPL has incomeTaxExpense for 2018 as :13372000000
-AAPL has incomeTaxExpense for 2017 as :15738000000
-AAPL has incomeTaxExpense for 2016 as :15685000000
-AAPL has totalCurrentAssets for 2019 as :162819000000
-AAPL has totalCurrentAssets for 2018 as :131339000000
-AAPL has totalCurrentAssets for 2017 as :128645000000
-AAPL has totalCurrentAssets for 2016 as :106869000000
-AAPL has totalCurrentLiabilities for 2019 as :105718000000
-AAPL has totalCurrentLiabilities for 2018 as :115929000000
-AAPL has totalCurrentLiabilities for 2017 as :100814000000
-AAPL has totalCurrentLiabilities for 2016 as :79006000000
-AAPL has longTermDebt for 2019 as :91807000000
-AAPL has longTermDebt for 2018 as :93735000000
-AAPL has longTermDebt for 2017 as :97207000000
-AAPL has longTermDebt for 2016 as :75427000000
-AAPL has interestExpense for 2019 as :-3576000000
-AAPL has interestExpense for 2018 as :-3240000000
-AAPL has interestExpense for 2017 as :-2323000000
-AAPL has interestExpense for 2016 as :-1456000000
-AAPL has depreciation for 2019 as :2816000000
-AAPL has depreciation for 2018 as :3179000000
-AAPL has depreciation for 2017 as :2933000000
-AAPL has depreciation for 2016 as :3040000000
-AAPL has capitalExpenditures for 2019 as :-2107000000
-AAPL has capitalExpenditures for 2018 as :-2777000000
-AAPL has capitalExpenditures for 2017 as :-2000000000
-AAPL has capitalExpenditures for 2016 as :-2363000000
-AAPL has revenueEstimate of for 2020 avg: 283112000000
-AAPL has revenueEstimate of for 2020 low: 271958000000
-AAPL has revenueEstimate of for 2020 high: 290405000000
-AAPL has revenueEstimate of for 2021 avg: 309466000000
-AAPL has revenueEstimate of for 2021 low: 292391000000
-AAPL has revenueEstimate of for 2021 high: 331392000000
-FB has beta of for year 2020 :  1.075971
-FB has marketCap of for year 2020 :  570802569216
-FB has sharesOutstanding of for year 2020 :  2405750016
-FB has totalRevenue for 2019 as :70697000000
-FB has totalRevenue for 2018 as :55838000000
-FB has totalRevenue for 2017 as :40653000000
-FB has totalRevenue for 2016 as :27638000000
-FB has netIncome for 2019 as :7349000000
-FB has netIncome for 2018 as :6091000000
-FB has netIncome for 2017 as :2616000000
-FB has netIncome for 2016 as :2429000000
-FB has ebit for 2019 as :23986000000
-FB has ebit for 2018 as :24913000000
-FB has ebit for 2017 as :20203000000
-FB has ebit for 2016 as :12427000000
-FB has incomeBeforeTax for 2019 as :24812000000
-FB has incomeBeforeTax for 2018 as :25361000000
-FB has incomeBeforeTax for 2017 as :20594000000
-FB has incomeBeforeTax for 2016 as :12518000000
-FB has incomeTaxExpense for 2019 as :6327000000
-FB has incomeTaxExpense for 2018 as :3249000000
-FB has incomeTaxExpense for 2017 as :4660000000
-FB has incomeTaxExpense for 2016 as :2301000000
-FB has totalCurrentAssets for 2019 as :66225000000
-FB has totalCurrentAssets for 2018 as :50480000000
-FB has totalCurrentAssets for 2017 as :48563000000
-FB has totalCurrentAssets for 2016 as :34401000000
-FB has totalCurrentLiabilities for 2019 as :15053000000
-FB has totalCurrentLiabilities for 2018 as :7017000000
-FB has totalCurrentLiabilities for 2017 as :3760000000
-FB has totalCurrentLiabilities for 2016 as :2875000000
-FB has longTermDebt for 2019 as :0
-FB has longTermDebt for 2018 as :0
-FB has longTermDebt for 2017 as :0
-FB has longTermDebt for 2016 as :0
-FB has interestExpense for 2019 as :-20000000
-FB has interestExpense for 2018 as :-9000000
-FB has interestExpense for 2017 as :-6000000
-FB has interestExpense for 2016 as :-10000000
-FB has depreciation for 2019 as :1468000000
-FB has depreciation for 2018 as :1416000000
-FB has depreciation for 2017 as :1502000000
-FB has depreciation for 2016 as :1355000000
-FB has capitalExpenditures for 2019 as :-4100000000
-FB has capitalExpenditures for 2018 as :-3532000000
-FB has capitalExpenditures for 2017 as :-3633000000
-FB has capitalExpenditures for 2016 as :-3837000000
-FB has revenueEstimate of for 2020 avg: 85696600000
-FB has revenueEstimate of for 2020 low: 83953700000
-FB has revenueEstimate of for 2020 high: 87782000000
-FB has revenueEstimate of for 2021 avg: 101975000000
-FB has revenueEstimate of for 2021 low: 96872100000
-FB has revenueEstimate of for 2021 high: 106867000000
-GOOG has beta of for year 2020 :  1.043286
-GOOG has marketCap of for year 2020 :  979184254976
-GOOG has sharesOutstanding of for year 2020 :  342065984
-GOOG has totalRevenue for 2019 as :161857000000
-GOOG has totalRevenue for 2018 as :136819000000
-GOOG has totalRevenue for 2017 as :110855000000
-GOOG has totalRevenue for 2016 as :90272000000
-GOOG has netIncome for 2019 as :10671000000
-GOOG has netIncome for 2018 as :7068000000
-GOOG has netIncome for 2017 as :9947000000
-GOOG has netIncome for 2016 as :6657000000
-GOOG has ebit for 2019 as :36482000000
-GOOG has ebit for 2018 as :32595000000
-GOOG has ebit for 2017 as :28914000000
-GOOG has ebit for 2016 as :23716000000
-GOOG has incomeBeforeTax for 2019 as :39625000000
-GOOG has incomeBeforeTax for 2018 as :34913000000
-GOOG has incomeBeforeTax for 2017 as :27193000000
-GOOG has incomeBeforeTax for 2016 as :24150000000
-GOOG has incomeTaxExpense for 2019 as :5282000000
-GOOG has incomeTaxExpense for 2018 as :4177000000
-GOOG has incomeTaxExpense for 2017 as :14531000000
-GOOG has incomeTaxExpense for 2016 as :4672000000
-GOOG has totalCurrentAssets for 2019 as :152578000000
-GOOG has totalCurrentAssets for 2018 as :135676000000
-GOOG has totalCurrentAssets for 2017 as :124308000000
-GOOG has totalCurrentAssets for 2016 as :105408000000
-GOOG has totalCurrentLiabilities for 2019 as :45221000000
-GOOG has totalCurrentLiabilities for 2018 as :34620000000
-GOOG has totalCurrentLiabilities for 2017 as :24183000000
-GOOG has totalCurrentLiabilities for 2016 as :16756000000
-GOOG has longTermDebt for 2019 as :3958000000
-GOOG has longTermDebt for 2018 as :3950000000
-GOOG has longTermDebt for 2017 as :3943000000
-GOOG has longTermDebt for 2016 as :3935000000
-GOOG has interestExpense for 2019 as :-100000000
-GOOG has interestExpense for 2018 as :-114000000
-GOOG has interestExpense for 2017 as :-109000000
-GOOG has interestExpense for 2016 as :-124000000
-GOOG has depreciation for 2019 as :3283000000
-GOOG has depreciation for 2018 as :2920000000
-GOOG has depreciation for 2017 as :2835000000
-GOOG has depreciation for 2016 as :2613000000
-GOOG has capitalExpenditures for 2019 as :-6052000000
-GOOG has capitalExpenditures for 2018 as :-6732000000
-GOOG has capitalExpenditures for 2017 as :-6126000000
-GOOG has capitalExpenditures for 2016 as :-4638000000
-GOOG has revenueEstimate of for 2020 avg: 190428000000
-GOOG has revenueEstimate of for 2020 low: 187894000000
-GOOG has revenueEstimate of for 2020 high: 193084000000
-GOOG has revenueEstimate of for 2021 avg: 221442000000
-GOOG has revenueEstimate of for 2021 low: 213262000000
-GOOG has revenueEstimate of for 2021 high: 230343000000
-AMZN has beta of for year 2020 :  1.615724
-AMZN has marketCap of for year 2020 :  995970908160
-AMZN has sharesOutstanding of for year 2020 :  498000000
-AMZN has totalRevenue for 2019 as :280522000000
-AMZN has totalRevenue for 2018 as :232887000000
-AMZN has totalRevenue for 2017 as :177866000000
-AMZN has totalRevenue for 2016 as :135987000000
-AMZN has netIncome for 2019 as :3268000000
-AMZN has netIncome for 2018 as :2134000000
-AMZN has netIncome for 2017 as :2625000000
-AMZN has netIncome for 2016 as :3561000000
-AMZN has ebit for 2019 as :14404000000
-AMZN has ebit for 2018 as :12421000000
-AMZN has ebit for 2017 as :4106000000
-AMZN has ebit for 2016 as :4186000000
-AMZN has incomeBeforeTax for 2019 as :13962000000
-AMZN has incomeBeforeTax for 2018 as :11270000000
-AMZN has incomeBeforeTax for 2017 as :3802000000
-AMZN has incomeBeforeTax for 2016 as :3796000000
-AMZN has incomeTaxExpense for 2019 as :2374000000
-AMZN has incomeTaxExpense for 2018 as :1197000000
-AMZN has incomeTaxExpense for 2017 as :769000000
-AMZN has incomeTaxExpense for 2016 as :1425000000
-AMZN has totalCurrentAssets for 2019 as :96334000000
-AMZN has totalCurrentAssets for 2018 as :75101000000
-AMZN has totalCurrentAssets for 2017 as :60197000000
-AMZN has totalCurrentAssets for 2016 as :45781000000
-AMZN has totalCurrentLiabilities for 2019 as :87812000000
-AMZN has totalCurrentLiabilities for 2018 as :68391000000
-AMZN has totalCurrentLiabilities for 2017 as :57883000000
-AMZN has totalCurrentLiabilities for 2016 as :43816000000
-AMZN has longTermDebt for 2019 as :23414000000
-AMZN has longTermDebt for 2018 as :23495000000
-AMZN has longTermDebt for 2017 as :24743000000
-AMZN has longTermDebt for 2016 as :7694000000
-AMZN has interestExpense for 2019 as :-1600000000
-AMZN has interestExpense for 2018 as :-1417000000
-AMZN has interestExpense for 2017 as :-848000000
-AMZN has interestExpense for 2016 as :-484000000
-AMZN has depreciation for 2019 as :6170000000
-AMZN has depreciation for 2018 as :5563000000
-AMZN has depreciation for 2017 as :5202000000
-AMZN has depreciation for 2016 as :4854000000
-AMZN has capitalExpenditures for 2019 as :-5312000000
-AMZN has capitalExpenditures for 2018 as :-4697000000
-AMZN has capitalExpenditures for 2017 as :-3562000000
-AMZN has capitalExpenditures for 2016 as :-3290000000
-AMZN has revenueEstimate of for 2020 avg: 334213000000
-AMZN has revenueEstimate of for 2020 low: 326924000000
-AMZN has revenueEstimate of for 2020 high: 339553000000
-AMZN has revenueEstimate of for 2021 avg: 391551000000
-AMZN has revenueEstimate of for 2021 low: 371958000000
-AMZN has revenueEstimate of for 2021 high: 407681000000
-NFLX has beta of for year 2020 :  1.479681
-NFLX has marketCap of for year 2020 :  161042169856
-NFLX has sharesOutstanding of for year 2020 :  438807008
-NFLX has totalRevenue for 2019 as :20156447000
-NFLX has totalRevenue for 2018 as :15794341000
-NFLX has totalRevenue for 2017 as :11692713000
-NFLX has totalRevenue for 2016 as :8830669000
-NFLX has netIncome for 2019 as :586970000
-NFLX has netIncome for 2018 as :665244000
-NFLX has netIncome for 2017 as :270650000
-NFLX has netIncome for 2016 as :344052000
-NFLX has ebit for 2019 as :2604254000
-NFLX has ebit for 2018 as :1605226000
-NFLX has ebit for 2017 as :838679000
-NFLX has ebit for 2016 as :379793000
-NFLX has incomeBeforeTax for 2019 as :2062231000
-NFLX has incomeBeforeTax for 2018 as :1226458000
-NFLX has incomeBeforeTax for 2017 as :485321000
-NFLX has incomeBeforeTax for 2016 as :260507000
-NFLX has incomeTaxExpense for 2019 as :195315000
-NFLX has incomeTaxExpense for 2018 as :15216000
-NFLX has incomeTaxExpense for 2017 as :-73608000
-NFLX has incomeTaxExpense for 2016 as :73829000
-NFLX has totalCurrentAssets for 2019 as :6178504000
-NFLX has totalCurrentAssets for 2018 as :9694135000
-NFLX has totalCurrentAssets for 2017 as :7669974000
-NFLX has totalCurrentAssets for 2016 as :5720291000
-NFLX has totalCurrentLiabilities for 2019 as :6855696000
-NFLX has totalCurrentLiabilities for 2018 as :6487320000
-NFLX has totalCurrentLiabilities for 2017 as :5466312000
-NFLX has totalCurrentLiabilities for 2016 as :4586657000
-NFLX has longTermDebt for 2019 as :14759260000
-NFLX has longTermDebt for 2018 as :10360058000
-NFLX has longTermDebt for 2017 as :6499432000
-NFLX has longTermDebt for 2016 as :3364311000
-NFLX has interestExpense for 2019 as :-626023000
-NFLX has interestExpense for 2018 as :-420493000
-NFLX has interestExpense for 2017 as :-238204000
-NFLX has interestExpense for 2016 as :-150114000
-NFLX has depreciation for 2019 as :27818000
-NFLX has depreciation for 2018 as :26704000
-NFLX has depreciation for 2017 as :25496000
-NFLX has depreciation for 2016 as :23561000
-NFLX has capitalExpenditures for 2019 as :-107737000
-NFLX has capitalExpenditures for 2018 as :-45333000
-NFLX has capitalExpenditures for 2017 as :-39584000
-NFLX has capitalExpenditures for 2016 as :-60381000
-NFLX has revenueEstimate of for 2020 avg: 24393200000
-NFLX has revenueEstimate of for 2020 low: 23579400000
-NFLX has revenueEstimate of for 2020 high: 25161000000
-NFLX has revenueEstimate of for 2021 avg: 28878600000
-NFLX has revenueEstimate of for 2021 low: 26754000000
-NFLX has revenueEstimate of for 2021 high: 30816000000
-
 ** testing
 
 
-|------+-------------------------+------+----+------+------+------|
-| S.l. | attributes              | AAPL | FB | GOOG | AMZN | NFLX |
-|------+-------------------------+------+----+------+------+------|
-|    1 | beta                    | OK   |    |      |      |      |
-|    2 | sharesoutstanding       | OK   |    |      |      |      |
-|    3 | marketcap               | OK   |    |      |      |      |
-|    4 | revenue                 | OK   |    |      |      |      |
-|    5 | netincome               | FAIL |    |      |      |      |
-|    6 | ebit                    | FAIL |    |      |      |      |
-|    7 | incomebeforetax         | OK   |    |      |      |      |
-|    8 | interestexpense         | OK   |    |      |      |      |
-|    9 | totalcurrentassets      | OK   |    |      |      |      |
-|   10 | totalcurrentliabilities | OK   |    |      |      |      |
-|   11 | longtermdebt            | OK   |    |      |      |      |
-|   12 | interestExpense         | OK   |    |      |      |      |
-|   13 | depreciation            | FAIL |    |      |      |      |
-|   14 | capitalexpenditures     | FAIL |    |      |      |      |
-|   15 | revenueestimate         | OK   |    |      |      |      |
-|------+-------------------------+------+----+------+------+------|
+|-------------------------+------+----+------+------+------|
+| attributes              | AAPL | FB | GOOG | AMZN | NFLX |
+|-------------------------+------+----+------+------+------|
+| beta                    | OK   | OK | OK   |      |      |
+| sharesOutstanding       | OK   | OK | OK   |      |      |
+| marketCap               | OK   | OK | OK   |      |      |
+| totalRevenue            | OK   | OK | OK   |      |      |
+| netIncome               | OK   | OK | OK   |      |      |
+| incomeBeforeTax         | OK   | OK | OK   |      |      |
+| incomeTaxExpense        | OK   | OK | OK   |      |      |
+| totalCurrentAssets      | OK   | OK | OK   |      |      |
+| totalCurrentLiabilities | OK   | OK | OK   |      |      |
+| longTermDebt            | OK   | OK | FAIL |      |      |
+| interestExpense         | OK   | OK | OK   |      |      |
+| depreciation            | OK   | OK | OK   |      |      |
+| capitalExpenditures     | OK   | OK | OK   |      |      |
+| revenueEstimate         | OK   | OK | OK   |      |      |
+|-------------------------+------+----+------+------+------|
+
+** removing ebit, will calculate
+
+EBITDA = Net Income + Tax + Interest Expenses + Depreciation and Amortization 
+EBITDA = netIncome + incomeTaxExpense - interestExpense + depreciation
 
 * add feature to add in the google sheets 

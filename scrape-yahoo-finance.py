@@ -54,7 +54,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
             attribute_value.append(str(0))
         for value in attribute_value:
             print(stock_ticker + " has " +attribute + " of for year " + str(current_year) + " :  " + value)
-    elif attribute in ['totalRevenue', 'netIncome', 'ebit', 'interestExpense', 'incomeBeforeTax', 'incomeTaxExpense']:
+    elif attribute in ['totalRevenue', 'interestExpense', 'incomeBeforeTax', 'incomeTaxExpense']:
         page = requests.get(income_statement_url)
         soup = BeautifulSoup(page.text, 'html.parser')
         match_string = '"incomeStatementHistory":[[].*"'+attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+'":{"raw":([-]?[0-9.]+).*}.*[]]'
@@ -120,10 +120,10 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
         print(stock_ticker + " has " +attribute + " for "+ str(current_year -2) + " as :"  + attribute_value[1])
         print(stock_ticker + " has " +attribute + " for "+ str(current_year -3) + " as :"  + attribute_value[2])
         print(stock_ticker + " has " +attribute + " for "+ str(current_year -4) + " as :"  + attribute_value[3])
-    elif attribute in ['depreciation', 'capitalExpenditures']:
+    elif attribute in ['depreciation', 'netIncome', 'capitalExpenditures']:
         page = requests.get(cash_flow_url)
         soup = BeautifulSoup(page.text, 'html.parser')
-        match_string = '"cashflowStatements":[[].*"'+attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+ '":{"raw":([-]?[0-9.]+).*},"' +attribute+'":{"raw":([-]?[0-9.]+).*}.*[]]'
+        match_string = '"cashflowStatementHistory":."cashflowStatements":[[].*?"'+attribute+ '":{"raw":([-]?[0-9.]+).*?},"' +attribute+ '":{"raw":([-]?[0-9.]+).*?},"' +attribute+ '":{"raw":([-]?[0-9.]+).*?},"' +attribute+'":{"raw":([-]?[0-9.]+).*}.*[]]'
         #match_string = '"cashflowStatements":[[].*[]]'
         #print(match_string)
         pattern = re.compile(match_string, re.MULTILINE )
@@ -134,6 +134,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
             match = pattern.search(script.text)
             if match:
                 #print("match found")
+                #print(match.group(0))
                 attribute_value.append(match.group(1))
                 attribute_value.append(match.group(2))
                 attribute_value.append(match.group(3))
@@ -200,13 +201,12 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
 
 
 
-# testing the code :
+# # testing the code :
 pull_attribute_from_yahoo('AAPL', 'beta')
 pull_attribute_from_yahoo('AAPL', 'marketCap')
 pull_attribute_from_yahoo('AAPL', 'sharesOutstanding')
 pull_attribute_from_yahoo('AAPL', 'totalRevenue')
 pull_attribute_from_yahoo('AAPL', 'netIncome')
-pull_attribute_from_yahoo('AAPL', 'ebit')
 pull_attribute_from_yahoo('AAPL', 'incomeBeforeTax')
 pull_attribute_from_yahoo('AAPL', 'incomeTaxExpense')
 pull_attribute_from_yahoo('AAPL', 'totalCurrentAssets')
@@ -222,7 +222,6 @@ pull_attribute_from_yahoo('FB', 'marketCap')
 pull_attribute_from_yahoo('FB', 'sharesOutstanding')
 pull_attribute_from_yahoo('FB', 'totalRevenue')
 pull_attribute_from_yahoo('FB', 'netIncome')
-pull_attribute_from_yahoo('FB', 'ebit')
 pull_attribute_from_yahoo('FB', 'incomeBeforeTax')
 pull_attribute_from_yahoo('FB', 'incomeTaxExpense')
 pull_attribute_from_yahoo('FB', 'totalCurrentAssets')
@@ -238,7 +237,6 @@ pull_attribute_from_yahoo('GOOG', 'marketCap')
 pull_attribute_from_yahoo('GOOG', 'sharesOutstanding')
 pull_attribute_from_yahoo('GOOG', 'totalRevenue')
 pull_attribute_from_yahoo('GOOG', 'netIncome')
-pull_attribute_from_yahoo('GOOG', 'ebit')
 pull_attribute_from_yahoo('GOOG', 'incomeBeforeTax')
 pull_attribute_from_yahoo('GOOG', 'incomeTaxExpense')
 pull_attribute_from_yahoo('GOOG', 'totalCurrentAssets')
@@ -254,7 +252,6 @@ pull_attribute_from_yahoo('AMZN', 'marketCap')
 pull_attribute_from_yahoo('AMZN', 'sharesOutstanding')
 pull_attribute_from_yahoo('AMZN', 'totalRevenue')
 pull_attribute_from_yahoo('AMZN', 'netIncome')
-pull_attribute_from_yahoo('AMZN', 'ebit')
 pull_attribute_from_yahoo('AMZN', 'incomeBeforeTax')
 pull_attribute_from_yahoo('AMZN', 'incomeTaxExpense')
 pull_attribute_from_yahoo('AMZN', 'totalCurrentAssets')
@@ -270,7 +267,6 @@ pull_attribute_from_yahoo('NFLX', 'marketCap')
 pull_attribute_from_yahoo('NFLX', 'sharesOutstanding')
 pull_attribute_from_yahoo('NFLX', 'totalRevenue')
 pull_attribute_from_yahoo('NFLX', 'netIncome')
-pull_attribute_from_yahoo('NFLX', 'ebit')
 pull_attribute_from_yahoo('NFLX', 'incomeBeforeTax')
 pull_attribute_from_yahoo('NFLX', 'incomeTaxExpense')
 pull_attribute_from_yahoo('NFLX', 'totalCurrentAssets')
