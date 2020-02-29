@@ -503,25 +503,53 @@ https://www.msn.com/en-in/money/stockscreener
 |-------------------------+------+----+------+------+------|
 | attributes              | AAPL | FB | GOOG | AMZN | NFLX |
 |-------------------------+------+----+------+------+------|
-| beta                    | OK   | OK | OK   |      |      |
-| sharesOutstanding       | OK   | OK | OK   |      |      |
-| marketCap               | OK   | OK | OK   |      |      |
-| totalRevenue            | OK   | OK | OK   |      |      |
-| netIncome               | OK   | OK | OK   |      |      |
-| incomeBeforeTax         | OK   | OK | OK   |      |      |
-| incomeTaxExpense        | OK   | OK | OK   |      |      |
-| totalCurrentAssets      | OK   | OK | OK   |      |      |
-| totalCurrentLiabilities | OK   | OK | OK   |      |      |
-| longTermDebt            | OK   | OK | FAIL |      |      |
-| interestExpense         | OK   | OK | OK   |      |      |
-| depreciation            | OK   | OK | OK   |      |      |
-| capitalExpenditures     | OK   | OK | OK   |      |      |
-| revenueEstimate         | OK   | OK | OK   |      |      |
+| beta                    | OK   | OK | OK   | OK   | OK   |
+| sharesOutstanding       | OK   | OK | OK   | OK   | OK   |
+| marketCap               | OK   | OK | OK   | OK   | OK   |
+| totalRevenue            | OK   | OK | OK   | OK   | OK   |
+| netIncome               | OK   | OK | OK   | OK   | OK   |
+| incomeBeforeTax         | OK   | OK | OK   | OK   | OK   |
+| incomeTaxExpense        | OK   | OK | OK   | OK   | OK   |
+| totalCurrentAssets      | OK   | OK | OK   | OK   | OK   |
+| totalCurrentLiabilities | OK   | OK | OK   | OK   | OK   |
+| longTermDebt            | OK   | OK | FAIL | OK   | OK   |
+| interestExpense         | OK   | OK | OK   | OK   | OK   |
+| depreciation            | OK   | OK | OK   | OK   | FAIL |
+| capitalExpenditures     | OK   | OK | OK   | OK   | OK   |
+| revenueEstimate         | OK   | OK | OK   | OK   | OK   |
 |-------------------------+------+----+------+------+------|
 
-** removing ebit, will calculate
+** features
 
-EBITDA = Net Income + Tax + Interest Expenses + Depreciation and Amortization 
-EBITDA = netIncome + incomeTaxExpense - interestExpense + depreciation
+*** pull attribute [13/13]
+
+   - [X] beta
+   - [X] shares outstanding
+   - [X] total market cap
+   - [X] total revenue
+   - [X] net income
+   - [X] income tax expenses
+   - [X] income before tax
+   - [X] current assets
+   - [X] current liabilities
+   - [X] long term loans
+   - [X] Depreciation & amortization
+   - [X] capital expenditures
+   - [X] estimated revenue
+  
+*** return attribute with year
+
+* calculate the following
+
+1. EBITDA = Net Income + Tax + Interest Expenses + Depreciation and Amortization 
+2. NWC Net Working Capital = Current Assets - Current Liabilities
+3. t tax Rate = Tax / Income Before Tax
+4. FCF Free Cash Flow = EBIT * (1 - t) + NWC + D&A - CapEx
+5. r WACC Weighted Average Cost of Capital = w_d * r_d * (1-t) + w_e * r_e
+6. r_e = R_f + beta * (R_m - R_f)
+7. Intrinsic Value of the business = FCF_1 / (1+r)^1 + FCF_2 / (1+r)^2 + FCF_3 / (1+r)^3 + FCF_4 / (1+r)^4 + FCF_5 / (1+r)^5 + FCF_5*(1+g)/(r-g)
+8. Intrinsic Value of Stock = Intrinsic Value of the Business / shares Outstanding
 
 * add feature to add in the google sheets 
+
+* calculate DCF valuation
