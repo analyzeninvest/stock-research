@@ -521,7 +521,7 @@ https://www.msn.com/en-in/money/stockscreener
 
 ** features
 
-*** pull attribute [13/13]
+*** DONE pull attribute [13/13]
 
    - [X] beta
    - [X] shares outstanding
@@ -537,9 +537,9 @@ https://www.msn.com/en-in/money/stockscreener
    - [X] capital expenditures
    - [X] estimated revenue
   
-*** return attribute with year
+*** DONE return attribute with year
 
-* calculate the following
+* calculate the following for DCF
 
 1. EBITDA = Net Income + Tax + Interest Expenses + Depreciation and Amortization 
 2. NWC Net Working Capital = Current Assets - Current Liabilities

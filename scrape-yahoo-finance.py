@@ -36,6 +36,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
     analysis_url = 'https://finance.yahoo.com/quote/'+stock_ticker+'/analysis?p='+stock_ticker+''
     attribute_value = []
     year_range = []
+    year_attribute = {}
     today = date.today()
     current_year = today.year
     if attribute in ['beta', 'marketCap', 'sharesOutstanding']:
@@ -53,7 +54,8 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
         else:
             attribute_value.append(str(0))
         for value in attribute_value:
-            print(stock_ticker + " has " +attribute + " of for year " + str(current_year) + " :  " + value)
+            #print(stock_ticker + " has " +attribute + " of for year " + str(current_year) + " :  " + value)
+            year_attribute.update({str(current_year):value})
     elif attribute in ['totalRevenue', 'interestExpense', 'incomeBeforeTax', 'incomeTaxExpense']:
         page = requests.get(income_statement_url)
         soup = BeautifulSoup(page.text, 'html.parser')
@@ -83,10 +85,13 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
             attribute_value.append(str(0))
             attribute_value.append(str(0))
             attribute_value.append(str(0))
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -1) + " as :"  + attribute_value[0])
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -2) + " as :"  + attribute_value[1])
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -3) + " as :"  + attribute_value[2])
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -4) + " as :"  + attribute_value[3])
+        # print(stock_ticker + " has " +attribute + " for "+ str(current_year -1) + " as :"  + attribute_value[0])
+        # print(stock_ticker + " has " +attribute + " for "+ str(current_year -2) + " as :"  + attribute_value[1])
+        # print(stock_ticker + " has " +attribute + " for "+ str(current_year -3) + " as :"  + attribute_value[2])
+        # print(stock_ticker + " has " +attribute + " for "+ str(current_year -4) + " as :"  + attribute_value[3])
+        for value in attribute_value:
+            year_attribute.update({str(current_year-1):value})
+            current_year -= 1
     elif attribute in ['totalCurrentAssets', 'totalCurrentLiabilities', 'longTermDebt']:
         page = requests.get(balance_sheet_url)
         soup = BeautifulSoup(page.text, 'html.parser')
@@ -116,10 +121,13 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
             attribute_value.append(str(0))
             attribute_value.append(str(0))
             attribute_value.append(str(0))
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -1) + " as :"  + attribute_value[0])
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -2) + " as :"  + attribute_value[1])
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -3) + " as :"  + attribute_value[2])
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -4) + " as :"  + attribute_value[3])
+        # print(stock_ticker + " has " +attribute + " for "+ str(current_year -1) + " as :"  + attribute_value[0])
+        # print(stock_ticker + " has " +attribute + " for "+ str(current_year -2) + " as :"  + attribute_value[1])
+        # print(stock_ticker + " has " +attribute + " for "+ str(current_year -3) + " as :"  + attribute_value[2])
+        # print(stock_ticker + " has " +attribute + " for "+ str(current_year -4) + " as :"  + attribute_value[3])
+        for value in attribute_value:
+            year_attribute.update({str(current_year-1):value})
+            current_year -= 1
     elif attribute in ['depreciation', 'netIncome', 'capitalExpenditures']:
         page = requests.get(cash_flow_url)
         soup = BeautifulSoup(page.text, 'html.parser')
@@ -151,11 +159,13 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
             attribute_value.append(str(0))
             attribute_value.append(str(0))
             attribute_value.append(str(0))
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -1) + " as :"  + attribute_value[0])
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -2) + " as :"  + attribute_value[1])
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -3) + " as :"  + attribute_value[2])
-        print(stock_ticker + " has " +attribute + " for "+ str(current_year -4) + " as :"  + attribute_value[3])
-                
+        for value in attribute_value:
+            year_attribute.update({str(current_year-1):value})
+            current_year -= 1
+        # print(stock_ticker + " has " +attribute + " for "+ str(current_year -1) + " as :"  + attribute_value[0])
+        # print(stock_ticker + " has " +attribute + " for "+ str(current_year -2) + " as :"  + attribute_value[1])
+        # print(stock_ticker + " has " +attribute + " for "+ str(current_year -3) + " as :"  + attribute_value[2])
+        # print(stock_ticker + " has " +attribute + " for "+ str(current_year -4) + " as :"  + attribute_value[3])
     elif attribute in ['revenueEstimate']:
         page = requests.get(analysis_url)
         soup = BeautifulSoup(page.text, 'html.parser')
@@ -191,91 +201,38 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
             attribute_value.append(str(0))
             attribute_value.append(str(0))
             attribute_value.append(str(0))
-        print(stock_ticker + " has " +attribute + " of for "+ str(current_year) + " avg: "  + attribute_value[0])
-        print(stock_ticker + " has " +attribute + " of for "+ str(current_year) + " low: "  + attribute_value[1])
-        print(stock_ticker + " has " +attribute + " of for "+ str(current_year) + " high: " + attribute_value[2])
-        next_year = current_year + 1
-        print(stock_ticker + " has " +attribute + " of for "+ str(next_year) + " avg: "  + attribute_value[3])
-        print(stock_ticker + " has " +attribute + " of for "+ str(next_year) + " low: "  + attribute_value[4])
-        print(stock_ticker + " has " +attribute + " of for "+ str(next_year) + " high: " + attribute_value[5])
+        year_attribute.update({str(current_year)+'_avg':attribute_value[0]})
+        year_attribute.update({str(current_year)+'_low':attribute_value[1]})
+        year_attribute.update({str(current_year)+'_high':attribute_value[2]})
+        year_attribute.update({str(current_year +1)+'_avg':attribute_value[3]})
+        year_attribute.update({str(current_year +1)+'_low':attribute_value[4]})
+        year_attribute.update({str(current_year +1)+'_high':attribute_value[5]})
 
+        # print(stock_ticker + " has " +attribute + " of for "+ str(current_year) + " avg: "  + attribute_value[0])
+        # print(stock_ticker + " has " +attribute + " of for "+ str(current_year) + " low: "  + attribute_value[1])
+        # print(stock_ticker + " has " +attribute + " of for "+ str(current_year) + " high: " + attribute_value[2])
+        # next_year = current_year + 1
+        # print(stock_ticker + " has " +attribute + " of for "+ str(next_year) + " avg: "  + attribute_value[3])
+        # print(stock_ticker + " has " +attribute + " of for "+ str(next_year) + " low: "  + attribute_value[4])
+        # print(stock_ticker + " has " +attribute + " of for "+ str(next_year) + " high: " + attribute_value[5])
+    return(year_attribute)
 
+def print_yahoo_financials_for_DCF(stock_ticker):
 
-# testing the code :
-# pull_attribute_from_yahoo('AAPL', 'beta')
-# pull_attribute_from_yahoo('AAPL', 'marketCap')
-# pull_attribute_from_yahoo('AAPL', 'sharesOutstanding')
-# pull_attribute_from_yahoo('AAPL', 'totalRevenue')
-# pull_attribute_from_yahoo('AAPL', 'netIncome')
-# pull_attribute_from_yahoo('AAPL', 'incomeBeforeTax')
-# pull_attribute_from_yahoo('AAPL', 'incomeTaxExpense')
-# pull_attribute_from_yahoo('AAPL', 'totalCurrentAssets')
-# pull_attribute_from_yahoo('AAPL', 'totalCurrentLiabilities')
-# pull_attribute_from_yahoo('AAPL', 'longTermDebt')
-# pull_attribute_from_yahoo('AAPL', 'interestExpense')
-# pull_attribute_from_yahoo('AAPL', 'depreciation')
-# pull_attribute_from_yahoo('AAPL', 'capitalExpenditures')
-# pull_attribute_from_yahoo('AAPL', 'revenueEstimate')
+    print(pull_attribute_from_yahoo(stock_ticker, 'beta'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'marketCap'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'sharesOutstanding'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'totalRevenue'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'netIncome'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'incomeBeforeTax'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'incomeTaxExpense'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'totalCurrentAssets'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'totalCurrentLiabilities'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'longTermDebt'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'interestExpense'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'depreciation'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'capitalExpenditures'))
+    print(pull_attribute_from_yahoo(stock_ticker, 'revenueEstimate'))
 
-# pull_attribute_from_yahoo('FB', 'beta')
-# pull_attribute_from_yahoo('FB', 'marketCap')
-# pull_attribute_from_yahoo('FB', 'sharesOutstanding')
-# pull_attribute_from_yahoo('FB', 'totalRevenue')
-# pull_attribute_from_yahoo('FB', 'netIncome')
-# pull_attribute_from_yahoo('FB', 'incomeBeforeTax')
-# pull_attribute_from_yahoo('FB', 'incomeTaxExpense')
-# pull_attribute_from_yahoo('FB', 'totalCurrentAssets')
-# pull_attribute_from_yahoo('FB', 'totalCurrentLiabilities')
-# pull_attribute_from_yahoo('FB', 'longTermDebt')
-# pull_attribute_from_yahoo('FB', 'interestExpense')
-# pull_attribute_from_yahoo('FB', 'depreciation')
-# pull_attribute_from_yahoo('FB', 'capitalExpenditures')
-# pull_attribute_from_yahoo('FB', 'revenueEstimate')
-
-# pull_attribute_from_yahoo('GOOG', 'beta')
-# pull_attribute_from_yahoo('GOOG', 'marketCap')
-# pull_attribute_from_yahoo('GOOG', 'sharesOutstanding')
-# pull_attribute_from_yahoo('GOOG', 'totalRevenue')
-# pull_attribute_from_yahoo('GOOG', 'netIncome')
-# pull_attribute_from_yahoo('GOOG', 'incomeBeforeTax')
-# pull_attribute_from_yahoo('GOOG', 'incomeTaxExpense')
-# pull_attribute_from_yahoo('GOOG', 'totalCurrentAssets')
-# pull_attribute_from_yahoo('GOOG', 'totalCurrentLiabilities')
-# pull_attribute_from_yahoo('GOOG', 'longTermDebt')
-# pull_attribute_from_yahoo('GOOG', 'interestExpense')
-# pull_attribute_from_yahoo('GOOG', 'depreciation')
-# pull_attribute_from_yahoo('GOOG', 'capitalExpenditures')
-# pull_attribute_from_yahoo('GOOG', 'revenueEstimate')
-
-# pull_attribute_from_yahoo('AMZN', 'beta')
-# pull_attribute_from_yahoo('AMZN', 'marketCap')
-# pull_attribute_from_yahoo('AMZN', 'sharesOutstanding')
-# pull_attribute_from_yahoo('AMZN', 'totalRevenue')
-# pull_attribute_from_yahoo('AMZN', 'netIncome')
-# pull_attribute_from_yahoo('AMZN', 'incomeBeforeTax')
-# pull_attribute_from_yahoo('AMZN', 'incomeTaxExpense')
-# pull_attribute_from_yahoo('AMZN', 'totalCurrentAssets')
-# pull_attribute_from_yahoo('AMZN', 'totalCurrentLiabilities')
-# pull_attribute_from_yahoo('AMZN', 'longTermDebt')
-# pull_attribute_from_yahoo('AMZN', 'interestExpense')
-# pull_attribute_from_yahoo('AMZN', 'depreciation')
-# pull_attribute_from_yahoo('AMZN', 'capitalExpenditures')
-# pull_attribute_from_yahoo('AMZN', 'revenueEstimate')
-
-# pull_attribute_from_yahoo('NFLX', 'beta')
-# pull_attribute_from_yahoo('NFLX', 'marketCap')
-# pull_attribute_from_yahoo('NFLX', 'sharesOutstanding')
-# pull_attribute_from_yahoo('NFLX', 'totalRevenue')
-# pull_attribute_from_yahoo('NFLX', 'netIncome')
-# pull_attribute_from_yahoo('NFLX', 'incomeBeforeTax')
-# pull_attribute_from_yahoo('NFLX', 'incomeTaxExpense')
-# pull_attribute_from_yahoo('NFLX', 'totalCurrentAssets')
-# pull_attribute_from_yahoo('NFLX', 'totalCurrentLiabilities')
-# pull_attribute_from_yahoo('NFLX', 'longTermDebt')
-# pull_attribute_from_yahoo('NFLX', 'interestExpense')
-# pull_attribute_from_yahoo('NFLX', 'depreciation')
-# pull_attribute_from_yahoo('NFLX', 'capitalExpenditures')
-# pull_attribute_from_yahoo('NFLX', 'revenueEstimate')
-
-
-
+print_yahoo_financials_for_DCF('MOIL.NS')
+#print(pull_attribute_from_yahoo('AAPL', 'revenueEstimate'))
