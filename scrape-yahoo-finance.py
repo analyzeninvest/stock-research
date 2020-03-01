@@ -207,7 +207,6 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
         year_attribute.update({str(current_year +1)+'_avg':attribute_value[3]})
         year_attribute.update({str(current_year +1)+'_low':attribute_value[4]})
         year_attribute.update({str(current_year +1)+'_high':attribute_value[5]})
-
         # print(stock_ticker + " has " +attribute + " of for "+ str(current_year) + " avg: "  + attribute_value[0])
         # print(stock_ticker + " has " +attribute + " of for "+ str(current_year) + " low: "  + attribute_value[1])
         # print(stock_ticker + " has " +attribute + " of for "+ str(current_year) + " high: " + attribute_value[2])
@@ -234,5 +233,77 @@ def print_yahoo_financials_for_DCF(stock_ticker):
     print(pull_attribute_from_yahoo(stock_ticker, 'capitalExpenditures'))
     print(pull_attribute_from_yahoo(stock_ticker, 'revenueEstimate'))
 
-print_yahoo_financials_for_DCF('MOIL.NS')
-#print(pull_attribute_from_yahoo('AAPL', 'revenueEstimate'))
+
+# testing    
+# print_yahoo_financials_for_DCF('MOIL.NS')
+# print(pull_attribute_from_yahoo('AAPL', 'marketCap'))
+
+
+def DCF_valuation(stock_ticker):
+    """
+    DCF Valuation of the stock.
+    This is based on the yahoo finance.
+    """
+    import pandas as pd
+    import numpy as np
+
+
+def wacc_of_stock(stock_ticker):
+    """
+    Get the WACC of a stock.
+    WACC or Weighted Average Cost of Capital is calculated in the following way:
+    r WACC Weighted Average Cost of Capital = w_d * r_d * (1-t) + w_e * r_e
+    w_d = weight of debt = (last FY) = long term debt / total market cap
+    r_d = rate of debt = (last FY) = intest expenses / long term debt
+    t = last tax rate = (last FY) = income tax expense / income before tax
+    w_e = weight of equity = 1 - w_d 
+    r_e = rate of equity = calculated by CAPM model
+    """
+    from datetime import date
+    today = date.today()
+    current_year = today.year
+    marketcap_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'marketCap')
+    market_cap = int(marketcap_year_from_yahoo.get(str(current_year)))
+    debt_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'longTermDebt')
+    long_term_debt = int(debt_year_from_yahoo.get(str(current_year -1)))
+    interst_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'interestExpense')
+    interest_expense = -(int(interst_year_from_yahoo.get(str(current_year -1))))
+    tax_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeTaxExpense')
+    tax = int(tax_year_from_yahoo.get(str(current_year -1)))
+    income_before_tax_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeBeforeTax')
+    income_before_tax = int(income_before_tax_year_from_yahoo.get(str(current_year -1)))
+    weight_of_debt = long_term_debt / market_cap
+    rate_of_debt = interest_expense / long_term_debt
+    tax_rate = tax / income_before_tax
+    weight_of_equity = 1 - weight_of_debt
+    rate_of_equity = rate_of_equity_of_stock(stock_ticker)
+    weighted_average_cost_of_capital = (weight_of_debt * rate_of_debt * (1 - tax_rate)) + (weight_of_equity * rate_of_equity)
+    return(weighted_average_cost_of_capital)
+
+print(wacc_of_stock('AAPL'))
+
+def rate_of_equity_of_stock(stock_ticker):
+    """
+    Get the rate of equity of the stock.  This is calculated based on
+    the CAPM model.  CAPM or Capital Asset Pricing Model calculates
+    the rate of equity in following way:
+    r_e = R_f + beta * (R_m - R_f)
+    where:
+    r_e = rate of equity.
+    beta is obtained from the statistics of the stock.
+    R_m = Rate of Return of the market in general.
+    R_f = Risk free rate of return.
+    R_m = 10%   (general return of the SNP 500 index fund)
+    R_f = 1.88% (10y US treasury bond yield)
+    """
+    from datetime import date
+    today = date.today()
+    current_year = today.year
+    beta_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'beta')
+    beta = float(beta_year_from_yahoo.get(str(current_year)))
+    risk_free_rate = 0.0188
+    return_of_market = 0.10
+    rate_of_equity = risk_free_rate + (beta * (return_of_market - risk_free_rate))
+    return(rate_of_equity)
+    
+# print(rate_of_equity_of_stock('AAPL'))
