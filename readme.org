@@ -15,7 +15,7 @@ https://www.msn.com/en-in/money/stockscreener
 
 
 
-* add following from the yahoo Finance
+* DONE add following from the yahoo Finance
 
 ** table for attributes
 
@@ -539,7 +539,7 @@ https://www.msn.com/en-in/money/stockscreener
   
 *** DONE return attribute with year
 
-* calculate the following for DCF
+* TODO calculate the following for DCF
 
 1. EBITDA = Net Income + Tax + Interest Expenses + Depreciation and Amortization 
 2. NWC Net Working Capital = Current Assets - Current Liabilities
@@ -552,4 +552,4 @@ https://www.msn.com/en-in/money/stockscreener
 
 * add feature to add in the google sheets 
 
-* calculate DCF valuation
+
