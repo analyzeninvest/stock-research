@@ -240,6 +240,13 @@ def print_yahoo_financials_for_DCF(stock_ticker):
 def Create_Financial_Statements_DataFrame_for_DCF(stock_ticker):
     """
     This will give out the Financial Statement Data Frame needed for DCF Valuation.
+    Following are derived:
+    1. EBITDA = Net Income + Tax + Interest Expenses + Depreciation and Amortization 
+    2. NWC Net Working Capital = Current Assets - Current Liabilities
+    3. t tax Rate = Tax / Income Before Tax
+    4. FCF Free Cash Flow = EBIT * (1 - t) + NWC + D&A - CapEx
+    5. FCF / Net Income 
+    6. Net Income Margin = Net Income / Total Revenue
     """
     import pandas as pd
     from datetime import date
@@ -253,83 +260,53 @@ def Create_Financial_Statements_DataFrame_for_DCF(stock_ticker):
         str(current_year -4)]})
     longTermDebt_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'longTermDebt')
     longTermDebt_year_1 = abs(int(longTermDebt_year_from_yahoo.get(str(current_year -1))))
-    longTermDebt_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'longTermDebt')
     longTermDebt_year_2 = abs(int(longTermDebt_year_from_yahoo.get(str(current_year -2))))
-    longTermDebt_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'longTermDebt')
     longTermDebt_year_3 = abs(int(longTermDebt_year_from_yahoo.get(str(current_year -3))))
-    longTermDebt_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'longTermDebt')
     longTermDebt_year_4 = abs(int(longTermDebt_year_from_yahoo.get(str(current_year -4))))
     totalCurrentLiabilities_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalCurrentLiabilities')
     totalCurrentLiabilities_year_1 = abs(int(totalCurrentLiabilities_year_from_yahoo.get(str(current_year -1))))
-    totalCurrentLiabilities_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalCurrentLiabilities')
     totalCurrentLiabilities_year_2 = abs(int(totalCurrentLiabilities_year_from_yahoo.get(str(current_year -2))))
-    totalCurrentLiabilities_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalCurrentLiabilities')
     totalCurrentLiabilities_year_3 = abs(int(totalCurrentLiabilities_year_from_yahoo.get(str(current_year -3))))
-    totalCurrentLiabilities_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalCurrentLiabilities')
     totalCurrentLiabilities_year_4 = abs(int(totalCurrentLiabilities_year_from_yahoo.get(str(current_year -4))))
     totalCurrentAssets_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalCurrentAssets')
     totalCurrentAssets_year_1 = abs(int(totalCurrentAssets_year_from_yahoo.get(str(current_year -1))))
-    totalCurrentAssets_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalCurrentAssets')
     totalCurrentAssets_year_2 = abs(int(totalCurrentAssets_year_from_yahoo.get(str(current_year -2))))
-    totalCurrentAssets_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalCurrentAssets')
     totalCurrentAssets_year_3 = abs(int(totalCurrentAssets_year_from_yahoo.get(str(current_year -3))))
-    totalCurrentAssets_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalCurrentAssets')
     totalCurrentAssets_year_4 = abs(int(totalCurrentAssets_year_from_yahoo.get(str(current_year -4))))
     incomeTaxExpense_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeTaxExpense')
     incomeTaxExpense_year_1 = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -1))))
-    incomeTaxExpense_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeTaxExpense')
     incomeTaxExpense_year_2 = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -2))))
-    incomeTaxExpense_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeTaxExpense')
     incomeTaxExpense_year_3 = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -3))))
-    incomeTaxExpense_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeTaxExpense')
     incomeTaxExpense_year_4 = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -4))))
     totalRevenue_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalRevenue')
     Revenue_year_1 = abs(int(totalRevenue_year_from_yahoo.get(str(current_year -1))))
-    totalRevenue_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalRevenue')
     Revenue_year_2 = abs(int(totalRevenue_year_from_yahoo.get(str(current_year -2))))
-    totalRevenue_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalRevenue')
     Revenue_year_3 = abs(int(totalRevenue_year_from_yahoo.get(str(current_year -3))))
-    totalRevenue_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalRevenue')
     Revenue_year_4 = abs(int(totalRevenue_year_from_yahoo.get(str(current_year -4))))
     netIncome_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'netIncome')
     netIncome_year_1 = abs(int(netIncome_year_from_yahoo.get(str(current_year -1))))
-    netIncome_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'netIncome')
     netIncome_year_2 = abs(int(netIncome_year_from_yahoo.get(str(current_year -2))))
-    netIncome_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'netIncome')
     netIncome_year_3 = abs(int(netIncome_year_from_yahoo.get(str(current_year -3))))
-    netIncome_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'netIncome')
     netIncome_year_4 = abs(int(netIncome_year_from_yahoo.get(str(current_year -4))))
     incomeBeforeTax_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeBeforeTax')
     incomeBeforeTax_year_1 = abs(int(incomeBeforeTax_year_from_yahoo.get(str(current_year -1))))
-    incomeBeforeTax_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeBeforeTax')
     incomeBeforeTax_year_2 = abs(int(incomeBeforeTax_year_from_yahoo.get(str(current_year -2))))
-    incomeBeforeTax_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeBeforeTax')
     incomeBeforeTax_year_3 = abs(int(incomeBeforeTax_year_from_yahoo.get(str(current_year -3))))
-    incomeBeforeTax_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeBeforeTax')
     incomeBeforeTax_year_4 = abs(int(incomeBeforeTax_year_from_yahoo.get(str(current_year -4))))
     depreciation_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'depreciation')
     D_n_A_year_1 = abs(int(depreciation_year_from_yahoo.get(str(current_year -1))))
-    depreciation_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'depreciation')
     D_n_A_year_2 = abs(int(depreciation_year_from_yahoo.get(str(current_year -2))))
-    depreciation_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'depreciation')
     D_n_A_year_3 = abs(int(depreciation_year_from_yahoo.get(str(current_year -3))))
-    depreciation_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'depreciation')
     D_n_A_year_4 = abs(int(depreciation_year_from_yahoo.get(str(current_year -4))))
     interestExpense_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'interestExpense')
     interestExpense_year_1 = abs(int(interestExpense_year_from_yahoo.get(str(current_year -1))))
-    interestExpense_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'interestExpense')
     interestExpense_year_2 = abs(int(interestExpense_year_from_yahoo.get(str(current_year -2))))
-    interestExpense_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'interestExpense')
     interestExpense_year_3 = abs(int(interestExpense_year_from_yahoo.get(str(current_year -3))))
-    interestExpense_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'interestExpense')
     interestExpense_year_4 = abs(int(interestExpense_year_from_yahoo.get(str(current_year -4))))
     capitalExpenditures_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'capitalExpenditures')
     capitalExpenditures_year_1 = abs(int(capitalExpenditures_year_from_yahoo.get(str(current_year -1))))
-    capitalExpenditures_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'capitalExpenditures')
     capitalExpenditures_year_2 = abs(int(capitalExpenditures_year_from_yahoo.get(str(current_year -2))))
-    capitalExpenditures_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'capitalExpenditures')
     capitalExpenditures_year_3 = abs(int(capitalExpenditures_year_from_yahoo.get(str(current_year -3))))
-    capitalExpenditures_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'capitalExpenditures')
     capitalExpenditures_year_4 = abs(int(capitalExpenditures_year_from_yahoo.get(str(current_year -4))))
     financials_of_stock.update({'Total Revenue':[Revenue_year_1, Revenue_year_2, Revenue_year_3, Revenue_year_4]})
     financials_of_stock.update({'Net Income':[netIncome_year_1, netIncome_year_2, netIncome_year_3, netIncome_year_4]})
@@ -347,13 +324,7 @@ def Create_Financial_Statements_DataFrame_for_DCF(stock_ticker):
     df_financial['Tax Rate'] = df_financial['Income Tax Expenses'] / df_financial['Income Before Tax']
     df_financial['Free Cash Flow'] = df_financial['EBIT'] * (1 - df_financial['Tax Rate']) + df_financial['Net Working Capital'] + df_financial['Depreciation and Amortization'] - df_financial['Capital Expenditures']
     df_financial['FCF/Net Income'] = df_financial['Free Cash Flow'] / df_financial['Net Income']
-    df_financial['Net Income Margin'] = df_financial['Total Revenue'] / df_financial['Net Income']
-    
-# 1. EBITDA = Net Income + Tax + Interest Expenses + Depreciation and Amortization 
-# 2. NWC Net Working Capital = Current Assets - Current Liabilities
-# 3. t tax Rate = Tax / Income Before Tax
-# 4. FCF Free Cash Flow = EBIT * (1 - t) + NWC + D&A - CapEx
-
+    df_financial['Net Income Margin'] = df_financial['Net Income'] / df_financial['Total Revenue'] 
     return(df_financial)
 
 print("\n")
