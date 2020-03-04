@@ -254,60 +254,60 @@ def Create_Financial_Statements_DataFrame_for_DCF(stock_ticker):
     current_year = today.year
     financials_of_stock = {}
     financials_of_stock.update({'year':[
-        str(current_year -1),
-        str(current_year -2),
+        str(current_year -4),
         str(current_year -3),
-        str(current_year -4)]})
+        str(current_year -2),
+        str(current_year -1)]})
     longTermDebt_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'longTermDebt')
-    longTermDebt_year_1 = abs(int(longTermDebt_year_from_yahoo.get(str(current_year -1))))
-    longTermDebt_year_2 = abs(int(longTermDebt_year_from_yahoo.get(str(current_year -2))))
-    longTermDebt_year_3 = abs(int(longTermDebt_year_from_yahoo.get(str(current_year -3))))
-    longTermDebt_year_4 = abs(int(longTermDebt_year_from_yahoo.get(str(current_year -4))))
+    longTermDebt_year_1 = abs(int(longTermDebt_year_from_yahoo.get(str(current_year -4))))
+    longTermDebt_year_2 = abs(int(longTermDebt_year_from_yahoo.get(str(current_year -3))))
+    longTermDebt_year_3 = abs(int(longTermDebt_year_from_yahoo.get(str(current_year -2))))
+    longTermDebt_year_4 = abs(int(longTermDebt_year_from_yahoo.get(str(current_year -1))))
     totalCurrentLiabilities_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalCurrentLiabilities')
-    totalCurrentLiabilities_year_1 = abs(int(totalCurrentLiabilities_year_from_yahoo.get(str(current_year -1))))
-    totalCurrentLiabilities_year_2 = abs(int(totalCurrentLiabilities_year_from_yahoo.get(str(current_year -2))))
-    totalCurrentLiabilities_year_3 = abs(int(totalCurrentLiabilities_year_from_yahoo.get(str(current_year -3))))
-    totalCurrentLiabilities_year_4 = abs(int(totalCurrentLiabilities_year_from_yahoo.get(str(current_year -4))))
+    totalCurrentLiabilities_year_1 = abs(int(totalCurrentLiabilities_year_from_yahoo.get(str(current_year -4))))
+    totalCurrentLiabilities_year_2 = abs(int(totalCurrentLiabilities_year_from_yahoo.get(str(current_year -3))))
+    totalCurrentLiabilities_year_3 = abs(int(totalCurrentLiabilities_year_from_yahoo.get(str(current_year -2))))
+    totalCurrentLiabilities_year_4 = abs(int(totalCurrentLiabilities_year_from_yahoo.get(str(current_year -1))))
     totalCurrentAssets_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalCurrentAssets')
-    totalCurrentAssets_year_1 = abs(int(totalCurrentAssets_year_from_yahoo.get(str(current_year -1))))
-    totalCurrentAssets_year_2 = abs(int(totalCurrentAssets_year_from_yahoo.get(str(current_year -2))))
-    totalCurrentAssets_year_3 = abs(int(totalCurrentAssets_year_from_yahoo.get(str(current_year -3))))
-    totalCurrentAssets_year_4 = abs(int(totalCurrentAssets_year_from_yahoo.get(str(current_year -4))))
+    totalCurrentAssets_year_1 = abs(int(totalCurrentAssets_year_from_yahoo.get(str(current_year -4))))
+    totalCurrentAssets_year_2 = abs(int(totalCurrentAssets_year_from_yahoo.get(str(current_year -3))))
+    totalCurrentAssets_year_3 = abs(int(totalCurrentAssets_year_from_yahoo.get(str(current_year -2))))
+    totalCurrentAssets_year_4 = abs(int(totalCurrentAssets_year_from_yahoo.get(str(current_year -1))))
     incomeTaxExpense_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeTaxExpense')
-    incomeTaxExpense_year_1 = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -1))))
-    incomeTaxExpense_year_2 = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -2))))
-    incomeTaxExpense_year_3 = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -3))))
-    incomeTaxExpense_year_4 = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -4))))
+    incomeTaxExpense_year_1 = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -4))))
+    incomeTaxExpense_year_2 = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -3))))
+    incomeTaxExpense_year_3 = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -2))))
+    incomeTaxExpense_year_4 = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -1))))
     totalRevenue_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalRevenue')
-    Revenue_year_1 = abs(int(totalRevenue_year_from_yahoo.get(str(current_year -1))))
-    Revenue_year_2 = abs(int(totalRevenue_year_from_yahoo.get(str(current_year -2))))
-    Revenue_year_3 = abs(int(totalRevenue_year_from_yahoo.get(str(current_year -3))))
-    Revenue_year_4 = abs(int(totalRevenue_year_from_yahoo.get(str(current_year -4))))
+    Revenue_year_1 = abs(int(totalRevenue_year_from_yahoo.get(str(current_year -4))))
+    Revenue_year_2 = abs(int(totalRevenue_year_from_yahoo.get(str(current_year -3))))
+    Revenue_year_3 = abs(int(totalRevenue_year_from_yahoo.get(str(current_year -2))))
+    Revenue_year_4 = abs(int(totalRevenue_year_from_yahoo.get(str(current_year -1))))
     netIncome_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'netIncome')
-    netIncome_year_1 = abs(int(netIncome_year_from_yahoo.get(str(current_year -1))))
-    netIncome_year_2 = abs(int(netIncome_year_from_yahoo.get(str(current_year -2))))
-    netIncome_year_3 = abs(int(netIncome_year_from_yahoo.get(str(current_year -3))))
-    netIncome_year_4 = abs(int(netIncome_year_from_yahoo.get(str(current_year -4))))
+    netIncome_year_1 = abs(int(netIncome_year_from_yahoo.get(str(current_year -4))))
+    netIncome_year_2 = abs(int(netIncome_year_from_yahoo.get(str(current_year -3))))
+    netIncome_year_3 = abs(int(netIncome_year_from_yahoo.get(str(current_year -2))))
+    netIncome_year_4 = abs(int(netIncome_year_from_yahoo.get(str(current_year -1))))
     incomeBeforeTax_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeBeforeTax')
-    incomeBeforeTax_year_1 = abs(int(incomeBeforeTax_year_from_yahoo.get(str(current_year -1))))
-    incomeBeforeTax_year_2 = abs(int(incomeBeforeTax_year_from_yahoo.get(str(current_year -2))))
-    incomeBeforeTax_year_3 = abs(int(incomeBeforeTax_year_from_yahoo.get(str(current_year -3))))
-    incomeBeforeTax_year_4 = abs(int(incomeBeforeTax_year_from_yahoo.get(str(current_year -4))))
+    incomeBeforeTax_year_1 = abs(int(incomeBeforeTax_year_from_yahoo.get(str(current_year -4))))
+    incomeBeforeTax_year_2 = abs(int(incomeBeforeTax_year_from_yahoo.get(str(current_year -3))))
+    incomeBeforeTax_year_3 = abs(int(incomeBeforeTax_year_from_yahoo.get(str(current_year -2))))
+    incomeBeforeTax_year_4 = abs(int(incomeBeforeTax_year_from_yahoo.get(str(current_year -1))))
     depreciation_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'depreciation')
-    D_n_A_year_1 = abs(int(depreciation_year_from_yahoo.get(str(current_year -1))))
-    D_n_A_year_2 = abs(int(depreciation_year_from_yahoo.get(str(current_year -2))))
-    D_n_A_year_3 = abs(int(depreciation_year_from_yahoo.get(str(current_year -3))))
-    D_n_A_year_4 = abs(int(depreciation_year_from_yahoo.get(str(current_year -4))))
+    D_n_A_year_1 = abs(int(depreciation_year_from_yahoo.get(str(current_year -4))))
+    D_n_A_year_2 = abs(int(depreciation_year_from_yahoo.get(str(current_year -3))))
+    D_n_A_year_3 = abs(int(depreciation_year_from_yahoo.get(str(current_year -2))))
+    D_n_A_year_4 = abs(int(depreciation_year_from_yahoo.get(str(current_year -1))))
     interestExpense_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'interestExpense')
-    interestExpense_year_1 = abs(int(interestExpense_year_from_yahoo.get(str(current_year -1))))
-    interestExpense_year_2 = abs(int(interestExpense_year_from_yahoo.get(str(current_year -2))))
-    interestExpense_year_3 = abs(int(interestExpense_year_from_yahoo.get(str(current_year -3))))
-    interestExpense_year_4 = abs(int(interestExpense_year_from_yahoo.get(str(current_year -4))))
+    interestExpense_year_1 = abs(int(interestExpense_year_from_yahoo.get(str(current_year -4))))
+    interestExpense_year_2 = abs(int(interestExpense_year_from_yahoo.get(str(current_year -3))))
+    interestExpense_year_3 = abs(int(interestExpense_year_from_yahoo.get(str(current_year -2))))
+    interestExpense_year_4 = abs(int(interestExpense_year_from_yahoo.get(str(current_year -1))))
     capitalExpenditures_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'capitalExpenditures')
-    capitalExpenditures_year_1 = abs(int(capitalExpenditures_year_from_yahoo.get(str(current_year -1))))
-    capitalExpenditures_year_2 = abs(int(capitalExpenditures_year_from_yahoo.get(str(current_year -2))))
-    capitalExpenditures_year_3 = abs(int(capitalExpenditures_year_from_yahoo.get(str(current_year -3))))
-    capitalExpenditures_year_4 = abs(int(capitalExpenditures_year_from_yahoo.get(str(current_year -4))))
+    capitalExpenditures_year_1 = abs(int(capitalExpenditures_year_from_yahoo.get(str(current_year -4))))
+    capitalExpenditures_year_2 = abs(int(capitalExpenditures_year_from_yahoo.get(str(current_year -3))))
+    capitalExpenditures_year_3 = abs(int(capitalExpenditures_year_from_yahoo.get(str(current_year -2))))
+    capitalExpenditures_year_4 = abs(int(capitalExpenditures_year_from_yahoo.get(str(current_year -1))))
     financials_of_stock.update({'Total Revenue':[Revenue_year_1, Revenue_year_2, Revenue_year_3, Revenue_year_4]})
     financials_of_stock.update({'Net Income':[netIncome_year_1, netIncome_year_2, netIncome_year_3, netIncome_year_4]})
     financials_of_stock.update({'Income Before Tax':[incomeBeforeTax_year_1, incomeBeforeTax_year_2, incomeBeforeTax_year_3, incomeBeforeTax_year_4]})
@@ -324,11 +324,12 @@ def Create_Financial_Statements_DataFrame_for_DCF(stock_ticker):
     df_financial['Tax Rate'] = df_financial['Income Tax Expenses'] / df_financial['Income Before Tax']
     df_financial['Free Cash Flow'] = df_financial['EBIT'] * (1 - df_financial['Tax Rate']) + df_financial['Net Working Capital'] + df_financial['Depreciation and Amortization'] - df_financial['Capital Expenditures']
     df_financial['FCF/Net Income'] = df_financial['Free Cash Flow'] / df_financial['Net Income']
-    df_financial['Net Income Margin'] = df_financial['Net Income'] / df_financial['Total Revenue'] 
+    df_financial['Net Income Margin'] = df_financial['Net Income'] / df_financial['Total Revenue']
+    df_financial['Revenue Growth Rate'] = df_financial['Total Revenue'].pct_change()
     return(df_financial)
 
-print("\n")
-print(Create_Financial_Statements_DataFrame_for_DCF('AAPL'))
+#print("\n")
+#print(Create_Financial_Statements_DataFrame_for_DCF('AAPL'))
 
 
 def wacc_of_stock(stock_ticker):
@@ -390,3 +391,71 @@ def rate_of_equity_of_stock(stock_ticker):
     return(rate_of_equity)
     
 # print(rate_of_equity_of_stock('AAPL'))
+
+
+def Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker):
+    """
+    This function will create the Estimation DataFrame for DCF Valuation. 
+    """
+    import pandas  as pd
+    from datetime import date
+    today = date.today()
+    current_year = today.year
+    financial_estimation_of_stock = {}
+    revenue_estimation_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'revenueEstimate')
+    revenue_estimation_year_1_avg   = abs(int(revenue_estimation_year_from_yahoo.get(str(current_year   )+'_avg' )))
+    revenue_estimation_year_1_high  = abs(int(revenue_estimation_year_from_yahoo.get(str(current_year   )+'_high')))
+    revenue_estimation_year_1_low   = abs(int(revenue_estimation_year_from_yahoo.get(str(current_year   )+'_low' )))
+    revenue_estimation_year_2_avg   = abs(int(revenue_estimation_year_from_yahoo.get(str(current_year +1)+'_avg' )))
+    revenue_estimation_year_2_high  = abs(int(revenue_estimation_year_from_yahoo.get(str(current_year +1)+'_high')))
+    revenue_estimation_year_2_low   = abs(int(revenue_estimation_year_from_yahoo.get(str(current_year +1)+'_low' )))
+    financial_estimation_of_stock.update({'Year':[
+        str(current_year   )+'_avg' ,
+        str(current_year +1)+'_avg' ,
+        str(current_year   )+'_high',
+        str(current_year +1)+'_high',
+        str(current_year   )+'_low' ,
+        str(current_year +1)+'_low']})
+    financial_estimation_of_stock.update({'Revenue Estimate':[
+        revenue_estimation_year_1_avg,
+        revenue_estimation_year_2_avg,
+        revenue_estimation_year_1_high,
+        revenue_estimation_year_2_high,
+        revenue_estimation_year_1_low,
+        revenue_estimation_year_2_low]})
+    df_financial_estimate = pd.DataFrame(data = financial_estimation_of_stock)
+    df_financial_estimate['Estimated Revenue Growth'] = df_financial_estimate['Revenue Estimate'].pct_change()
+    projected_revenue_year_1 = [
+        df_financial_estimate.loc[0,'Revenue Estimate'],
+        df_financial_estimate.loc[2,'Revenue Estimate'],
+        df_financial_estimate.loc[4,'Revenue Estimate']]
+    projected_revenue_growth = [
+        df_financial_estimate.loc[1,'Estimated Revenue Growth'],
+        df_financial_estimate.loc[3,'Estimated Revenue Growth'],
+        df_financial_estimate.loc[5,'Estimated Revenue Growth']]
+    df_actual_finance_of_stock = Create_Financial_Statements_DataFrame_for_DCF(stock_ticker)
+    actual_revenue_growth_average = df_actual_finance_of_stock['Revenue Growth Rate'].mean()
+    last_year_revenue = df_actual_finance_of_stock.loc[3,'Total Revenue']
+    projected_revenue_growth_year_1_avg = (projected_revenue_year_1[0] - last_year_revenue)/last_year_revenue
+    projected_revenue_growth_year_1_high = (projected_revenue_year_1[1] - last_year_revenue)/last_year_revenue
+    projected_revenue_growth_year_1_low = (projected_revenue_year_1[2] - last_year_revenue)/last_year_revenue
+    # print(projected_revenue_growth_year_1_avg)
+    # print(projected_revenue_growth_year_1_high)
+    # print(projected_revenue_growth_year_1_low)
+    revenue_growth_avg = (projected_revenue_growth_year_1_avg + actual_revenue_growth_average + projected_revenue_growth[0])/3
+    revenue_growth_high = (projected_revenue_growth_year_1_high + actual_revenue_growth_average + projected_revenue_growth[1])/3
+    revenue_growth_low = (projected_revenue_growth_year_1_low + actual_revenue_growth_average + projected_revenue_growth[2])/3
+    # print(revenue_growth_avg)
+    # print(revenue_growth_high)
+    # print(revenue_growth_low)
+    last_year_net_income = df_actual_finance_of_stock.loc[3,'Net Income']
+    last_year_free_cash_flow = df_actual_finance_of_stock.loc[3,'Free Cash Flow']
+    min_net_income_margin = df_actual_finance_of_stock['Net Income Margin'].min()
+    min_fcf_over_net_income = df_actual_finance_of_stock['FCF/Net Income'].min()
+    return(df_financial_estimate)
+
+
+    
+#print("\n")
+Create_Financial_Estimation_DataFrame_for_DCF('AAPL')
+
