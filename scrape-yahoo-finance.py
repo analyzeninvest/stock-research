@@ -452,10 +452,50 @@ def Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker):
     last_year_free_cash_flow = df_actual_finance_of_stock.loc[3,'Free Cash Flow']
     min_net_income_margin = df_actual_finance_of_stock['Net Income Margin'].min()
     min_fcf_over_net_income = df_actual_finance_of_stock['FCF/Net Income'].min()
+    # print(min_net_income_margin)
+    # print(min_fcf_over_net_income)
+    df_financial_estimate = df_financial_estimate.drop(columns=['Estimated Revenue Growth'])
+    df_financial_estimate = df_financial_estimate.reindex([2, 0, 4, 3, 1, 5])
+    financial_projection_of_stock = {}
+    financial_projection_of_stock.update({'Year':[
+        str(current_year +2)+'_high',
+        str(current_year +2)+'_avg' ,
+        str(current_year +2)+'_low' ,
+        str(current_year +3)+'_high',
+        str(current_year +3)+'_avg' ,
+        str(current_year +3)+'_low' ,
+        str(current_year +4)+'_high',
+        str(current_year +4)+'_avg' ,
+        str(current_year +4)+'_low']})
+    revenue_estimation_year_3_high = revenue_estimation_year_2_high * (1 + revenue_growth_high)
+    revenue_estimation_year_3_avg = revenue_estimation_year_2_avg * (1 + revenue_growth_avg)
+    revenue_estimation_year_3_low = revenue_estimation_year_2_low * (1 + revenue_growth_low)
+    revenue_estimation_year_4_high = revenue_estimation_year_3_high * (1 + revenue_growth_high)
+    revenue_estimation_year_4_avg = revenue_estimation_year_3_avg * (1 + revenue_growth_avg)
+    revenue_estimation_year_4_low = revenue_estimation_year_3_low * (1 + revenue_growth_low)
+    revenue_estimation_year_5_high = revenue_estimation_year_4_high * (1 + revenue_growth_high)
+    revenue_estimation_year_5_avg = revenue_estimation_year_4_avg * (1 + revenue_growth_avg)
+    revenue_estimation_year_5_low = revenue_estimation_year_4_low * (1 + revenue_growth_low)
+    financial_projection_of_stock.update({'Revenue Estimate':[
+        revenue_estimation_year_3_high,
+        revenue_estimation_year_3_avg,
+        revenue_estimation_year_3_low,
+        revenue_estimation_year_4_high,
+        revenue_estimation_year_4_avg,
+        revenue_estimation_year_4_low,
+        revenue_estimation_year_5_high,
+        revenue_estimation_year_5_avg,
+        revenue_estimation_year_5_low,]})
+    df_financial_projection = pd.DataFrame(data=financial_projection_of_stock)
+    df_financial_estimate = df_financial_estimate.append(df_financial_projection)
+    df_financial_estimate = df_financial_estimate[['Year','Revenue Estimate']]
+    df_financial_estimate['Net Income Estimate'] = df_financial_estimate['Revenue Estimate'] * min_net_income_margin
+    df_financial_estimate['Free Cash Flow Estimate'] = df_financial_estimate['Net Income Estimate'] * min_fcf_over_net_income
     return(df_financial_estimate)
+
 
 
     
 #print("\n")
-Create_Financial_Estimation_DataFrame_for_DCF('AAPL')
+print(Create_Financial_Estimation_DataFrame_for_DCF('AAPL'))
 
