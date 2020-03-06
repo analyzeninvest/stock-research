@@ -357,7 +357,10 @@ def wacc_of_stock(stock_ticker):
     income_before_tax_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeBeforeTax')
     income_before_tax = int(income_before_tax_year_from_yahoo.get(str(current_year -1)))
     weight_of_debt = long_term_debt / market_cap
-    rate_of_debt = interest_expense / long_term_debt
+    if long_term_debt != 0:
+        rate_of_debt = interest_expense / long_term_debt
+    else:
+        rate_of_debt = 0
     tax_rate = tax / income_before_tax
     weight_of_equity = 1 - weight_of_debt
     rate_of_equity = rate_of_equity_of_stock(stock_ticker)
@@ -491,11 +494,89 @@ def Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker):
     df_financial_estimate = df_financial_estimate[['Year','Revenue Estimate']]
     df_financial_estimate['Net Income Estimate'] = df_financial_estimate['Revenue Estimate'] * min_net_income_margin
     df_financial_estimate['Free Cash Flow Estimate'] = df_financial_estimate['Net Income Estimate'] * min_fcf_over_net_income
+    df_financial_estimate = df_financial_estimate.reset_index(drop = True)
     return(df_financial_estimate)
 
+# print("\n")
+# print(Create_Financial_Estimation_DataFrame_for_DCF('AAPL'))
+
+def terminal_value_of_stock_perpetual_growth_model(stock_ticker, last_FCF):
+    """
+    This function finds the terminal value of for the last estimated
+    revenue. The Calculation is made using the perpetual growth model.
+    Terminal Value = Last Revenue * (1 + g)/(r- g)
+    r = required rate of return, this is calculated using the WACC
+    g = perpetual growth rate, this is considered to be 2.5%
+    """
+    r = wacc_of_stock(stock_ticker)
+    g = 0.025
+    if r > g:
+        terminal_value = last_FCF * (1 + g) / (r - g)
+    else:
+        terminal_value = last_FCF * (1 + g) / g
+    return(terminal_value)
 
 
-    
-#print("\n")
-print(Create_Financial_Estimation_DataFrame_for_DCF('AAPL'))
+def DCF_valuation_of_a_stock(stock_ticker):
+    """
+    This function calculcates the DCF valuation of a stock.
+    DCF Valuation is calculated using the following method:
+    Intrinsic Value of the business = FCF_1 / (1+r)^1 + FCF_2 / (1+r)^2 + FCF_3 / (1+r)^3 + FCF_4 / (1+r)^4 + FCF_5 / (1+r)^5 + FCF_5*(1+g)/(r-g)
+    Intrinsic Value of Stock = Intrinsic Value of the Business / shares Outstanding
+    The valuation is based on the yahoo Finance.
+    Since the yahoo Finance estimates 3 range of values for a stock, this method will give out 3 DCF value of the stock.
+    """
+    import pandas as pd
+    from datetime import date
+    today = date.today()
+    current_year = today.year
+    df_financial_projection_of_stock = Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker)
+    #print(df_financial_projection_of_stock)
+    FCF_high_projection_year_1 = df_financial_projection_of_stock.loc[0,'Free Cash Flow Estimate'] 
+    FCF_high_projection_year_2 = df_financial_projection_of_stock.loc[3,'Free Cash Flow Estimate'] 
+    FCF_high_projection_year_3 = df_financial_projection_of_stock.loc[6,'Free Cash Flow Estimate'] 
+    FCF_high_projection_year_4 = df_financial_projection_of_stock.loc[9,'Free Cash Flow Estimate'] 
+    FCF_high_projection_year_5 = df_financial_projection_of_stock.loc[12,'Free Cash Flow Estimate']
+    FCF_avg_projection_year_1 = df_financial_projection_of_stock.loc[1,'Free Cash Flow Estimate'] 
+    FCF_avg_projection_year_2 = df_financial_projection_of_stock.loc[4,'Free Cash Flow Estimate'] 
+    FCF_avg_projection_year_3 = df_financial_projection_of_stock.loc[7,'Free Cash Flow Estimate'] 
+    FCF_avg_projection_year_4 = df_financial_projection_of_stock.loc[10,'Free Cash Flow Estimate'] 
+    FCF_avg_projection_year_5 = df_financial_projection_of_stock.loc[13,'Free Cash Flow Estimate']
+    FCF_low_projection_year_1 = df_financial_projection_of_stock.loc[2,'Free Cash Flow Estimate'] 
+    FCF_low_projection_year_2 = df_financial_projection_of_stock.loc[5,'Free Cash Flow Estimate'] 
+    FCF_low_projection_year_3 = df_financial_projection_of_stock.loc[8,'Free Cash Flow Estimate'] 
+    FCF_low_projection_year_4 = df_financial_projection_of_stock.loc[11,'Free Cash Flow Estimate'] 
+    FCF_low_projection_year_5 = df_financial_projection_of_stock.loc[14,'Free Cash Flow Estimate']
+    last_FCF_estimate_high = df_financial_projection_of_stock.loc[12,'Free Cash Flow Estimate']
+    last_FCF_estimate_avg = df_financial_projection_of_stock.loc[13,'Free Cash Flow Estimate']
+    last_FCF_estimate_low = df_financial_projection_of_stock.loc[14,'Free Cash Flow Estimate']
+    Terminal_value_high = terminal_value_of_stock_perpetual_growth_model(stock_ticker, last_FCF_estimate_high)
+    Terminal_value_avg = terminal_value_of_stock_perpetual_growth_model(stock_ticker, last_FCF_estimate_avg)
+    Terminal_value_low = terminal_value_of_stock_perpetual_growth_model(stock_ticker, last_FCF_estimate_low)
+    # print(Terminal_value_high)
+    # print(Terminal_value_avg)
+    # print(Terminal_value_low)
+    r = wacc_of_stock(stock_ticker)
+    # print(r)
+    Present_value_of_business_high = (FCF_high_projection_year_1 / (pow((1+r),1))) + (FCF_high_projection_year_2 / (pow((1+r),2))) + (FCF_high_projection_year_3 / (pow((1+r),3))) + (FCF_high_projection_year_4 / (pow((1+r),4))) + (FCF_high_projection_year_5 / (pow((1+r),5))) + (Terminal_value_high/ (pow((1+r),5)))
+    Present_value_of_business_avg = (FCF_avg_projection_year_1 / (pow((1+r),1))) + (FCF_avg_projection_year_2 / (pow((1+r),2))) + (FCF_avg_projection_year_3 / (pow((1+r),3))) + (FCF_avg_projection_year_4 / (pow((1+r),4))) + (FCF_avg_projection_year_5 / (pow((1+r),5))) + (Terminal_value_avg/ (pow((1+r),5)))
+    Present_value_of_business_low = (FCF_low_projection_year_1 / (pow((1+r),1))) + (FCF_low_projection_year_2 / (pow((1+r),2))) + (FCF_low_projection_year_3 / (pow((1+r),3))) + (FCF_low_projection_year_4 / (pow((1+r),4))) + (FCF_low_projection_year_5 / (pow((1+r),5))) + (Terminal_value_low/ (pow((1+r),5)))
+    shares_outstanding_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'sharesOutstanding')
+    shares = int(shares_outstanding_from_yahoo.get(str(current_year)))
+    # print(shares)
+    DCF_valuation_high = Present_value_of_business_high / shares
+    DCF_valuation_avg = Present_value_of_business_avg / shares
+    DCF_valuation_low = Present_value_of_business_low / shares
+    # print(DCF_valuation_high)
+    # print(DCF_valuation_avg)
+    # print(DCF_valuation_low)
+    DCF_valuation = [DCF_valuation_high, DCF_valuation_avg, DCF_valuation_low]
+    return(DCF_valuation)
 
+# testing
+# print("\n")
+# print(DCF_valuation_of_a_stock('AAPL'))
+# print(DCF_valuation_of_a_stock('FB'))
+# print(DCF_valuation_of_a_stock('NFLX'))
+# print(DCF_valuation_of_a_stock('GOOG'))
+# print(DCF_valuation_of_a_stock('AMZN'))
