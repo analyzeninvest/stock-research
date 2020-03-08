@@ -322,10 +322,12 @@ def Create_Financial_Statements_DataFrame_for_DCF(stock_ticker):
     df_financial['EBIT'] = df_financial['Net Income'] + df_financial['Income Tax Expenses'] + df_financial['Interest Expenses']
     df_financial['Net Working Capital'] = df_financial['Current Assets'] - df_financial['Current Liabilities']
     df_financial['Tax Rate'] = df_financial['Income Tax Expenses'] / df_financial['Income Before Tax']
+    df_financial.loc[df_financial['Tax Rate'] > 0.25, 'Tax Rate'] = 0.25
     df_financial['Free Cash Flow'] = df_financial['EBIT'] * (1 - df_financial['Tax Rate']) + df_financial['Net Working Capital'] + df_financial['Depreciation and Amortization'] - df_financial['Capital Expenditures']
     df_financial['FCF/Net Income'] = df_financial['Free Cash Flow'] / df_financial['Net Income']
     df_financial['Net Income Margin'] = df_financial['Net Income'] / df_financial['Total Revenue']
     df_financial['Revenue Growth Rate'] = df_financial['Total Revenue'].pct_change()
+    print(df_financial)
     return(df_financial)
 
 #print("\n")
@@ -342,6 +344,11 @@ def wacc_of_stock(stock_ticker):
     t = last tax rate = (last FY) = income tax expense / income before tax
     w_e = weight of equity = 1 - w_d 
     r_e = rate of equity = calculated by CAPM model
+    set tax rate to 25% if the last value is greater than 25%. 
+    There can be such cases when :
+    there is any income tax refund / tax paid more for some pending tax.
+    But this will not happen in the future.
+    25% is a value that is universally true for most companies.
     """
     from datetime import date
     today = date.today()
@@ -362,14 +369,16 @@ def wacc_of_stock(stock_ticker):
     else:
         rate_of_debt = 0
     tax_rate = tax / income_before_tax
+    if tax_rate > 0.25:
+        tax_rate = 0.25
     weight_of_equity = 1 - weight_of_debt
-    rate_of_equity = rate_of_equity_of_stock(stock_ticker)
+    rate_of_equity = rate_of_equity_of_stock_CAPM(stock_ticker)
     weighted_average_cost_of_capital = (weight_of_debt * rate_of_debt * (1 - tax_rate)) + (weight_of_equity * rate_of_equity)
     return(weighted_average_cost_of_capital)
 
 # print(wacc_of_stock('AAPL'))
 
-def rate_of_equity_of_stock(stock_ticker):
+def rate_of_equity_of_stock_CAPM(stock_ticker):
     """
     Get the rate of equity of the stock.  This is calculated based on
     the CAPM model.  CAPM or Capital Asset Pricing Model calculates
@@ -393,10 +402,10 @@ def rate_of_equity_of_stock(stock_ticker):
     rate_of_equity = risk_free_rate + (beta * (return_of_market - risk_free_rate))
     return(rate_of_equity)
     
-# print(rate_of_equity_of_stock('AAPL'))
+# print(rate_of_equity_of_stock_CAPM('AAPL'))
 
 
-def Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker):
+def Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker, df_actual_finance_of_stock ):
     """
     This function will create the Estimation DataFrame for DCF Valuation. 
     """
@@ -436,7 +445,7 @@ def Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker):
         df_financial_estimate.loc[1,'Estimated Revenue Growth'],
         df_financial_estimate.loc[3,'Estimated Revenue Growth'],
         df_financial_estimate.loc[5,'Estimated Revenue Growth']]
-    df_actual_finance_of_stock = Create_Financial_Statements_DataFrame_for_DCF(stock_ticker)
+    # df_actual_finance_of_stock = Create_Financial_Statements_DataFrame_for_DCF(stock_ticker)
     actual_revenue_growth_average = df_actual_finance_of_stock['Revenue Growth Rate'].mean()
     last_year_revenue = df_actual_finance_of_stock.loc[3,'Total Revenue']
     projected_revenue_growth_year_1_avg = (projected_revenue_year_1[0] - last_year_revenue)/last_year_revenue
@@ -495,6 +504,7 @@ def Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker):
     df_financial_estimate['Net Income Estimate'] = df_financial_estimate['Revenue Estimate'] * min_net_income_margin
     df_financial_estimate['Free Cash Flow Estimate'] = df_financial_estimate['Net Income Estimate'] * min_fcf_over_net_income
     df_financial_estimate = df_financial_estimate.reset_index(drop = True)
+    print(df_financial_estimate)
     return(df_financial_estimate)
 
 # print("\n")
@@ -527,32 +537,40 @@ def DCF_valuation_of_a_stock(stock_ticker):
     Since the yahoo Finance estimates 3 range of values for a stock, this method will give out 3 DCF value of the stock.
     """
     import pandas as pd
+    from openpyxl import load_workbook
     from datetime import date
     today = date.today()
     current_year = today.year
-    df_financial_projection_of_stock = Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker)
-    #print(df_financial_projection_of_stock)
-    FCF_high_projection_year_1 = df_financial_projection_of_stock.loc[0,'Free Cash Flow Estimate'] 
-    FCF_high_projection_year_2 = df_financial_projection_of_stock.loc[3,'Free Cash Flow Estimate'] 
-    FCF_high_projection_year_3 = df_financial_projection_of_stock.loc[6,'Free Cash Flow Estimate'] 
-    FCF_high_projection_year_4 = df_financial_projection_of_stock.loc[9,'Free Cash Flow Estimate'] 
-    FCF_high_projection_year_5 = df_financial_projection_of_stock.loc[12,'Free Cash Flow Estimate']
-    FCF_avg_projection_year_1 = df_financial_projection_of_stock.loc[1,'Free Cash Flow Estimate'] 
-    FCF_avg_projection_year_2 = df_financial_projection_of_stock.loc[4,'Free Cash Flow Estimate'] 
-    FCF_avg_projection_year_3 = df_financial_projection_of_stock.loc[7,'Free Cash Flow Estimate'] 
-    FCF_avg_projection_year_4 = df_financial_projection_of_stock.loc[10,'Free Cash Flow Estimate'] 
-    FCF_avg_projection_year_5 = df_financial_projection_of_stock.loc[13,'Free Cash Flow Estimate']
-    FCF_low_projection_year_1 = df_financial_projection_of_stock.loc[2,'Free Cash Flow Estimate'] 
-    FCF_low_projection_year_2 = df_financial_projection_of_stock.loc[5,'Free Cash Flow Estimate'] 
-    FCF_low_projection_year_3 = df_financial_projection_of_stock.loc[8,'Free Cash Flow Estimate'] 
-    FCF_low_projection_year_4 = df_financial_projection_of_stock.loc[11,'Free Cash Flow Estimate'] 
-    FCF_low_projection_year_5 = df_financial_projection_of_stock.loc[14,'Free Cash Flow Estimate']
-    last_FCF_estimate_high = df_financial_projection_of_stock.loc[12,'Free Cash Flow Estimate']
-    last_FCF_estimate_avg = df_financial_projection_of_stock.loc[13,'Free Cash Flow Estimate']
-    last_FCF_estimate_low = df_financial_projection_of_stock.loc[14,'Free Cash Flow Estimate']
-    Terminal_value_high = terminal_value_of_stock_perpetual_growth_model(stock_ticker, last_FCF_estimate_high)
-    Terminal_value_avg = terminal_value_of_stock_perpetual_growth_model(stock_ticker, last_FCF_estimate_avg)
-    Terminal_value_low = terminal_value_of_stock_perpetual_growth_model(stock_ticker, last_FCF_estimate_low)
+    excel_path = '/home/aritra/analyzeninvest-projects/stock-research/save_DCF_valuation.xlsx'
+    writer = pd.ExcelWriter(excel_path, engine = 'openpyxl')
+    writer.book = load_workbook(excel_path)
+    writer.sheets = dict((ws.title, ws) for ws in writer.book.worksheets)
+    df_actual_financials_of_stock = Create_Financial_Statements_DataFrame_for_DCF(stock_ticker)
+    df_financial_projection_of_stock = Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker, df_actual_financials_of_stock)
+    df_actual_financials_of_stock.to_excel(writer, sheet_name=stock_ticker,float_format="%.2f",index=False, startrow=15)
+    df_financial_projection_of_stock.to_excel(writer, sheet_name=stock_ticker,float_format="%.2f",index=False, startrow=25)
+    # print(df_financial_projection_of_stock)
+    FCF_high_projection_year_1  = df_financial_projection_of_stock.loc[0,'Free Cash Flow Estimate'] 
+    FCF_high_projection_year_2  = df_financial_projection_of_stock.loc[3,'Free Cash Flow Estimate'] 
+    FCF_high_projection_year_3  = df_financial_projection_of_stock.loc[6,'Free Cash Flow Estimate'] 
+    FCF_high_projection_year_4  = df_financial_projection_of_stock.loc[9,'Free Cash Flow Estimate'] 
+    FCF_high_projection_year_5  = df_financial_projection_of_stock.loc[12,'Free Cash Flow Estimate']
+    FCF_avg_projection_year_1   = df_financial_projection_of_stock.loc[1,'Free Cash Flow Estimate'] 
+    FCF_avg_projection_year_2   = df_financial_projection_of_stock.loc[4,'Free Cash Flow Estimate'] 
+    FCF_avg_projection_year_3   = df_financial_projection_of_stock.loc[7,'Free Cash Flow Estimate'] 
+    FCF_avg_projection_year_4   = df_financial_projection_of_stock.loc[10,'Free Cash Flow Estimate'] 
+    FCF_avg_projection_year_5   = df_financial_projection_of_stock.loc[13,'Free Cash Flow Estimate']
+    FCF_low_projection_year_1   = df_financial_projection_of_stock.loc[2,'Free Cash Flow Estimate'] 
+    FCF_low_projection_year_2   = df_financial_projection_of_stock.loc[5,'Free Cash Flow Estimate'] 
+    FCF_low_projection_year_3   = df_financial_projection_of_stock.loc[8,'Free Cash Flow Estimate'] 
+    FCF_low_projection_year_4   = df_financial_projection_of_stock.loc[11,'Free Cash Flow Estimate'] 
+    FCF_low_projection_year_5   = df_financial_projection_of_stock.loc[14,'Free Cash Flow Estimate']
+    last_FCF_estimate_high      = df_financial_projection_of_stock.loc[12,'Free Cash Flow Estimate']
+    last_FCF_estimate_avg       = df_financial_projection_of_stock.loc[13,'Free Cash Flow Estimate']
+    last_FCF_estimate_low       = df_financial_projection_of_stock.loc[14,'Free Cash Flow Estimate']
+    Terminal_value_high         = terminal_value_of_stock_perpetual_growth_model(stock_ticker, last_FCF_estimate_high)
+    Terminal_value_avg          = terminal_value_of_stock_perpetual_growth_model(stock_ticker, last_FCF_estimate_avg)
+    Terminal_value_low          = terminal_value_of_stock_perpetual_growth_model(stock_ticker, last_FCF_estimate_low)
     # print(Terminal_value_high)
     # print(Terminal_value_avg)
     # print(Terminal_value_low)
@@ -564,19 +582,34 @@ def DCF_valuation_of_a_stock(stock_ticker):
     shares_outstanding_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'sharesOutstanding')
     shares = int(shares_outstanding_from_yahoo.get(str(current_year)))
     # print(shares)
-    DCF_valuation_high = Present_value_of_business_high / shares
-    DCF_valuation_avg = Present_value_of_business_avg / shares
-    DCF_valuation_low = Present_value_of_business_low / shares
+    DCF_valuation_high  = Present_value_of_business_high / shares
+    DCF_valuation_avg   = Present_value_of_business_avg / shares
+    DCF_valuation_low   = Present_value_of_business_low / shares
     # print(DCF_valuation_high)
     # print(DCF_valuation_avg)
     # print(DCF_valuation_low)
-    DCF_valuation = [DCF_valuation_high, DCF_valuation_avg, DCF_valuation_low]
-    return(DCF_valuation)
+    DCF_valuation = {}
+    DCF_valuation.update({"Rate of Return":r})
+    DCF_valuation.update({"Total Shares Outstanding":shares})
+    DCF_valuation.update({"Present Value of Business":[Present_value_of_business_high, Present_value_of_business_avg, Present_value_of_business_low]})
+    DCF_valuation.update({"DCF Valuation":[DCF_valuation_high, DCF_valuation_avg, DCF_valuation_low]})
+    df_DCF_valuation = pd.DataFrame(data=DCF_valuation,index=['high','average','low'])
+    df_DCF_valuation.to_excel(writer, sheet_name=stock_ticker,float_format="%.2f",index=True)
+    writer.save()
+    writer.close()
+    print(df_DCF_valuation)
+    return(df_DCF_valuation)
 
 # testing
 # print("\n")
-# print(DCF_valuation_of_a_stock('AAPL'))
-# print(DCF_valuation_of_a_stock('FB'))
-# print(DCF_valuation_of_a_stock('NFLX'))
-# print(DCF_valuation_of_a_stock('GOOG'))
-# print(DCF_valuation_of_a_stock('AMZN'))
+# DCF_valuation_of_a_stock('AAPL')
+# DCF_valuation_of_a_stock('FB')
+# DCF_valuation_of_a_stock('NFLX')
+# DCF_valuation_of_a_stock('GOOG')
+# DCF_valuation_of_a_stock('AMZN')
+# DCF_valuation_of_a_stock('CDNS')
+# DCF_valuation_of_a_stock('TCS')
+# DCF_valuation_of_a_stock('INFY.NS')
+DCF_valuation_of_a_stock('COALINDIA.NS')
+DCF_valuation_of_a_stock('MRF.NS')
+DCF_valuation_of_a_stock('TATAMOTORS.NS')

@@ -539,7 +539,7 @@ https://www.msn.com/en-in/money/stockscreener
   
 *** DONE return attribute with year
 
-* TODO calculate the following for DCF
+* DONE calculate the following for DCF
 
 1. EBITDA = Net Income + Tax + Interest Expenses + Depreciation and Amortization 
 2. NWC Net Working Capital = Current Assets - Current Liabilities
@@ -550,6 +550,10 @@ https://www.msn.com/en-in/money/stockscreener
 7. Intrinsic Value of the business = FCF_1 / (1+r)^1 + FCF_2 / (1+r)^2 + FCF_3 / (1+r)^3 + FCF_4 / (1+r)^4 + FCF_5 / (1+r)^5 + FCF_5*(1+g)/(r-g)
 8. Intrinsic Value of Stock = Intrinsic Value of the Business / shares Outstanding
 
-* add feature to add in the google sheets 
+* TODO add feature to add in the google sheets 
+[[https://medium.com/better-programming/using-python-pandas-with-excel-d5082102ca27][good read for adding xls from pandas]]
 
+** TODO append the data in local excel file
+
+** TODO upload the doc to google sheet
 
