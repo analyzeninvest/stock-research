@@ -17,7 +17,7 @@ https://www.msn.com/en-in/money/stockscreener
 
 * DONE add following from the yahoo Finance
 
-** table for attributes
+** DONE table for attributes
 
  |-----------------------------+-------------------------+------------------|
  | attribute                   | scrape                  | page             |
@@ -38,7 +38,7 @@ https://www.msn.com/en-in/money/stockscreener
  | Estimated total Revenue     | revenueestimate         | Analysis         |
  |-----------------------------+-------------------------+------------------|
 
-** actual web page contents
+** DONE actual web page contents
 
    "beta":{"raw":1.075971,"fmt":"1.08"}
    "marketCap":{"raw":584459354112,"fmt":"584.46B","longFmt":"584,459,354,112"}
@@ -67,7 +67,7 @@ https://www.msn.com/en-in/money/stockscreener
    "low":{"raw":23579400000,"fmt":"23.58B","longFmt":"23,579,400,000"},"high":{"raw":25161000000,"fmt":"25.16B","longFmt":"25,161,000,000"}
    --- first 2 are Quarterly estimate, then yearly, all 3 types in same
 
-** need to find the pattern with the year
+** DONE need to find the pattern with the year
 
 *** revenue
  "financialsChart":{"yearly":[{"date":2016,"revenue":{"raw":27638000000,"fmt":"27.64B","longFmt":"27,638,000,000"},"earnings":{"raw":10217000000,"fmt":"10.22B","longFmt":"10,217,000,000"}},{"date":2017,"revenue":{"raw":40653000000,"fmt":"40.65B","longFmt":"40,653,000,000"},"earnings":{"raw":15934000000,"fmt":"15.93B","longFmt":"15,934,000,000"}},{"date":2018,"revenue":{"raw":55838000000,"fmt":"55.84B","longFmt":"55,838,000,000"},"earnings":{"raw":22112000000,"fmt":"22.11B","longFmt":"22,112,000,000"}},{"date":2019,"revenue":{"raw":70697000000,"fmt":"70.7B","longFmt":"70,697,000,000"},"earnings":{"raw":18485000000,"fmt":"18.48B","longFmt":"18,485,000,000"}}]
@@ -497,7 +497,7 @@ https://www.msn.com/en-in/money/stockscreener
 ,"growth":{}
 }
 
-** testing
+** DONE testing
 
 
 |-------------------------+------+----+------+------+------|
@@ -519,7 +519,7 @@ https://www.msn.com/en-in/money/stockscreener
 | revenueEstimate         | OK   | OK | OK   | OK   | OK   |
 |-------------------------+------+----+------+------+------|
 
-** features
+** DONE features
 
 *** DONE pull attribute [13/13]
 
@@ -550,10 +550,23 @@ https://www.msn.com/en-in/money/stockscreener
 7. Intrinsic Value of the business = FCF_1 / (1+r)^1 + FCF_2 / (1+r)^2 + FCF_3 / (1+r)^3 + FCF_4 / (1+r)^4 + FCF_5 / (1+r)^5 + FCF_5*(1+g)/(r-g)
 8. Intrinsic Value of Stock = Intrinsic Value of the Business / shares Outstanding
 
+
+* TODO bug fixes 
+
+** TODO loss making company
+
+** TODO Banks or other Financial Institution
+
+** TODO company with missing info
+
+** DONE comany with missing estimates
+   this is done by projection of the rate same as the current revenue growth. So high, avg & low values will be same.
+
+** DONE diff risk free rate calculation for India & US
 * TODO add feature to add in the google sheets 
 [[https://medium.com/better-programming/using-python-pandas-with-excel-d5082102ca27][good read for adding xls from pandas]]
 
-** TODO append the data in local excel file
+** DONE append the data in local excel file
 
 ** TODO upload the doc to google sheet
 
