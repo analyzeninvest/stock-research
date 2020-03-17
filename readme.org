@@ -539,6 +539,18 @@ https://www.msn.com/en-in/money/stockscreener
   
 *** DONE return attribute with year
 
+*** TODO stock details [0/5]
+    - [ ] company name
+      "shortName":"Apple Inc.","longName":"Apple Inc."
+    - [ ] ticker
+      "symbol":"AAPL","assetProfile"
+    - [ ] current share price
+      "regularMarketPrice":{"raw":277.97,"fmt":"277.97"}
+    - [ ] sector
+      "assetProfile":{"zip":"95014","sector":"Technology"
+    - [ ] industry
+      "industry":"Consumer Electronics"
+
 * DONE calculate the following for DCF
 
 1. EBITDA = Net Income + Tax + Interest Expenses + Depreciation and Amortization 
@@ -568,5 +580,16 @@ https://www.msn.com/en-in/money/stockscreener
 
 ** DONE append the data in local excel file
 
+** TODO format excel output
+
+** append company info []
+   append following to company info
+   - [] company name
+   - [] sector
+   - [] industry
+   - [] description
+   - [] ticker
+   - [] current price
+ 
 ** TODO upload the doc to google sheet
 

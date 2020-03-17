@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
-MAX_TAX_RATE           = 0.35
-LONG_TERM_GROWTH_RATE  = 0.025
-BOND_RATE_10Y_US       = 0.0188
-FD_RATE_INDIA          = 0.07
-AVG_RETURN_OF_MARKET   = 0.10
+MAX_TAX_RATE                = 0.35
+LONG_TERM_GROWTH_RATE       = 0.025
+BOND_RATE_10Y_US            = 0.0188
+FD_RATE_INDIA               = 0.07
+AVG_RETURN_OF_MARKET_US     = 0.10
+AVG_RETURN_OF_MARKET_INDIA  = 0.12
+DISCOUNT_FACTOR_INDIA       = 0.15
 
 def pull_attribute_from_yahoo(stock_ticker, attribute):
     """
@@ -34,22 +36,43 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
     import requests, re, csv
     from bs4 import BeautifulSoup
     from datetime import date
-    statistics_url = 'https://finance.yahoo.com/quote/'+stock_ticker+'/key-statistics?p='+stock_ticker+''
-    income_statement_url = 'https://finance.yahoo.com/quote/'+stock_ticker+'/financials?p='+stock_ticker+''
-    balance_sheet_url = 'https://finance.yahoo.com/quote/'+stock_ticker+'/balance-sheet?p='+stock_ticker+''
-    cash_flow_url = 'https://finance.yahoo.com/quote/'+stock_ticker+'/cash-flow?p='+stock_ticker+''
-    analysis_url = 'https://finance.yahoo.com/quote/'+stock_ticker+'/analysis?p='+stock_ticker+''
-    attribute_value = []
-    year_range = []
-    year_attribute = {}
-    today = date.today()
-    current_year = today.year
+    statistics_url        = 'https://finance.yahoo.com/quote/'+stock_ticker+'/key-statistics?p='+stock_ticker+''
+    income_statement_url  = 'https://finance.yahoo.com/quote/'+stock_ticker+'/financials?p='+stock_ticker+''
+    balance_sheet_url     = 'https://finance.yahoo.com/quote/'+stock_ticker+'/balance-sheet?p='+stock_ticker+''
+    cash_flow_url         = 'https://finance.yahoo.com/quote/'+stock_ticker+'/cash-flow?p='+stock_ticker+''
+    analysis_url          = 'https://finance.yahoo.com/quote/'+stock_ticker+'/analysis?p='+stock_ticker+''
+    profile_url           = 'https://in.finance.yahoo.com/quote/'+stock_ticker+'/profile?p='+stock_ticker+''
+    attribute_value       = []
+    year_range            = []
+    year_attribute        = {}
+    today                 = date.today()
+    current_year          = today.year
     if attribute in ['beta', 'marketCap', 'sharesOutstanding']:
-        page = requests.get(statistics_url)
-        soup = BeautifulSoup(page.text, 'html.parser')
-        match_string = '"'+attribute+'":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"}'
-        pattern = re.compile(match_string, re.MULTILINE )
-        script = soup.find('script', text=pattern)
+        page          = requests.get(statistics_url)
+        soup          = BeautifulSoup(page.text, 'html.parser')
+        match_string  = '"'+attribute+'":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"}'
+        pattern       = re.compile(match_string, re.MULTILINE )
+        script        = soup.find('script', text=pattern)
+        if script:
+            match = pattern.search(script.text)
+            if match:
+                attribute_value.append(match.group(1))
+            else:
+                attribute_value.append(str(0))
+        else:
+            attribute_value.append(str(0))
+        for value in attribute_value:
+            #print(stock_ticker + " has " +attribute + " of for year " + str(current_year) + " :  " + value)
+            year_attribute.update({str(current_year):value})
+    elif attribute in ['longName', 'symbol', 'sector', 'industry', 'regularMarketPrice']:
+        page          = requests.get(profile_url)
+        soup          = BeautifulSoup(page.text, 'html.parser')
+        if attribute == 'regularMarketPrice':
+            match_string  = '"'+attribute+'":{"raw":([0-9.]+),"fmt":".*?"}'
+        elif attribute in ['longName', 'symbol', 'sector', 'industry'] :
+            match_string  = '"'+attribute+'":"(.*?)"'
+        pattern       = re.compile(match_string, re.MULTILINE )
+        script        = soup.find('script', text=pattern)
         if script:
             match = pattern.search(script.text)
             if match:
@@ -221,7 +244,11 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
         # print(stock_ticker + " has " +attribute + " of for "+ str(next_year) + " high: " + attribute_value[5])
     return(year_attribute)
 
-# print(pull_attribute_from_yahoo('AAPL', 'marketCap'))
+# print(pull_attribute_from_yahoo('AAPL', 'symbol'))
+# print(pull_attribute_from_yahoo('AAPL', 'longName'))
+# print(pull_attribute_from_yahoo('AAPL', 'sector'))
+# print(pull_attribute_from_yahoo('AAPL', 'industry'))
+# print(pull_attribute_from_yahoo('AAPL', 'regularMarketPrice'))
 # print(pull_attribute_from_yahoo('LT.NS', 'longTermDebt'))
 
 def print_yahoo_financials_for_DCF(stock_ticker):
@@ -335,6 +362,37 @@ def Create_Financial_Statements_DataFrame_for_DCF(stock_ticker):
 #print("\n")
 #print(Create_Financial_Statements_DataFrame_for_DCF('AAPL'))
 
+def rate_of_equity_of_stock_CAPM(stock_ticker):
+    """
+    Get the rate of equity of the stock.  This is calculated based on
+    the CAPM model.  CAPM or Capital Asset Pricing Model calculates
+    the rate of equity in following way:
+    r_e = R_f + beta * (R_m - R_f)
+    where:
+    r_e = rate of equity.
+    beta is obtained from the statistics of the stock.
+    R_m = Rate of Return of the market in general.
+    R_f = Risk free rate of return.
+    R_m = 10%   (general return of the SNP 500 index fund)
+    R_f = 1.88% (10y US treasury bond yield)
+    """
+    from datetime import date
+    today                 = date.today()
+    current_year          = today.year
+    beta_year_from_yahoo  = pull_attribute_from_yahoo(stock_ticker, 'beta')
+    beta                  = float(beta_year_from_yahoo.get(str(current_year)))
+    stock_end = stock_ticker.split(".")
+    if len(stock_end)==2:
+        if stock_end[1] == "NS" or stock_end[1] == "BO":
+            risk_free_rate        = FD_RATE_INDIA
+            return_of_market      = AVG_RETURN_OF_MARKET_US
+    else:
+        risk_free_rate        = BOND_RATE_10Y_US
+        return_of_market      = AVG_RETURN_OF_MARKET_INDIA
+    rate_of_equity        = risk_free_rate + (beta * (return_of_market - risk_free_rate))
+    return(rate_of_equity)
+    
+# print(rate_of_equity_of_stock_CAPM('AAPL'))
 
 def wacc_of_stock(stock_ticker):
     """
@@ -384,37 +442,6 @@ def wacc_of_stock(stock_ticker):
     return(weighted_average_cost_of_capital)
 
 # print(wacc_of_stock('RELAXO.NS'))
-
-def rate_of_equity_of_stock_CAPM(stock_ticker):
-    """
-    Get the rate of equity of the stock.  This is calculated based on
-    the CAPM model.  CAPM or Capital Asset Pricing Model calculates
-    the rate of equity in following way:
-    r_e = R_f + beta * (R_m - R_f)
-    where:
-    r_e = rate of equity.
-    beta is obtained from the statistics of the stock.
-    R_m = Rate of Return of the market in general.
-    R_f = Risk free rate of return.
-    R_m = 10%   (general return of the SNP 500 index fund)
-    R_f = 1.88% (10y US treasury bond yield)
-    """
-    from datetime import date
-    today                 = date.today()
-    current_year          = today.year
-    beta_year_from_yahoo  = pull_attribute_from_yahoo(stock_ticker, 'beta')
-    beta                  = float(beta_year_from_yahoo.get(str(current_year)))
-    stock_end = stock_ticker.split(".")
-    if len(stock_end)==2 and stock_end[1] == "NS":
-        risk_free_rate        = FD_RATE_INDIA
-    else:
-        risk_free_rate        = BOND_RATE_10Y_US
-    return_of_market      = AVG_RETURN_OF_MARKET
-    rate_of_equity        = risk_free_rate + (beta * (return_of_market - risk_free_rate))
-    return(rate_of_equity)
-    
-# print(rate_of_equity_of_stock_CAPM('AAPL'))
-
 
 def Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker, df_actual_finance_of_stock):
     """
@@ -611,15 +638,30 @@ def DCF_valuation_of_a_stock(stock_ticker):
     # print(DCF_valuation_high)
     # print(DCF_valuation_avg)
     # print(DCF_valuation_low)
-    beta_year_from_yahoo       = pull_attribute_from_yahoo(stock_ticker, 'beta')
-    beta                       = float(beta_year_from_yahoo.get(str(current_year)))
-    marketcap_year_from_yahoo  = pull_attribute_from_yahoo(stock_ticker, 'marketCap')
-    market_cap                 = int(marketcap_year_from_yahoo.get(str(current_year)))
+    beta_year_from_yahoo                = pull_attribute_from_yahoo(stock_ticker, 'beta')
+    beta                                = float(beta_year_from_yahoo.get(str(current_year)))
+    marketcap_year_from_yahoo           = pull_attribute_from_yahoo(stock_ticker, 'marketCap')
+    market_cap                          = int(marketcap_year_from_yahoo.get(str(current_year)))
+    symbol_year_from_yahoo              = pull_attribute_from_yahoo(stock_ticker, 'symbol')
+    symbol                              = str(symbol_year_from_yahoo.get(str(current_year)))
+    longName_year_from_yahoo            = pull_attribute_from_yahoo(stock_ticker, 'longName')
+    StockName                           = str(longName_year_from_yahoo.get(str(current_year)))
+    sector_year_from_yahoo              = pull_attribute_from_yahoo(stock_ticker, 'sector')
+    sector                              = str(sector_year_from_yahoo.get(str(current_year)))
+    industry_year_from_yahoo            = pull_attribute_from_yahoo(stock_ticker, 'industry')
+    industry                            = str(industry_year_from_yahoo.get(str(current_year)))
+    regularMarketPrice_year_from_yahoo  = pull_attribute_from_yahoo(stock_ticker, 'regularMarketPrice')
+    currentMarketPrice                  = float(regularMarketPrice_year_from_yahoo.get(str(current_year)))
     DCF_valuation = {}
     DCF_valuation.update({"Rate of Return":r})
     DCF_valuation.update({"Total Shares Outstanding":shares})
     DCF_valuation.update({"Total Market Cap":market_cap})
     DCF_valuation.update({"beta":beta})
+    DCF_valuation.update({"Current Share Price":currentMarketPrice})
+    DCF_valuation.update({"Ticker Symbol":symbol})
+    DCF_valuation.update({"Stock Name":StockName})
+    DCF_valuation.update({"Sector":sector})
+    DCF_valuation.update({"Industry":industry})
     DCF_valuation.update({str(current_year  )+" FCF":[FCF_high_projection_year_1,FCF_avg_projection_year_1,FCF_low_projection_year_1]})
     DCF_valuation.update({str(current_year+1)+" FCF":[FCF_high_projection_year_2,FCF_avg_projection_year_2,FCF_low_projection_year_2]})
     DCF_valuation.update({str(current_year+2)+" FCF":[FCF_high_projection_year_3,FCF_avg_projection_year_3,FCF_low_projection_year_3]})
@@ -629,7 +671,7 @@ def DCF_valuation_of_a_stock(stock_ticker):
     DCF_valuation.update({"Present Value of Business":[Present_value_of_business_high, Present_value_of_business_avg, Present_value_of_business_low]})
     DCF_valuation.update({"DCF Valuation":[DCF_valuation_high, DCF_valuation_avg, DCF_valuation_low]})
     df_DCF_valuation = pd.DataFrame(data=DCF_valuation,index=['high','average','low'])
-    df_DCF_valuation = df_DCF_valuation[['DCF Valuation', 'Present Value of Business', 'Rate of Return', 'Total Shares Outstanding', str(current_year  )+" FCF", str(current_year+1)+" FCF", str(current_year+2)+" FCF", str(current_year+3)+" FCF", str(current_year+4)+" FCF", "Terminal Value", "Total Market Cap", "beta"]]
+    df_DCF_valuation = df_DCF_valuation[['DCF Valuation', 'Current Share Price', 'Stock Name', 'Ticker Symbol', 'Present Value of Business', 'Rate of Return', 'Total Shares Outstanding', str(current_year  )+" FCF", str(current_year+1)+" FCF", str(current_year+2)+" FCF", str(current_year+3)+" FCF", str(current_year+4)+" FCF", "Terminal Value", "Total Market Cap", "beta", 'Sector', 'Industry']]
     df_DCF_valuation.to_excel(writer, sheet_name=stock_ticker,float_format="%.2f",index=True)
     writer.save()
     writer.close()
@@ -658,4 +700,7 @@ def DCF_valuation_of_a_stock(stock_ticker):
 # DCF_valuation_of_a_stock('RELIANCE.NS')
 # DCF_valuation_of_a_stock('RELAXO.NS')
 # DCF_valuation_of_a_stock('BATAINDIA.NS')
-DCF_valuation_of_a_stock('BABA')
+# DCF_valuation_of_a_stock('BABA')
+# DCF_valuation_of_a_stock('SUNTV.NS')
+# DCF_valuation_of_a_stock('HCLTECH.NS')
+# DCF_valuation_of_a_stock('ASIANPAINT.NS')
