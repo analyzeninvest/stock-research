@@ -7,6 +7,7 @@ FD_RATE_INDIA               = 0.07
 AVG_RETURN_OF_MARKET_US     = 0.10
 AVG_RETURN_OF_MARKET_INDIA  = 0.12
 DISCOUNT_FACTOR_INDIA       = 0.15
+DISCOUNT_FACTOR_US          = 0.075
 
 def pull_attribute_from_yahoo(stock_ticker, attribute):
     """
@@ -577,7 +578,15 @@ def terminal_value_of_stock_perpetual_growth_model(stock_ticker, last_FCF):
     return(terminal_value)
 
 
-def DCF_valuation_of_a_stock(stock_ticker):
+def present_value_by_discount(FCF_1, FCF_2, FCF_3, FCF_4, FCF_5, TV, r):
+    """
+    Intrinsic Value of the business = FCF_1 / (1+r)^1 + FCF_2 / (1+r)^2 + FCF_3 / (1+r)^3 + FCF_4 / (1+r)^4 + FCF_5 / (1+r)^5 + FCF_5*(1+g)/(r-g)    
+    """
+    Present_value = (FCF_1 / (pow((1+r),1))) + (FCF_2 / (pow((1+r),2))) + (FCF_3 / (pow((1+r),3))) + (FCF_4 / (pow((1+r),4))) + (FCF_5 / (pow((1+r),5))) + (TV/ (pow((1+r),5)))
+    return(Present_value)
+
+
+def DCF_valuation_of_stock(stock_ticker):
     """
     This function calculcates the DCF valuation of a stock.
     DCF Valuation is calculated using the following method:
@@ -624,20 +633,74 @@ def DCF_valuation_of_a_stock(stock_ticker):
     # print(Terminal_value_high)
     # print(Terminal_value_avg)
     # print(Terminal_value_low)
+    stock_end = stock_ticker.split(".")
+    if len(stock_end)==2:
+        if stock_end[1] == "NS" or stock_end[1] == "BO":
+            r_fixed = DISCOUNT_FACTOR_INDIA
+    else:
+        r_fixed = DISCOUNT_FACTOR_US
     r = wacc_of_stock(stock_ticker)
     # print(r)
-    Present_value_of_business_high = (FCF_high_projection_year_1 / (pow((1+r),1))) + (FCF_high_projection_year_2 / (pow((1+r),2))) + (FCF_high_projection_year_3 / (pow((1+r),3))) + (FCF_high_projection_year_4 / (pow((1+r),4))) + (FCF_high_projection_year_5 / (pow((1+r),5))) + (Terminal_value_high/ (pow((1+r),5)))
-    Present_value_of_business_avg = (FCF_avg_projection_year_1 / (pow((1+r),1))) + (FCF_avg_projection_year_2 / (pow((1+r),2))) + (FCF_avg_projection_year_3 / (pow((1+r),3))) + (FCF_avg_projection_year_4 / (pow((1+r),4))) + (FCF_avg_projection_year_5 / (pow((1+r),5))) + (Terminal_value_avg/ (pow((1+r),5)))
-    Present_value_of_business_low = (FCF_low_projection_year_1 / (pow((1+r),1))) + (FCF_low_projection_year_2 / (pow((1+r),2))) + (FCF_low_projection_year_3 / (pow((1+r),3))) + (FCF_low_projection_year_4 / (pow((1+r),4))) + (FCF_low_projection_year_5 / (pow((1+r),5))) + (Terminal_value_low/ (pow((1+r),5)))
+    Present_value_of_business_wacc_high =  present_value_by_discount(
+        FCF_high_projection_year_1,
+        FCF_high_projection_year_2,
+        FCF_high_projection_year_3,
+        FCF_high_projection_year_4,
+        FCF_high_projection_year_5,
+        Terminal_value_high,
+        r)
+    Present_value_of_business_wacc_avg = present_value_by_discount(
+        FCF_avg_projection_year_1,
+        FCF_avg_projection_year_2,
+        FCF_avg_projection_year_3,
+        FCF_avg_projection_year_4,
+        FCF_avg_projection_year_5,
+        Terminal_value_avg,
+        r)
+    Present_value_of_business_wacc_low = present_value_by_discount(
+        FCF_low_projection_year_1,
+        FCF_low_projection_year_2,
+        FCF_low_projection_year_3,
+        FCF_low_projection_year_4,
+        FCF_low_projection_year_5,
+        Terminal_value_low,
+        r)
+    Present_value_of_business_fixed_high =  present_value_by_discount(
+        FCF_high_projection_year_1,
+        FCF_high_projection_year_2,
+        FCF_high_projection_year_3,
+        FCF_high_projection_year_4,
+        FCF_high_projection_year_5,
+        Terminal_value_high,
+        r_fixed)
+    Present_value_of_business_fixed_avg = present_value_by_discount(
+        FCF_avg_projection_year_1,
+        FCF_avg_projection_year_2,
+        FCF_avg_projection_year_3,
+        FCF_avg_projection_year_4,
+        FCF_avg_projection_year_5,
+        Terminal_value_avg,
+        r_fixed)
+    Present_value_of_business_fixed_low = present_value_by_discount(
+        FCF_low_projection_year_1,
+        FCF_low_projection_year_2,
+        FCF_low_projection_year_3,
+        FCF_low_projection_year_4,
+        FCF_low_projection_year_5,
+        Terminal_value_low,
+        r_fixed)
     shares_outstanding_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'sharesOutstanding')
     shares = int(shares_outstanding_from_yahoo.get(str(current_year)))
     # print(shares)
-    DCF_valuation_high  = Present_value_of_business_high / shares
-    DCF_valuation_avg   = Present_value_of_business_avg / shares
-    DCF_valuation_low   = Present_value_of_business_low / shares
-    # print(DCF_valuation_high)
-    # print(DCF_valuation_avg)
-    # print(DCF_valuation_low)
+    DCF_valuation_wacc_high   = Present_value_of_business_wacc_high / shares
+    DCF_valuation_wacc_avg    = Present_value_of_business_wacc_avg / shares
+    DCF_valuation_wacc_low    = Present_value_of_business_wacc_low / shares
+    DCF_valuation_fixed_high  = Present_value_of_business_fixed_high / shares
+    DCF_valuation_fixed_avg   = Present_value_of_business_fixed_avg / shares
+    DCF_valuation_fixed_low   = Present_value_of_business_fixed_low / shares
+    # print(DCF_valuation_wacc_high)
+    # print(DCF_valuation_wacc_avg)
+    # print(DCF_valuation_wacc_low)
     beta_year_from_yahoo                = pull_attribute_from_yahoo(stock_ticker, 'beta')
     beta                                = float(beta_year_from_yahoo.get(str(current_year)))
     marketcap_year_from_yahoo           = pull_attribute_from_yahoo(stock_ticker, 'marketCap')
@@ -668,10 +731,12 @@ def DCF_valuation_of_a_stock(stock_ticker):
     DCF_valuation.update({str(current_year+3)+" FCF":[FCF_high_projection_year_4,FCF_avg_projection_year_4,FCF_low_projection_year_4]})
     DCF_valuation.update({str(current_year+4)+" FCF":[FCF_high_projection_year_5,FCF_avg_projection_year_5,FCF_low_projection_year_5]})
     DCF_valuation.update({"Terminal Value":[Terminal_value_high, Terminal_value_avg, Terminal_value_low]})
-    DCF_valuation.update({"Present Value of Business":[Present_value_of_business_high, Present_value_of_business_avg, Present_value_of_business_low]})
-    DCF_valuation.update({"DCF Valuation":[DCF_valuation_high, DCF_valuation_avg, DCF_valuation_low]})
+    DCF_valuation.update({"Present Value of Business (wacc)":[Present_value_of_business_wacc_high, Present_value_of_business_wacc_avg, Present_value_of_business_wacc_low]})
+    DCF_valuation.update({"Present Value of Business (fixed)":[Present_value_of_business_fixed_high, Present_value_of_business_fixed_avg, Present_value_of_business_fixed_low]})
+    DCF_valuation.update({"DCF Valuation (wacc)":[DCF_valuation_wacc_high, DCF_valuation_wacc_avg, DCF_valuation_wacc_low]})
+    DCF_valuation.update({"DCF Valuation (fixed)":[DCF_valuation_fixed_high, DCF_valuation_fixed_avg, DCF_valuation_fixed_low]})
     df_DCF_valuation = pd.DataFrame(data=DCF_valuation,index=['high','average','low'])
-    df_DCF_valuation = df_DCF_valuation[['DCF Valuation', 'Current Share Price', 'Stock Name', 'Ticker Symbol', 'Present Value of Business', 'Rate of Return', 'Total Shares Outstanding', str(current_year  )+" FCF", str(current_year+1)+" FCF", str(current_year+2)+" FCF", str(current_year+3)+" FCF", str(current_year+4)+" FCF", "Terminal Value", "Total Market Cap", "beta", 'Sector', 'Industry']]
+    df_DCF_valuation = df_DCF_valuation[['DCF Valuation (wacc)', 'DCF Valuation (fixed)', 'Current Share Price', 'Stock Name', 'Ticker Symbol', 'Present Value of Business (wacc)', 'Present Value of Business (fixed)', 'Rate of Return', 'Total Shares Outstanding', str(current_year  )+" FCF", str(current_year+1)+" FCF", str(current_year+2)+" FCF", str(current_year+3)+" FCF", str(current_year+4)+" FCF", "Terminal Value", "Total Market Cap", "beta", 'Sector', 'Industry']]
     df_DCF_valuation.to_excel(writer, sheet_name=stock_ticker,float_format="%.2f",index=True)
     writer.save()
     writer.close()
@@ -680,27 +745,30 @@ def DCF_valuation_of_a_stock(stock_ticker):
 
 # testing
 # print("\n")
-# DCF_valuation_of_a_stock('AAPL')
-# DCF_valuation_of_a_stock('FB')
-# DCF_valuation_of_a_stock('NFLX')
-# DCF_valuation_of_a_stock('GOOG')
-# DCF_valuation_of_a_stock('AMZN')
-# DCF_valuation_of_a_stock('CDNS')
-# DCF_valuation_of_a_stock('TCS')
-# DCF_valuation_of_a_stock('INFY.NS')
-# DCF_valuation_of_a_stock('COALINDIA.NS')
-# DCF_valuation_of_a_stock('MRF.NS')
-# DCF_valuation_of_a_stock('TATAMOTORS.NS')
-# DCF_valuation_of_a_stock('LT.NS')
-# DCF_valuation_of_a_stock('HDFCBANK.NS')
-# DCF_valuation_of_a_stock('SBIN.NS')
-# DCF_valuation_of_a_stock('GRAPHITE.NS')
-# DCF_valuation_of_a_stock('HEG.NS')
-# DCF_valuation_of_a_stock('ITC.NS')
-# DCF_valuation_of_a_stock('RELIANCE.NS')
-# DCF_valuation_of_a_stock('RELAXO.NS')
-# DCF_valuation_of_a_stock('BATAINDIA.NS')
-# DCF_valuation_of_a_stock('BABA')
-# DCF_valuation_of_a_stock('SUNTV.NS')
-# DCF_valuation_of_a_stock('HCLTECH.NS')
-# DCF_valuation_of_a_stock('ASIANPAINT.NS')
+# DCF_valuation_of_stock('AAPL')
+# DCF_valuation_of_stock('FB')
+# DCF_valuation_of_stock('NFLX')
+# DCF_valuation_of_stock('GOOG')
+# DCF_valuation_of_stock('AMZN')
+# DCF_valuation_of_stock('CDNS')
+# DCF_valuation_of_stock('TCS')
+# DCF_valuation_of_stock('INFY.NS')
+# DCF_valuation_of_stock('COALINDIA.NS')
+# DCF_valuation_of_stock('MRF.NS')
+# DCF_valuation_of_stock('TATAMOTORS.NS')
+# DCF_valuation_of_stock('LT.NS')
+# DCF_valuation_of_stock('HDFCBANK.NS')
+# DCF_valuation_of_stock('SBIN.NS')
+# DCF_valuation_of_stock('GRAPHITE.NS')
+# DCF_valuation_of_stock('HEG.NS')
+# DCF_valuation_of_stock('ITC.NS')
+# DCF_valuation_of_stock('RELIANCE.NS')
+# DCF_valuation_of_stock('RELAXO.NS')
+# DCF_valuation_of_stock('BATAINDIA.NS')
+# DCF_valuation_of_stock('BABA')
+# DCF_valuation_of_stock('SUNTV.NS')
+# DCF_valuation_of_stock('HCLTECH.NS')
+# DCF_valuation_of_stock('ASIANPAINT.NS')
+# DCF_valuation_of_stock('NMDC.NS')
+# DCF_valuation_of_stock('RECLTD.NS')
+

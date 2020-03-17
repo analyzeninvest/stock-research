@@ -539,16 +539,16 @@ https://www.msn.com/en-in/money/stockscreener
   
 *** DONE return attribute with year
 
-*** TODO stock details [0/5]
-    - [ ] company name
+*** DONE stock details [5/5]
+    - [X] company name
       "shortName":"Apple Inc.","longName":"Apple Inc."
-    - [ ] ticker
+    - [X] ticker
       "symbol":"AAPL","assetProfile"
-    - [ ] current share price
+    - [X] current share price
       "regularMarketPrice":{"raw":277.97,"fmt":"277.97"}
-    - [ ] sector
+    - [X] sector
       "assetProfile":{"zip":"95014","sector":"Technology"
-    - [ ] industry
+    - [X] industry
       "industry":"Consumer Electronics"
 
 * DONE calculate the following for DCF
@@ -561,7 +561,7 @@ https://www.msn.com/en-in/money/stockscreener
 6. r_e = R_f + beta * (R_m - R_f)
 7. Intrinsic Value of the business = FCF_1 / (1+r)^1 + FCF_2 / (1+r)^2 + FCF_3 / (1+r)^3 + FCF_4 / (1+r)^4 + FCF_5 / (1+r)^5 + FCF_5*(1+g)/(r-g)
 8. Intrinsic Value of Stock = Intrinsic Value of the Business / shares Outstanding
-
+9. Add fixed rate of return for US & India.
 
 * TODO bug fixes 
 
@@ -582,14 +582,7 @@ https://www.msn.com/en-in/money/stockscreener
 
 ** TODO format excel output
 
-** append company info []
-   append following to company info
-   - [] company name
-   - [] sector
-   - [] industry
-   - [] description
-   - [] ticker
-   - [] current price
- 
+** DONE append company info
+
 ** TODO upload the doc to google sheet
 
