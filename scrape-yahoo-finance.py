@@ -716,7 +716,8 @@ def DCF_valuation_of_stock(stock_ticker):
     regularMarketPrice_year_from_yahoo  = pull_attribute_from_yahoo(stock_ticker, 'regularMarketPrice')
     currentMarketPrice                  = float(regularMarketPrice_year_from_yahoo.get(str(current_year)))
     DCF_valuation = {}
-    DCF_valuation.update({"Rate of Return":r})
+    DCF_valuation.update({"Rate of Return (wacc)":r})
+    DCF_valuation.update({"Rate of Return (fixed)":r_fixed})
     DCF_valuation.update({"Total Shares Outstanding":shares})
     DCF_valuation.update({"Total Market Cap":market_cap})
     DCF_valuation.update({"beta":beta})
@@ -736,7 +737,7 @@ def DCF_valuation_of_stock(stock_ticker):
     DCF_valuation.update({"DCF Valuation (wacc)":[DCF_valuation_wacc_high, DCF_valuation_wacc_avg, DCF_valuation_wacc_low]})
     DCF_valuation.update({"DCF Valuation (fixed)":[DCF_valuation_fixed_high, DCF_valuation_fixed_avg, DCF_valuation_fixed_low]})
     df_DCF_valuation = pd.DataFrame(data=DCF_valuation,index=['high','average','low'])
-    df_DCF_valuation = df_DCF_valuation[['DCF Valuation (wacc)', 'DCF Valuation (fixed)', 'Current Share Price', 'Stock Name', 'Ticker Symbol', 'Present Value of Business (wacc)', 'Present Value of Business (fixed)', 'Rate of Return', 'Total Shares Outstanding', str(current_year  )+" FCF", str(current_year+1)+" FCF", str(current_year+2)+" FCF", str(current_year+3)+" FCF", str(current_year+4)+" FCF", "Terminal Value", "Total Market Cap", "beta", 'Sector', 'Industry']]
+    df_DCF_valuation = df_DCF_valuation[['DCF Valuation (wacc)', 'DCF Valuation (fixed)', 'Current Share Price', 'Stock Name', 'Ticker Symbol', 'Present Value of Business (wacc)', 'Present Value of Business (fixed)', 'Rate of Return (wacc)', 'Rate of Return (fixed)' 'Total Shares Outstanding', str(current_year  )+" FCF", str(current_year+1)+" FCF", str(current_year+2)+" FCF", str(current_year+3)+" FCF", str(current_year+4)+" FCF", "Terminal Value", "Total Market Cap", "beta", 'Sector', 'Industry']]
     df_DCF_valuation.to_excel(writer, sheet_name=stock_ticker,float_format="%.2f",index=True)
     writer.save()
     writer.close()

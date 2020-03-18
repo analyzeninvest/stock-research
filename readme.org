@@ -563,7 +563,7 @@ https://www.msn.com/en-in/money/stockscreener
 8. Intrinsic Value of Stock = Intrinsic Value of the Business / shares Outstanding
 9. Add fixed rate of return for US & India.
 
-* TODO bug fixes 
+* TODO bug fixes of DCF valuation
 
 ** TODO loss making company
 
@@ -586,3 +586,42 @@ https://www.msn.com/en-in/money/stockscreener
 
 ** TODO upload the doc to google sheet
 
+* long term growth potential
+
+** company filing report
+
+*** business segment
+
+*** operations 
+
+*** Industry
+
+** Management Discussion & Analysis
+
+*** business overview
+
+*** industry trend
+
+*** segment performance
+
+*** management plan
+
+*** overall performance
+
+** Financial Statement analysis
+
+** Company presentation & earnings call
+
+** Competitor analysis
+
+** Fair Value the company
+
+** Identify the stock driver
+
+*** what causes the stock to trade up/down
+
+*** find news at that point where stock moved up/ down
+
+** look for a buying oppertunity
+
+*** get a MOS, some % below of Fair Value
