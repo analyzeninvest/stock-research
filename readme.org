@@ -587,6 +587,7 @@ https://www.msn.com/en-in/money/stockscreener
 ** TODO upload the doc to google sheet
 
 * long term growth potential
+[[https://www.youtube.com/watch?v=fGVtypWv04Y][learn to invest: 8 steps]]
 
 ** company filing report
 
@@ -625,3 +626,24 @@ https://www.msn.com/en-in/money/stockscreener
 ** look for a buying oppertunity
 
 *** get a MOS, some % below of Fair Value
+
+* screener & calculation
+[[https://www.youtube.com/watch?v=S1wbCieoHs4&list=PLD3EB06EC4A19BFB8&index=10][preston : buffet valuation]]
+
+** debt repayment / management effectiveness
+debt/equity ratio < 0.5
+current ratio < 1
+plot this for prev years
+
+D/E = total debt / total shareholder equity
+Current Ratio = curret assets / current liabilities
+
+** long term investments for capital gain
+hold for long term to get capital gain
+
+** stable stock 
+product may be used for next 10 years
+has stable eps
+** fair value
+calculate fair value
+current market price is lower than fair value 
