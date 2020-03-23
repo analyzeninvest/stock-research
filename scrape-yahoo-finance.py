@@ -121,7 +121,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
         for value in attribute_value:
             year_attribute.update({str(current_year-1):value})
             current_year -= 1
-    elif attribute in ['totalCurrentAssets', 'totalCurrentLiabilities', 'longTermDebt']:
+    elif attribute in ['totalCurrentAssets', 'totalCurrentLiabilities', 'longTermDebt', 'totalStockholderEquity']:
         page = requests.get(balance_sheet_url)
         soup = BeautifulSoup(page.text, 'html.parser')
         match_string = '"balanceSheetHistory":."balanceSheetStatements":[[].*"'+attribute+ '":."raw":([-]?[0-9.]+).*"' +attribute+ '":."raw":([-]?[0-9.]+).*"' +attribute+ '":."raw":([-]?[0-9.]+).*,"' +attribute+'":."raw":([-]?[0-9.]+).*[]]'
@@ -157,7 +157,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
         for value in attribute_value:
             year_attribute.update({str(current_year-1):value})
             current_year -= 1
-    elif attribute in ['depreciation', 'netIncome', 'capitalExpenditures']:
+    elif attribute in ['depreciation', 'netIncome', 'capitalExpenditures', 'dividendsPaid']:
         page = requests.get(cash_flow_url)
         soup = BeautifulSoup(page.text, 'html.parser')
         match_string = '"cashflowStatementHistory":."cashflowStatements":[[].*?"'+attribute+ '":{"raw":([-]?[0-9.]+).*?},"' +attribute+ '":{"raw":([-]?[0-9.]+).*?},"' +attribute+ '":{"raw":([-]?[0-9.]+).*?},"' +attribute+'":{"raw":([-]?[0-9.]+).*}.*[]]'
@@ -245,7 +245,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
         # print(stock_ticker + " has " +attribute + " of for "+ str(next_year) + " high: " + attribute_value[5])
     return(year_attribute)
 
-# print(pull_attribute_from_yahoo('AAPL', 'symbol'))
+#print(pull_attribute_from_yahoo('AAPL', 'totalStockholderEquity'))
 # print(pull_attribute_from_yahoo('AAPL', 'longName'))
 # print(pull_attribute_from_yahoo('AAPL', 'sector'))
 # print(pull_attribute_from_yahoo('AAPL', 'industry'))
@@ -737,13 +737,63 @@ def DCF_valuation_of_stock(stock_ticker):
     DCF_valuation.update({"DCF Valuation (wacc)":[DCF_valuation_wacc_high, DCF_valuation_wacc_avg, DCF_valuation_wacc_low]})
     DCF_valuation.update({"DCF Valuation (fixed)":[DCF_valuation_fixed_high, DCF_valuation_fixed_avg, DCF_valuation_fixed_low]})
     df_DCF_valuation = pd.DataFrame(data=DCF_valuation,index=['high','average','low'])
-    df_DCF_valuation = df_DCF_valuation[['DCF Valuation (wacc)', 'DCF Valuation (fixed)', 'Current Share Price', 'Stock Name', 'Ticker Symbol', 'Present Value of Business (wacc)', 'Present Value of Business (fixed)', 'Rate of Return (wacc)', 'Rate of Return (fixed)' 'Total Shares Outstanding', str(current_year  )+" FCF", str(current_year+1)+" FCF", str(current_year+2)+" FCF", str(current_year+3)+" FCF", str(current_year+4)+" FCF", "Terminal Value", "Total Market Cap", "beta", 'Sector', 'Industry']]
+    df_DCF_valuation = df_DCF_valuation[[
+        'DCF Valuation (wacc)',
+        'DCF Valuation (fixed)',
+        'Current Share Price',
+        'Stock Name',
+        'Ticker Symbol',
+        'Present Value of Business (wacc)',
+        'Present Value of Business (fixed)',
+        'Rate of Return (wacc)',
+        'Rate of Return (fixed)',
+        'Total Shares Outstanding',
+        str(current_year  )+" FCF",
+        str(current_year+1)+" FCF",
+        str(current_year+2)+" FCF",
+        str(current_year+3)+" FCF",
+        str(current_year+4)+" FCF",
+        "Terminal Value",
+        "Total Market Cap",
+        "beta",
+        'Sector',
+        'Industry']]
     df_DCF_valuation.to_excel(writer, sheet_name=stock_ticker,float_format="%.2f",index=True)
     writer.save()
     writer.close()
     print(df_DCF_valuation)
     return(df_DCF_valuation)
 
+def DDM_Valuation_of_stock(stock_ticker):
+    """
+    This function will calculate Dividend Discount Model of the stock_ticker.
+    Share Price = Current Dividend Per Share * ( 1 + g) / (r -g)
+    r = rate of Equity
+    g = (1 - dividend payout ratio) * ROE
+    ROE = Net Income / Total Shareholder's Equity
+    dividend payout ratio = Dividend Paid / Net Income  
+    """
+    from datetime import date
+    today                               = date.today()
+    current_year                        = today.year
+    r                                   = rate_of_equity_of_stock_CAPM(stock_ticker)
+    dividend_paid_year_from_yahoo       = pull_attribute_from_yahoo(stock_ticker, 'dividendsPaid')
+    dividend                            = float(dividend_paid_year_from_yahoo.get(str(current_year -1)))
+    shareholder_equity_year_from_yahoo  = pull_attribute_from_yahoo(stock_ticker, 'totalStockholderEquity')
+    shareholder_equity                  = float(shareholder_equity_year_from_yahoo.get(str(current_year -1)))
+    netIncome_paid_year_from_yahoo      = pull_attribute_from_yahoo(stock_ticker, 'netIncome')
+    net_income                          = float(netIncome_paid_year_from_yahoo.get(str(current_year -1)))
+    shares_outstanding_from_yahoo       = pull_attribute_from_yahoo(stock_ticker, 'sharesOutstanding')
+    shares                              = int(shares_outstanding_from_yahoo.get(str(current_year)))
+    dividend_payout_ratio               = dividend / net_income
+    roe                                 = net_income / shareholder_equity
+    g                                   = (1 - dividend_payout_ratio) * roe
+    dividend_per_share                  = dividend / shares
+    Intrisic_value_of_share_DDM         = dividend_per_share * ( 1 + g) / (r - g)
+    return(Intrisic_value_of_share_DDM)
+
+
+print(DDM_Valuation_of_stock('AAPL'))
 # testing
 # print("\n")
 # DCF_valuation_of_stock('AAPL')
@@ -772,4 +822,9 @@ def DCF_valuation_of_stock(stock_ticker):
 # DCF_valuation_of_stock('ASIANPAINT.NS')
 # DCF_valuation_of_stock('NMDC.NS')
 # DCF_valuation_of_stock('RECLTD.NS')
-
+#DCF_valuation_of_stock('ITC.NS')
+#DCF_valuation_of_stock('COCHINSHIP.BO')
+#DCF_valuation_of_stock('CONTROLPR.NS')
+#DCF_valuation_of_stock('ENGINERSIN.NS')
+#DCF_valuation_of_stock('PAPERPROD.BO')
+#DCF_valuation_of_stock('KSCL.NS')

@@ -519,7 +519,7 @@ https://www.msn.com/en-in/money/stockscreener
 | revenueEstimate         | OK   | OK | OK   | OK   | OK   |
 |-------------------------+------+----+------+------+------|
 
-** DONE features
+** TODO features
 
 *** DONE pull attribute [13/13]
 
@@ -550,6 +550,13 @@ https://www.msn.com/en-in/money/stockscreener
       "assetProfile":{"zip":"95014","sector":"Technology"
     - [X] industry
       "industry":"Consumer Electronics"
+
+
+*** DONE DDM model requirements [3/3]
+    - [X] total shareholder's euqity
+    - [X] dividends paid
+    - [X] dividend per share
+
 
 * DONE calculate the following for DCF
 
@@ -586,54 +593,47 @@ https://www.msn.com/en-in/money/stockscreener
 
 ** TODO upload the doc to google sheet
 
+* DDM Model
+
+** DONE to calculate
+
+Share Price = Current Dividend Per Share * ( 1 + g) / (r -g)
+r = rate of Equity
+g = (1 - dividend payout ratio) * ROE
+ROE = Net Income / Total Shareholder's Equity
+dividend payout ratio = Dividend Paid / Net Income  
+
+
+
 * long term growth potential
 [[https://www.youtube.com/watch?v=fGVtypWv04Y][learn to invest: 8 steps]]
-
 ** company filing report
-
 *** business segment
-
 *** operations 
-
 *** Industry
-
 ** Management Discussion & Analysis
-
 *** business overview
-
 *** industry trend
-
 *** segment performance
-
 *** management plan
-
 *** overall performance
-
 ** Financial Statement analysis
-
 ** Company presentation & earnings call
-
 ** Competitor analysis
-
 ** Fair Value the company
-
 ** Identify the stock driver
-
 *** what causes the stock to trade up/down
-
 *** find news at that point where stock moved up/ down
-
 ** look for a buying oppertunity
-
 *** get a MOS, some % below of Fair Value
-
-* screener & calculation
+* buffet valuation
+  
 [[https://www.youtube.com/watch?v=S1wbCieoHs4&list=PLD3EB06EC4A19BFB8&index=10][preston : buffet valuation]]
 
 ** debt repayment / management effectiveness
 debt/equity ratio < 0.5
-current ratio < 1
-plot this for prev years
+current ratio > 1.5
+plot this for prev 10 years
 
 D/E = total debt / total shareholder equity
 Current Ratio = curret assets / current liabilities
@@ -644,6 +644,91 @@ hold for long term to get capital gain
 ** stable stock 
 product may be used for next 10 years
 has stable eps
+
 ** fair value
 calculate fair value
 current market price is lower than fair value 
+
+* screener
+
+** from buffet valuation
+
+ 1. Market Cap > $500 Million
+ 2. P/E Ratio < 15
+ 3. Current Ratio > 1.5
+ 4. Return on Equity (5Y median %) > 8
+ 5. Interest Coverage > 6.0
+ 6. 5Y Net Income Growth Rate (%) > 5
+ 7. 10Y Revenue Growth Rate (%) > 5
+ 8. 10Y EPS Growth Rate (%) > 5
+
+
+** modified to indian market
+ 1. Market Cap > Rs 100 Cr
+ 2. P/E Ratio < 20
+ 3. Current Ratio > 1.5
+ 4. Return on Equity (5Y median %) > 8
+ 5. 5Y Net Income Growth Rate (%) > 5
+ 6. 10Y Revenue Growth Rate (%) > 5
+ 7. 10Y EPS Growth Rate (%) > 5
+
+* Moat
+
+1. Brand / Trade Marks
+2. Proprietary Technology
+3. Patents / Copyrights
+4. Trade Secrets
+5. The stickiness of Product (Think Microsoft Office)
+
+
+* List of Shares
+
+** broker recomendation
+
+ 1. Advanced Enzyme Technologies Ltd.
+ 2. Avanti Feeds Ltd.
+ 3. Cipla Ltd.
+ 4. Cochin Shipyard Ltd.
+ 5. Control Print Ltd.
+ 6. Dhanuka Agritech Ltd.
+ 7. Engineers India Ltd.
+ 8. FDC Ltd.
+ 9. Gujarat Pipavav Port Ltd.
+ 10. Hexaware Technologies Ltd.
+ 11. Huhtamaki PPL Ltd.
+ 12. Insecticides (India) Ltd.
+ 13. ITC Ltd.
+ 14. Kaveri Seed Company Ltd.
+ 15. L&T Technology Services Ltd.
+ 16. MphasiS Ltd.
+ 17. Navneet Education Ltd.
+ 18. NIIT Technologies Ltd.
+ 19. PNC Infratech Ltd.
+ 20. Radico Khaitan Ltd.
+
+** Dividend Payout
+
+ 1. ITC Ltd.
+ 2. Rupa & Company Ltd.
+ 3. Huhtamaki PPL Ltd.
+ 4. J B Chemicals & Pharmaceuticals Ltd.
+ 5. Voltamp Transformers Ltd.
+ 6. Kaveri Seed Company Ltd.
+ 7. Kitex Garments Ltd.
+ 8. Cochin Shipyard Ltd.
+ 9. Rites Ltd.
+ 10. Advani Hotels & Resorts (India) Ltd.
+ 11. Honda Siel Power Products Ltd.
+ 12. Mazda Ltd.
+ 13. Engineers India Ltd.
+ 14. Borosil Renewables Ltd.
+ 15. Control Print Ltd. 
+
+** Selected Companies for review
+
+ 1. ITC Ltd.
+ 2. Cochin Shipyard Ltd.
+ 3. Control Print Ltd.
+ 4. Engineers India Ltd.
+ 5. Huhtamaki PPL Ltd.
+ 6. Kaveri Seed Company Ltd.
