@@ -245,6 +245,9 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
         # print(stock_ticker + " has " +attribute + " of for "+ str(next_year) + " high: " + attribute_value[5])
     return(year_attribute)
 
+#print(pull_attribute_from_yahoo('ENGINERSIN.NS', 'dividendsPaid'))
+#print(pull_attribute_from_yahoo('ENGINERSIN.NS', 'netIncome'))
+
 #print(pull_attribute_from_yahoo('AAPL', 'totalStockholderEquity'))
 # print(pull_attribute_from_yahoo('AAPL', 'longName'))
 # print(pull_attribute_from_yahoo('AAPL', 'sector'))
@@ -793,7 +796,16 @@ def DDM_Valuation_of_stock(stock_ticker):
     return(Intrisic_value_of_share_DDM)
 
 
-print(DDM_Valuation_of_stock('AAPL'))
+#print(DDM_Valuation_of_stock('AAPL'))
+#print(DDM_Valuation_of_stock('SBIN.NS'))
+#print(DDM_Valuation_of_stock('HDFCBANK.NS'))
+#print(DDM_Valuation_of_stock('RELIANCE.NS'))
+#print(DDM_Valuation_of_stock('ITC.NS'))
+#print(DDM_Valuation_of_stock('COCHINSHIP.BO'))
+#print(DDM_Valuation_of_stock('CONTROLPR.NS'))
+#print(DDM_Valuation_of_stock('ENGINERSIN.NS'))
+#print(DDM_Valuation_of_stock('PAPERPROD.BO'))
+#print(DDM_Valuation_of_stock('KSCL.NS'))
 # testing
 # print("\n")
 # DCF_valuation_of_stock('AAPL')
@@ -828,3 +840,5 @@ print(DDM_Valuation_of_stock('AAPL'))
 #DCF_valuation_of_stock('ENGINERSIN.NS')
 #DCF_valuation_of_stock('PAPERPROD.BO')
 #DCF_valuation_of_stock('KSCL.NS')
+
+
