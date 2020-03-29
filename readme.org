@@ -570,13 +570,13 @@ https://www.msn.com/en-in/money/stockscreener
 8. Intrinsic Value of Stock = Intrinsic Value of the Business / shares Outstanding
 9. Add fixed rate of return for US & India.
 
-* TODO bug fixes of DCF valuation
+* DONE bug fixes of DCF valuation
 
-** TODO loss making company
-
-** TODO Banks or other Financial Institution
-
-** TODO company with missing info
+** DONE loss making company
+   Cant do it in DCF Valuation, will be covered in the DDM model & CCI model
+** DONE Banks or other Financial Institution
+   Cant do it in DCF Valuation, will be covered in the DDM model & CCI model
+** DONE company with missing info
 
 ** DONE comany with missing estimates
    this is done by projection of the rate same as the current revenue growth. So high, avg & low values will be same.
@@ -593,7 +593,7 @@ https://www.msn.com/en-in/money/stockscreener
 
 ** TODO upload the doc to google sheet
 
-* DDM Model
+* DONE DDM Model
 
 ** DONE to calculate
 
@@ -604,6 +604,13 @@ ROE = Net Income / Total Shareholder's Equity
 dividend payout ratio = Dividend Paid / Net Income  
 
 
+* DONE make a valuation function
+
+** DONE DCF Valuation
+
+** DONE DDM Valuation
+
+** DONE Write to xlsx
 
 * long term growth potential
 [[https://www.youtube.com/watch?v=fGVtypWv04Y][learn to invest: 8 steps]]
@@ -681,7 +688,7 @@ current market price is lower than fair value
 5. The stickiness of Product (Think Microsoft Office)
 
 
-* List of Shares
+* List of Shares from trendlyne
 
 ** broker recomendation
 
@@ -732,3 +739,24 @@ current market price is lower than fair value
  4. Engineers India Ltd.
  5. Huhtamaki PPL Ltd.
  6. Kaveri Seed Company Ltd.
+
+
+* List of Shares from ticker tape
+
+1. Indian Oil Corporation Ltd
+2. GAIL (India) Ltd
+3. Power Grid Corporation of India Ltd
+4. NTPC Ltd
+5. Moil Ltd
+6. Bharti Infratel Ltd
+7. Sun Tv Network Ltd
+8. NMDC Ltd
+9. Nesco Ltd
+10. Multi Commodity Exchange of India Ltd
+11. Coal India Ltd
+12. Bajaj Consumer Care Ltd
+13. SJVN Ltd
+
+
+
+

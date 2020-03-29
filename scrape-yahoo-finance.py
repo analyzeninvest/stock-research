@@ -8,6 +8,7 @@ AVG_RETURN_OF_MARKET_US     = 0.10
 AVG_RETURN_OF_MARKET_INDIA  = 0.12
 DISCOUNT_FACTOR_INDIA       = 0.15
 DISCOUNT_FACTOR_US          = 0.075
+YEARS_TILL_STABLE_GROWTH    = 10
 
 def pull_attribute_from_yahoo(stock_ticker, attribute):
     """
@@ -247,6 +248,8 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
 
 #print(pull_attribute_from_yahoo('ENGINERSIN.NS', 'dividendsPaid'))
 #print(pull_attribute_from_yahoo('ENGINERSIN.NS', 'netIncome'))
+#print(pull_attribute_from_yahoo('RECLTD.NS', 'dividendsPaid'))
+#print(pull_attribute_from_yahoo('RECLTD.NS', 'netIncome'))
 
 #print(pull_attribute_from_yahoo('AAPL', 'totalStockholderEquity'))
 # print(pull_attribute_from_yahoo('AAPL', 'longName'))
@@ -589,7 +592,7 @@ def present_value_by_discount(FCF_1, FCF_2, FCF_3, FCF_4, FCF_5, TV, r):
     return(Present_value)
 
 
-def DCF_valuation_of_stock(stock_ticker):
+def DCF_valuation_of_stock(stock_ticker, df_actual_financials_of_stock, df_financial_projection_of_stock):
     """
     This function calculcates the DCF valuation of a stock.
     DCF Valuation is calculated using the following method:
@@ -599,18 +602,9 @@ def DCF_valuation_of_stock(stock_ticker):
     Since the yahoo Finance estimates 3 range of values for a stock, this method will give out 3 DCF value of the stock.
     """
     import pandas as pd
-    from openpyxl import load_workbook
     from datetime import date
     today                             = date.today()
     current_year                      = today.year
-    excel_path                        = '/home/aritra/analyzeninvest-projects/stock-research/save_DCF_valuation.xlsx'
-    writer                            = pd.ExcelWriter(excel_path, engine = 'openpyxl')
-    writer.book                       = load_workbook(excel_path)
-    writer.sheets                     = dict((ws.title, ws) for ws in writer.book.worksheets)
-    df_actual_financials_of_stock     = Create_Financial_Statements_DataFrame_for_DCF(stock_ticker)
-    df_financial_projection_of_stock  = Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker, df_actual_financials_of_stock)
-    df_actual_financials_of_stock.to_excel(writer, sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=15)
-    df_financial_projection_of_stock.to_excel(writer, sheet_name=stock_ticker,float_format="%.2f",index=False, startrow=25)
     # print(df_financial_projection_of_stock)
     FCF_high_projection_year_1  = df_financial_projection_of_stock.loc[0,'Free Cash Flow Estimate'] 
     FCF_high_projection_year_2  = df_financial_projection_of_stock.loc[3,'Free Cash Flow Estimate'] 
@@ -704,31 +698,10 @@ def DCF_valuation_of_stock(stock_ticker):
     # print(DCF_valuation_wacc_high)
     # print(DCF_valuation_wacc_avg)
     # print(DCF_valuation_wacc_low)
-    beta_year_from_yahoo                = pull_attribute_from_yahoo(stock_ticker, 'beta')
-    beta                                = float(beta_year_from_yahoo.get(str(current_year)))
-    marketcap_year_from_yahoo           = pull_attribute_from_yahoo(stock_ticker, 'marketCap')
-    market_cap                          = int(marketcap_year_from_yahoo.get(str(current_year)))
-    symbol_year_from_yahoo              = pull_attribute_from_yahoo(stock_ticker, 'symbol')
-    symbol                              = str(symbol_year_from_yahoo.get(str(current_year)))
-    longName_year_from_yahoo            = pull_attribute_from_yahoo(stock_ticker, 'longName')
-    StockName                           = str(longName_year_from_yahoo.get(str(current_year)))
-    sector_year_from_yahoo              = pull_attribute_from_yahoo(stock_ticker, 'sector')
-    sector                              = str(sector_year_from_yahoo.get(str(current_year)))
-    industry_year_from_yahoo            = pull_attribute_from_yahoo(stock_ticker, 'industry')
-    industry                            = str(industry_year_from_yahoo.get(str(current_year)))
-    regularMarketPrice_year_from_yahoo  = pull_attribute_from_yahoo(stock_ticker, 'regularMarketPrice')
-    currentMarketPrice                  = float(regularMarketPrice_year_from_yahoo.get(str(current_year)))
     DCF_valuation = {}
     DCF_valuation.update({"Rate of Return (wacc)":r})
     DCF_valuation.update({"Rate of Return (fixed)":r_fixed})
     DCF_valuation.update({"Total Shares Outstanding":shares})
-    DCF_valuation.update({"Total Market Cap":market_cap})
-    DCF_valuation.update({"beta":beta})
-    DCF_valuation.update({"Current Share Price":currentMarketPrice})
-    DCF_valuation.update({"Ticker Symbol":symbol})
-    DCF_valuation.update({"Stock Name":StockName})
-    DCF_valuation.update({"Sector":sector})
-    DCF_valuation.update({"Industry":industry})
     DCF_valuation.update({str(current_year  )+" FCF":[FCF_high_projection_year_1,FCF_avg_projection_year_1,FCF_low_projection_year_1]})
     DCF_valuation.update({str(current_year+1)+" FCF":[FCF_high_projection_year_2,FCF_avg_projection_year_2,FCF_low_projection_year_2]})
     DCF_valuation.update({str(current_year+2)+" FCF":[FCF_high_projection_year_3,FCF_avg_projection_year_3,FCF_low_projection_year_3]})
@@ -743,9 +716,6 @@ def DCF_valuation_of_stock(stock_ticker):
     df_DCF_valuation = df_DCF_valuation[[
         'DCF Valuation (wacc)',
         'DCF Valuation (fixed)',
-        'Current Share Price',
-        'Stock Name',
-        'Ticker Symbol',
         'Present Value of Business (wacc)',
         'Present Value of Business (fixed)',
         'Rate of Return (wacc)',
@@ -756,14 +726,7 @@ def DCF_valuation_of_stock(stock_ticker):
         str(current_year+2)+" FCF",
         str(current_year+3)+" FCF",
         str(current_year+4)+" FCF",
-        "Terminal Value",
-        "Total Market Cap",
-        "beta",
-        'Sector',
-        'Industry']]
-    df_DCF_valuation.to_excel(writer, sheet_name=stock_ticker,float_format="%.2f",index=True)
-    writer.save()
-    writer.close()
+        "Terminal Value"]]
     print(df_DCF_valuation)
     return(df_DCF_valuation)
 
@@ -777,11 +740,12 @@ def DDM_Valuation_of_stock(stock_ticker):
     dividend payout ratio = Dividend Paid / Net Income  
     """
     from datetime import date
+    import pandas as pd
     today                               = date.today()
     current_year                        = today.year
     r                                   = rate_of_equity_of_stock_CAPM(stock_ticker)
     dividend_paid_year_from_yahoo       = pull_attribute_from_yahoo(stock_ticker, 'dividendsPaid')
-    dividend                            = float(dividend_paid_year_from_yahoo.get(str(current_year -1)))
+    dividend                            = abs(float(dividend_paid_year_from_yahoo.get(str(current_year -1))))
     shareholder_equity_year_from_yahoo  = pull_attribute_from_yahoo(stock_ticker, 'totalStockholderEquity')
     shareholder_equity                  = float(shareholder_equity_year_from_yahoo.get(str(current_year -1)))
     netIncome_paid_year_from_yahoo      = pull_attribute_from_yahoo(stock_ticker, 'netIncome')
@@ -792,53 +756,145 @@ def DDM_Valuation_of_stock(stock_ticker):
     roe                                 = net_income / shareholder_equity
     g                                   = (1 - dividend_payout_ratio) * roe
     dividend_per_share                  = dividend / shares
+    g_l = LONG_TERM_GROWTH_RATE
+    h = YEARS_TILL_STABLE_GROWTH
     Intrisic_value_of_share_DDM         = dividend_per_share * ( 1 + g) / (r - g)
-    return(Intrisic_value_of_share_DDM)
+    Intrisic_value_of_share_DDM_H_model = (dividend_per_share * ( 1 + g_l) / (r - g_l)) + (dividend_per_share * (h/2) * (1 + g)/(r - g_l))
+    ddm_valuation = {}
+    ddm_valuation.update({"Current Dividend"      :dividend})
+    ddm_valuation.update({"Rate of Return"        :r})
+    ddm_valuation.update({"Growth Rate"           :g})
+    ddm_valuation.update({"Shareholders' Equity"  :shareholder_equity})
+    ddm_valuation.update({"Net Income"            :net_income})
+    ddm_valuation.update({"Shares"                :shares})
+    ddm_valuation.update({"Dividend Payout Ratio" :dividend_payout_ratio})
+    ddm_valuation.update({"Return On Equity"      :roe})
+    ddm_valuation.update({"Dividend Per Share"    :dividend_per_share})
+    ddm_valuation.update({"DDM Valuation"         :Intrisic_value_of_share_DDM})
+    ddm_valuation.update({"DDM Valuation H model" :Intrisic_value_of_share_DDM_H_model})
+    df_ddm_valuation = pd.DataFrame(data=ddm_valuation, index=[current_year])
+    df_ddm_valuation = df_ddm_valuation[[
+        "DDM Valuation"         ,
+        "DDM Valuation H model" ,
+        "Rate of Return"        ,
+        "Growth Rate"           ,
+        "Dividend Payout Ratio" ,
+        "Dividend Per Share"    ,
+        "Current Dividend"      ,
+        "Shareholders' Equity"  ,
+        "Net Income"            ,
+        "Shares"                ,
+        "Return On Equity"      
+    ]]
+    print(df_ddm_valuation)
+    return(df_ddm_valuation)
 
+# print(DDM_Valuation_of_stock('AAPL'))
 
-#print(DDM_Valuation_of_stock('AAPL'))
-#print(DDM_Valuation_of_stock('SBIN.NS'))
-#print(DDM_Valuation_of_stock('HDFCBANK.NS'))
-#print(DDM_Valuation_of_stock('RELIANCE.NS'))
-#print(DDM_Valuation_of_stock('ITC.NS'))
-#print(DDM_Valuation_of_stock('COCHINSHIP.BO'))
-#print(DDM_Valuation_of_stock('CONTROLPR.NS'))
-#print(DDM_Valuation_of_stock('ENGINERSIN.NS'))
-#print(DDM_Valuation_of_stock('PAPERPROD.BO'))
-#print(DDM_Valuation_of_stock('KSCL.NS'))
-# testing
-# print("\n")
-# DCF_valuation_of_stock('AAPL')
-# DCF_valuation_of_stock('FB')
-# DCF_valuation_of_stock('NFLX')
-# DCF_valuation_of_stock('GOOG')
-# DCF_valuation_of_stock('AMZN')
-# DCF_valuation_of_stock('CDNS')
-# DCF_valuation_of_stock('TCS')
-# DCF_valuation_of_stock('INFY.NS')
-# DCF_valuation_of_stock('COALINDIA.NS')
-# DCF_valuation_of_stock('MRF.NS')
-# DCF_valuation_of_stock('TATAMOTORS.NS')
-# DCF_valuation_of_stock('LT.NS')
-# DCF_valuation_of_stock('HDFCBANK.NS')
-# DCF_valuation_of_stock('SBIN.NS')
-# DCF_valuation_of_stock('GRAPHITE.NS')
-# DCF_valuation_of_stock('HEG.NS')
-# DCF_valuation_of_stock('ITC.NS')
-# DCF_valuation_of_stock('RELIANCE.NS')
-# DCF_valuation_of_stock('RELAXO.NS')
-# DCF_valuation_of_stock('BATAINDIA.NS')
-# DCF_valuation_of_stock('BABA')
-# DCF_valuation_of_stock('SUNTV.NS')
-# DCF_valuation_of_stock('HCLTECH.NS')
-# DCF_valuation_of_stock('ASIANPAINT.NS')
-# DCF_valuation_of_stock('NMDC.NS')
-# DCF_valuation_of_stock('RECLTD.NS')
-#DCF_valuation_of_stock('ITC.NS')
-#DCF_valuation_of_stock('COCHINSHIP.BO')
-#DCF_valuation_of_stock('CONTROLPR.NS')
-#DCF_valuation_of_stock('ENGINERSIN.NS')
-#DCF_valuation_of_stock('PAPERPROD.BO')
-#DCF_valuation_of_stock('KSCL.NS')
+def Stock_details(stock_ticker):
+    """
+    This function give general info about the stock.
+    """
+    from datetime import date
+    import pandas as pd
+    today                               = date.today()
+    current_year                        = today.year
+    beta_year_from_yahoo                = pull_attribute_from_yahoo(stock_ticker, 'beta')
+    beta                                = float(beta_year_from_yahoo.get(str(current_year)))
+    marketcap_year_from_yahoo           = pull_attribute_from_yahoo(stock_ticker, 'marketCap')
+    market_cap                          = int(marketcap_year_from_yahoo.get(str(current_year)))
+    symbol_year_from_yahoo              = pull_attribute_from_yahoo(stock_ticker, 'symbol')
+    symbol                              = str(symbol_year_from_yahoo.get(str(current_year)))
+    longName_year_from_yahoo            = pull_attribute_from_yahoo(stock_ticker, 'longName')
+    StockName                           = str(longName_year_from_yahoo.get(str(current_year)))
+    sector_year_from_yahoo              = pull_attribute_from_yahoo(stock_ticker, 'sector')
+    sector                              = str(sector_year_from_yahoo.get(str(current_year)))
+    industry_year_from_yahoo            = pull_attribute_from_yahoo(stock_ticker, 'industry')
+    industry                            = str(industry_year_from_yahoo.get(str(current_year)))
+    regularMarketPrice_year_from_yahoo  = pull_attribute_from_yahoo(stock_ticker, 'regularMarketPrice')
+    currentMarketPrice                  = float(regularMarketPrice_year_from_yahoo.get(str(current_year)))
+    shares_outstanding_from_yahoo       = pull_attribute_from_yahoo(stock_ticker, 'sharesOutstanding')
+    shares                              = int(shares_outstanding_from_yahoo.get(str(current_year)))
+    stock_details = {}
+    stock_details.update({"Total Shares Outstanding":shares})
+    stock_details.update({"Total Market Cap":market_cap})
+    stock_details.update({"beta":beta})
+    stock_details.update({"Current Share Price":currentMarketPrice})
+    stock_details.update({"Ticker Symbol":symbol})
+    stock_details.update({"Stock Name":StockName})
+    stock_details.update({"Sector":sector})
+    stock_details.update({"Industry":industry})
+    df_stock_details = pd.DataFrame(data=stock_details,index=[current_year])
+    df_stock_details = df_stock_details[[
+        'Stock Name',
+        'Ticker Symbol',
+        'Current Share Price',
+        'Total Shares Outstanding',
+        'Total Market Cap',
+        'Sector',
+        'Industry',
+        'beta'
+    ]]
+    print(df_stock_details)
+    return(df_stock_details)
+
+#print(Stock_details('AAPL'))
+
+def Valuation_of_stock(stock_ticker):
+    """
+    This is the main function for the valuation. 
+    The valuations will include:
+    1. DCF Discounted Cash Flow
+    1.a. perpetual growth model
+    1.b. rate of return with wacc
+    1.c. fixed rate of return
+    2. DDM Dividend Discount model
+    2.b grodon growth model
+    After calculating the valuation, will write to an xlsx
+    """
+    import pandas as pd
+    from openpyxl import load_workbook
+    from datetime import date
+    today                             = date.today()
+    current_year                      = today.year
+    excel_path                        = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
+    writer                            = pd.ExcelWriter(excel_path, engine = 'openpyxl')
+    writer.book                       = load_workbook(excel_path)
+    writer.sheets                     = dict((ws.title, ws) for ws in writer.book.worksheets)
+    df_actual_financials_of_stock     = Create_Financial_Statements_DataFrame_for_DCF(stock_ticker)
+    df_financial_projection_of_stock  = Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker,
+                                                                                      df_actual_financials_of_stock)
+    df_DCF_valuation                  = DCF_valuation_of_stock(stock_ticker,
+                                                               df_actual_financials_of_stock,
+                                                               df_financial_projection_of_stock)
+    df_DDM_valuation                  = DDM_Valuation_of_stock(stock_ticker)
+    df_stock_details                  = Stock_details(stock_ticker)
+    df_stock_details.to_excel(writer                 , sheet_name=stock_ticker,float_format="%.2f",index=False)
+    df_DCF_valuation.to_excel(writer                 , sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=5)
+    df_DDM_valuation.to_excel(writer                 , sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=12)
+    df_actual_financials_of_stock.to_excel(writer    , sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=18)
+    df_financial_projection_of_stock.to_excel(writer , sheet_name=stock_ticker,float_format="%.2f",index=False, startrow=25)
+    writer.save()
+    writer.close()
+
+#Valuation_of_stock('IOC.NS')
+#Valuation_of_stock('GAIL.NS')
+#Valuation_of_stock('COALINDIA.NS')
+#Valuation_of_stock('BAJAJCON.NS')
+#Valuation_of_stock('SJVN.NS')
+#Valuation_of_stock('POWERGRID.NS')
+#Valuation_of_stock('NTPC.NS')
+#Valuation_of_stock('MOIL.NS')
+#Valuation_of_stock('INFRATEL.NS')
+#Valuation_of_stock('SUNTV.NS')
+#Valuation_of_stock('NMDC.NS')
+#Valuation_of_stock('NESCO.NS')
+#Valuation_of_stock('MCX.NS')
+# Valuation_of_stock('ZEEL.NS')
+# Valuation_of_stock('ABB.NS')
+# Valuation_of_stock('GOOG')
+# Valuation_of_stock('FB')
+# Valuation_of_stock('AMZN')
+# Valuation_of_stock('NFLX')
 
 
