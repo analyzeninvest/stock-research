@@ -35,7 +35,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
     | Estimated total Revenue | Analysis         |
     |-------------------------+------------------|
     """
-    import requests, re, csv
+    import requests, re
     from bs4 import BeautifulSoup
     from datetime import date
     statistics_url        = 'https://finance.yahoo.com/quote/'+stock_ticker+'/key-statistics?p='+stock_ticker+''
@@ -877,6 +877,13 @@ def Valuation_of_stock(stock_ticker):
     writer.save()
     writer.close()
 
+
+#Valuation_of_stock('ITC.NS')
+#Valuation_of_stock('COCHINSHIP.NS')
+#Valuation_of_stock('CONTROLPR.NS')
+#Valuation_of_stock('ENGINERSIN.NS')
+#Valuation_of_stock('PAPERPROD.NS')
+#Valuation_of_stock('KSCL.NS')
 #Valuation_of_stock('IOC.NS')
 #Valuation_of_stock('GAIL.NS')
 #Valuation_of_stock('COALINDIA.NS')
