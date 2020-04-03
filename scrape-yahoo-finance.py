@@ -9,6 +9,7 @@ AVG_RETURN_OF_MARKET_INDIA  = 0.12
 DISCOUNT_FACTOR_INDIA       = 0.15
 DISCOUNT_FACTOR_US          = 0.075
 YEARS_TILL_STABLE_GROWTH    = 10
+EXCEL_PATH                        = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
 
 def pull_attribute_from_yahoo(stock_ticker, attribute):
     """
@@ -840,7 +841,7 @@ def Stock_details(stock_ticker):
 
 #print(Stock_details('AAPL'))
 
-def Valuation_of_stock(stock_ticker):
+def Valuation_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     """
     This is the main function for the valuation. 
     The valuations will include:
@@ -857,7 +858,6 @@ def Valuation_of_stock(stock_ticker):
     from datetime import date
     today                             = date.today()
     current_year                      = today.year
-    excel_path                        = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
     writer                            = pd.ExcelWriter(excel_path, engine = 'openpyxl')
     writer.book                       = load_workbook(excel_path)
     writer.sheets                     = dict((ws.title, ws) for ws in writer.book.worksheets)
@@ -876,32 +876,5 @@ def Valuation_of_stock(stock_ticker):
     df_financial_projection_of_stock.to_excel(writer , sheet_name=stock_ticker,float_format="%.2f",index=False, startrow=25)
     writer.save()
     writer.close()
-
-
-#Valuation_of_stock('ITC.NS')
-#Valuation_of_stock('COCHINSHIP.NS')
-#Valuation_of_stock('CONTROLPR.NS')
-#Valuation_of_stock('ENGINERSIN.NS')
-#Valuation_of_stock('PAPERPROD.NS')
-#Valuation_of_stock('KSCL.NS')
-#Valuation_of_stock('IOC.NS')
-#Valuation_of_stock('GAIL.NS')
-#Valuation_of_stock('COALINDIA.NS')
-#Valuation_of_stock('BAJAJCON.NS')
-#Valuation_of_stock('SJVN.NS')
-#Valuation_of_stock('POWERGRID.NS')
-#Valuation_of_stock('NTPC.NS')
-#Valuation_of_stock('MOIL.NS')
-#Valuation_of_stock('INFRATEL.NS')
-#Valuation_of_stock('SUNTV.NS')
-#Valuation_of_stock('NMDC.NS')
-#Valuation_of_stock('NESCO.NS')
-#Valuation_of_stock('MCX.NS')
-# Valuation_of_stock('ZEEL.NS')
-# Valuation_of_stock('ABB.NS')
-# Valuation_of_stock('GOOG')
-# Valuation_of_stock('FB')
-# Valuation_of_stock('AMZN')
-# Valuation_of_stock('NFLX')
 
 
