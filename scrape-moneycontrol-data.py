@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-EXCEL_PATH                        = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
+EXCEL_PATH = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
 
 def pull_ratio_from_moneycontrol(stock_ticker, ratio):
     """

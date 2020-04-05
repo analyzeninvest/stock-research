@@ -4,16 +4,14 @@ currently this can be done using the tradingview screener or the yahoo finance s
 https://in.tradingview.com/screener/
 https://www.msn.com/en-in/money/stockscreener
 
-* TODO get the historical balance sheet from moneycontrol website
+* DONE get the historical balance sheet from moneycontrol website
   DEADLINE: <2019-09-22 Sun>
-
+  This is done from the yahoo finance for valuation purpose.
 * TODO make tables in the org file
   DEADLINE: <2019-09-29 Sun>
 
 * TODO plot and save values using org-plot/gnuplot
   DEADLINE: <2019-10-06 Sun>
-
-
 
 * DONE add following from the yahoo Finance
 
@@ -603,12 +601,41 @@ g = (1 - dividend payout ratio) * ROE
 ROE = Net Income / Total Shareholder's Equity
 dividend payout ratio = Dividend Paid / Net Income  
 
+* TODO Comparable Company Analysis
 
-* DONE make a valuation function
+** features
+   - [0/2] Pre downloaded equity csv containing all stock names with industry
+     - [ ] India
+     - [ ] US
+   - [ ] from stock ticker, get the industry
+   - [ ] from the industry get all stock ticker of same industry
+   - [0/6] from all stock ticker, get
+     - [ ] Market Cap
+     - [ ] EV
+     - [ ] Current Price
+     - [ ] P/E
+     - [ ] EV/EBITDA
+     - [ ] P/B
+   - [0/4] Compute following from the above data
+     - [ ] mean
+     - [ ] median
+     - [ ] high
+     - [ ] low
+   - [0/4] Compute following
+     - [ ] most optimistic share valuation
+     - [ ] most pesimistic share valuation
+     - [ ] mean share valuation
+     - [ ] median share valuation
+
+
+* TODO make a valuation function
 
 ** DONE DCF Valuation
 
 ** DONE DDM Valuation
+
+** TODO Comparable Company Analysis
+
 
 ** DONE Write to xlsx
 
