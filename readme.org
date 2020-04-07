@@ -604,18 +604,17 @@ dividend payout ratio = Dividend Paid / Net Income
 * TODO Comparable Company Analysis
 
 ** features
-   - [0/2] Pre downloaded equity csv containing all stock names with industry
-     - [ ] India
-     - [ ] US
-   - [ ] from stock ticker, get the industry
-   - [ ] from the industry get all stock ticker of same industry
-   - [0/6] from all stock ticker, get
-     - [ ] Market Cap
-     - [ ] EV
-     - [ ] Current Price
-     - [ ] P/E
-     - [ ] EV/EBITDA
-     - [ ] P/B
+   - [2/2] Pre downloaded equity csv containing all stock names with industry
+     - [X] India
+     - [X] US
+   - [X] from stock ticker, get the industry
+   - [X] from the industry get all stock ticker of same industry
+   - [5/5] from all stock ticker, get
+     - [X] Market Cap, marketCap
+     - [X] EV, enterpriseValue
+     - [X] Current Price, regularMarketPrice
+     - [X] P/E, trailingPE
+     - [X] EV/EBITDA, enterpriseToEbitda
    - [0/4] Compute following from the above data
      - [ ] mean
      - [ ] median

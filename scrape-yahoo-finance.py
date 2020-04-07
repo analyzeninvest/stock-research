@@ -9,7 +9,10 @@ AVG_RETURN_OF_MARKET_INDIA  = 0.12
 DISCOUNT_FACTOR_INDIA       = 0.15
 DISCOUNT_FACTOR_US          = 0.075
 YEARS_TILL_STABLE_GROWTH    = 10
-EXCEL_PATH                        = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
+EXCEL_PATH                  = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
+COMPANY_LISTED_INDIA        = '/home/aritra/analyzeninvest-projects/stock-research/Equity-India-filtered.csv'
+COMPANY_LISTED_US           = '/home/aritra/analyzeninvest-projects/stock-research/Equity-US-filtered.csv'
+
 
 def pull_attribute_from_yahoo(stock_ticker, attribute):
     """
@@ -50,7 +53,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
     year_attribute        = {}
     today                 = date.today()
     current_year          = today.year
-    if attribute in ['beta', 'marketCap', 'sharesOutstanding']:
+    if attribute in ['beta', 'marketCap', 'sharesOutstanding', 'enterpriseValue', 'trailingPE', 'enterpriseToEbitda']:
         page          = requests.get(statistics_url)
         soup          = BeautifulSoup(page.text, 'html.parser')
         match_string  = '"'+attribute+'":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"}'
@@ -258,6 +261,12 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
 # print(pull_attribute_from_yahoo('AAPL', 'industry'))
 # print(pull_attribute_from_yahoo('AAPL', 'regularMarketPrice'))
 # print(pull_attribute_from_yahoo('LT.NS', 'longTermDebt'))
+# print(pull_attribute_from_yahoo('AAPL', 'marketCap'))
+# print(pull_attribute_from_yahoo('AAPL', 'enterpriseValue'))
+# print(pull_attribute_from_yahoo('AAPL', 'regularMarketPrice'))
+# print(pull_attribute_from_yahoo('AAPL', 'trailingPE'))
+# print(pull_attribute_from_yahoo('AAPL', 'enterpriseToEbitda'))
+
 
 def print_yahoo_financials_for_DCF(stock_ticker):
 
@@ -878,3 +887,78 @@ def Valuation_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     writer.close()
 
 
+def get_all_peers_from_industry_of_stock(stock_ticker):
+    """
+    This function will fetch the industry from the list of all
+    publicly traded companies.  Now for the US & India there should
+    exist an xls comtaining all publicly traded company name with its
+    industry.
+    """
+    import pandas as pd
+    stock_end = stock_ticker.split(".")
+    if len(stock_end)==2:
+        if stock_end[1] == "NS" or stock_end[1] == "BO":
+            stock_name_industry_csv = COMPANY_LISTED_INDIA
+            stock_symbol = stock_end[0]
+    else:
+        stock_name_industry_csv = COMPANY_LISTED_US
+        stock_symbol = stock_ticker
+    df_company_list = pd.read_csv(stock_name_industry_csv)
+    df_stock_industry = df_company_list[df_company_list.Symbol.isin([stock_symbol])].reset_index()
+    industry = df_stock_industry.loc[0, "Industry"]
+    df_industry = df_company_list[df_company_list.Industry.isin([industry])].reset_index()
+    df_industry = df_industry[["Symbol", "Name", "Industry"]]
+    print(df_industry)
+    return(df_industry)
+
+def create_peer_dataframe_from_stock(stock_ticker):
+    """
+    This function will make the peer dataframe from stock.
+    The peer dataframe will include:
+    Symbol, Name, Industry, Current Price, Market Cap, EV, P/E, EV/EBITDA
+    """
+    import pandas as pd
+    from datetime import date
+    today = date.today()
+    current_year = today.year
+    df_peer_list_of_industry = get_all_peers_from_industry_of_stock(stock_ticker)
+    stock_peer = df_peer_list_of_industry.Symbol
+    price_peers = []
+    market_cap_peers = []
+    ev_peers = []
+    pe_ratio_peers = []
+    ev_ebitda_peers = []
+    for stock in stock_peer:
+        marketCap_from_yahoo = pull_attribute_from_yahoo(stock, 'marketCap')
+        market_cap = int(marketCap_from_yahoo.get(str(current_year)))
+        market_cap_peers.append(market_cap)
+        enterpriseValue_from_yahoo = pull_attribute_from_yahoo(stock, 'enterpriseValue')
+        enterpriseValue = int(enterpriseValue_from_yahoo.get(str(current_year)))
+        ev_peers.append(enterpriseValue)
+        regularMarketPrice_from_yahoo = pull_attribute_from_yahoo(stock, 'regularMarketPrice')
+        regularMarketPrice = float(regularMarketPrice_from_yahoo.get(str(current_year)))
+        price_peers.append(regularMarketPrice)
+        trailingPE_from_yahoo = pull_attribute_from_yahoo(stock, 'trailingPE')
+        trailingPE = float(trailingPE_from_yahoo.get(str(current_year)))
+        pe_ratio_peers.append(trailingPE)
+        enterpriseToEbitda_from_yahoo = pull_attribute_from_yahoo(stock, 'enterpriseToEbitda')
+        enterpriseToEbitda = float(enterpriseToEbitda_from_yahoo.get(str(current_year)))
+        ev_ebitda_peers.append(enterpriseToEbitda)
+    df_peer_list_of_industry["Current Share Price"] = price_peers
+    df_peer_list_of_industry["Market Cap"] = market_cap_peers
+    df_peer_list_of_industry["Enterprice Value"] = ev_peers
+    df_peer_list_of_industry["P/E"] = pe_ratio_peers
+    df_peer_list_of_industry["EV/EBITDA"] = ev_ebitda_peers
+    print(df_peer_list_of_industry)
+    return(df_peer_list_of_industry)
+    
+create_peer_dataframe_from_stock('AAPL')
+
+# print(pull_attribute_from_yahoo('AAPL', 'enterpriseValue'))
+# print(pull_attribute_from_yahoo('AAPL', 'enterpriseValue'))
+# print(pull_attribute_from_yahoo('AAPL', 'regularMarketPrice'))
+# print(pull_attribute_from_yahoo('AAPL', 'trailingPE'))
+# print(pull_attribute_from_yahoo('AAPL', 'enterpriseToEbitda'))
+    
+    
+    
