@@ -603,7 +603,7 @@ dividend payout ratio = Dividend Paid / Net Income
 
 * TODO Comparable Company Analysis
 
-** features
+** DONE features
    - [2/2] Pre downloaded equity csv containing all stock names with industry
      - [X] India
      - [X] US
@@ -615,17 +615,18 @@ dividend payout ratio = Dividend Paid / Net Income
      - [X] Current Price, regularMarketPrice
      - [X] P/E, trailingPE
      - [X] EV/EBITDA, enterpriseToEbitda
-   - [0/4] Compute following from the above data
-     - [ ] mean
-     - [ ] median
-     - [ ] high
-     - [ ] low
-   - [0/4] Compute following
-     - [ ] most optimistic share valuation
-     - [ ] most pesimistic share valuation
-     - [ ] mean share valuation
-     - [ ] median share valuation
+   - [4/4] Compute following from the above data
+     - [X] mean
+     - [X] median
+     - [X] high
+     - [X] low
+   - [4/4] Compute following
+     - [X] most optimistic share valuation
+     - [X] most pesimistic share valuation
+     - [X] mean share valuation
+     - [X] median share valuation
 
+** TODO write a df output
 
 * TODO make a valuation function
 
@@ -686,14 +687,14 @@ current market price is lower than fair value
 
 ** from buffet valuation
 
- 1. Market Cap > $500 Million
- 2. P/E Ratio < 15
- 3. Current Ratio > 1.5
- 4. Return on Equity (5Y median %) > 8
- 5. Interest Coverage > 6.0
- 6. 5Y Net Income Growth Rate (%) > 5
- 7. 10Y Revenue Growth Rate (%) > 5
- 8. 10Y EPS Growth Rate (%) > 5
+   1.> Market Cap  $500 Million
+   2. P/E Ratio < 15
+   3. Current Ratio > 1.5
+   4. Return on Equity (5Y median %) > 8
+   5. Interest Coverage > 6.0
+   6. 5Y Net Income Growth Rate (%) > 5
+   7. 10Y Revenue Growth Rate (%) > 5
+   8. 10Y EPS Growth Rate (%) > 5
 
 
 ** modified to indian market

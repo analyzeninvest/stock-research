@@ -126,7 +126,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
         for value in attribute_value:
             year_attribute.update({str(current_year-1):value})
             current_year -= 1
-    elif attribute in ['totalCurrentAssets', 'totalCurrentLiabilities', 'longTermDebt', 'totalStockholderEquity']:
+    elif attribute in ['totalCurrentAssets', 'totalCurrentLiabilities', 'longTermDebt', 'totalStockholderEquity', "cash"]:
         page = requests.get(balance_sheet_url)
         soup = BeautifulSoup(page.text, 'html.parser')
         match_string = '"balanceSheetHistory":."balanceSheetStatements":[[].*"'+attribute+ '":."raw":([-]?[0-9.]+).*"' +attribute+ '":."raw":([-]?[0-9.]+).*"' +attribute+ '":."raw":([-]?[0-9.]+).*,"' +attribute+'":."raw":([-]?[0-9.]+).*[]]'
@@ -850,41 +850,6 @@ def Stock_details(stock_ticker):
 
 #print(Stock_details('AAPL'))
 
-def Valuation_of_stock(stock_ticker, excel_path = EXCEL_PATH):
-    """
-    This is the main function for the valuation. 
-    The valuations will include:
-    1. DCF Discounted Cash Flow
-    1.a. perpetual growth model
-    1.b. rate of return with wacc
-    1.c. fixed rate of return
-    2. DDM Dividend Discount model
-    2.b grodon growth model
-    After calculating the valuation, will write to an xlsx
-    """
-    import pandas as pd
-    from openpyxl import load_workbook
-    from datetime import date
-    today                             = date.today()
-    current_year                      = today.year
-    writer                            = pd.ExcelWriter(excel_path, engine = 'openpyxl')
-    writer.book                       = load_workbook(excel_path)
-    writer.sheets                     = dict((ws.title, ws) for ws in writer.book.worksheets)
-    df_actual_financials_of_stock     = Create_Financial_Statements_DataFrame_for_DCF(stock_ticker)
-    df_financial_projection_of_stock  = Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker,
-                                                                                      df_actual_financials_of_stock)
-    df_DCF_valuation                  = DCF_valuation_of_stock(stock_ticker,
-                                                               df_actual_financials_of_stock,
-                                                               df_financial_projection_of_stock)
-    df_DDM_valuation                  = DDM_Valuation_of_stock(stock_ticker)
-    df_stock_details                  = Stock_details(stock_ticker)
-    df_stock_details.to_excel(writer                 , sheet_name=stock_ticker,float_format="%.2f",index=False)
-    df_DCF_valuation.to_excel(writer                 , sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=5)
-    df_DDM_valuation.to_excel(writer                 , sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=12)
-    df_actual_financials_of_stock.to_excel(writer    , sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=18)
-    df_financial_projection_of_stock.to_excel(writer , sheet_name=stock_ticker,float_format="%.2f",index=False, startrow=25)
-    writer.save()
-    writer.close()
 
 
 def get_all_peers_from_industry_of_stock(stock_ticker):
@@ -921,6 +886,12 @@ def create_peer_dataframe_from_stock(stock_ticker):
     from datetime import date
     today = date.today()
     current_year = today.year
+    stock_end = stock_ticker.split(".")
+    if len(stock_end)==2:
+        if stock_end[1] == "NS" or stock_end[1] == "BO":
+            stock_end = "." + stock_end[1]
+    else:
+        stock_end = ""
     df_peer_list_of_industry = get_all_peers_from_industry_of_stock(stock_ticker)
     stock_peer = df_peer_list_of_industry.Symbol
     price_peers = []
@@ -928,7 +899,8 @@ def create_peer_dataframe_from_stock(stock_ticker):
     ev_peers = []
     pe_ratio_peers = []
     ev_ebitda_peers = []
-    for stock in stock_peer:
+    for stock_name in stock_peer:
+        stock = stock_name + stock_end
         marketCap_from_yahoo = pull_attribute_from_yahoo(stock, 'marketCap')
         market_cap = int(marketCap_from_yahoo.get(str(current_year)))
         market_cap_peers.append(market_cap)
@@ -949,16 +921,122 @@ def create_peer_dataframe_from_stock(stock_ticker):
     df_peer_list_of_industry["Enterprice Value"] = ev_peers
     df_peer_list_of_industry["P/E"] = pe_ratio_peers
     df_peer_list_of_industry["EV/EBITDA"] = ev_ebitda_peers
+    df_peer_list_of_industry = df_peer_list_of_industry[df_peer_list_of_industry["Market Cap"] > 0].reset_index()
     print(df_peer_list_of_industry)
     return(df_peer_list_of_industry)
     
-create_peer_dataframe_from_stock('AAPL')
+def CCA_Valuation_of_stock(stock_ticker):
+    """
+    This function will make the comparable company analysis.
+    This will be based on :
+    1. P/E ratio
+    2. EV/EBITDA
+    """
+    import pandas  as pd
+    from datetime import date
+    today = date.today()
+    current_year = today.year
+    df_stock_with_peer = create_peer_dataframe_from_stock(stock_ticker)
+    mean_pe = df_stock_with_peer["P/E"].mean()
+    min_pe = df_stock_with_peer["P/E"].min()
+    max_pe = df_stock_with_peer["P/E"].max()
+    median_pe = df_stock_with_peer["P/E"].median()
+    pe_range = [min_pe, mean_pe, median_pe, max_pe]
+    print(pe_range)
+    mean_ev_ebitda = df_stock_with_peer["EV/EBITDA"].mean()
+    min_ev_ebitda = df_stock_with_peer["EV/EBITDA"].min()
+    max_ev_ebitda = df_stock_with_peer["EV/EBITDA"].max()
+    median_ev_ebitda = df_stock_with_peer["EV/EBITDA"].median()
+    ev_ebitda_range = [min_ev_ebitda, mean_ev_ebitda, median_ev_ebitda, max_ev_ebitda]
+    print(ev_ebitda_range)
+    cash_from_yahoo = pull_attribute_from_yahoo(stock_ticker, "cash")
+    cash = float(cash_from_yahoo.get(str(current_year -1)))
+    debt_from_yahoo = pull_attribute_from_yahoo(stock_ticker, "longTermDebt")
+    debt = float(debt_from_yahoo.get(str(current_year -1)))
+    depreciation_year_from_yahoo             = pull_attribute_from_yahoo(stock_ticker, 'depreciation')
+    D_n_A                             = abs(int(depreciation_year_from_yahoo.get(str(current_year -1))))
+    netIncome_year_from_yahoo                = pull_attribute_from_yahoo(stock_ticker, 'netIncome')
+    netIncome                         = abs(int(netIncome_year_from_yahoo.get(str(current_year -1))))
+    incomeTaxExpense_year_from_yahoo         = pull_attribute_from_yahoo(stock_ticker, 'incomeTaxExpense')
+    incomeTaxExpense                  = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -1))))
+    interestExpense_year_from_yahoo          = pull_attribute_from_yahoo(stock_ticker, 'interestExpense')
+    interestExpense                   = abs(int(interestExpense_year_from_yahoo.get(str(current_year -1))))
+    EBITDA = netIncome + incomeTaxExpense + interestExpense + D_n_A
+    EV_min = ev_ebitda_range[0] * EBITDA 
+    EV_mean = ev_ebitda_range[1] * EBITDA
+    EV_median = ev_ebitda_range[2] * EBITDA
+    EV_max = ev_ebitda_range[3] * EBITDA
+    Equity_min = EV_min - debt + cash
+    Equity_mean = EV_mean - debt + cash
+    Equity_median = EV_median - debt + cash
+    Equity_max = EV_max - debt + cash
+    shares_outstanding_from_yahoo       = pull_attribute_from_yahoo(stock_ticker, 'sharesOutstanding')
+    shares                              = int(shares_outstanding_from_yahoo.get(str(current_year)))
+    Share_price_by_EV_EBITDA_min = Equity_min / shares
+    Share_price_by_EV_EBITDA_mean = Equity_mean / shares
+    Share_price_by_EV_EBITDA_median = Equity_median / shares
+    Share_price_by_EV_EBITDA_max = Equity_max / shares
+    Share_price_by_EV_EBITDA_range = [Share_price_by_EV_EBITDA_min, Share_price_by_EV_EBITDA_mean, Share_price_by_EV_EBITDA_median, Share_price_by_EV_EBITDA_max]
+    print(Share_price_by_EV_EBITDA_range)
+    stock_end = stock_ticker.split(".")
+    if len(stock_end)==2:
+        if stock_end[1] == "NS" or stock_end[1] == "BO":
+            stock_symbol = stock_end[0]
+    else:
+        stock_symbol = stock_ticker
+    df_stock_pe = df_stock_with_peer[df_stock_with_peer.Symbol.isin([stock_symbol])].reset_index()
+    pe_stock = df_stock_pe.loc[0, "P/E"]
+    df_stock_price = df_stock_with_peer[df_stock_with_peer.Symbol.isin([stock_symbol])].reset_index()
+    price_stock = df_stock_price.loc[0, "Current Share Price"]
+    eps_stock = price_stock / pe_stock
+    Share_price_by_PE_min = eps_stock * min_pe
+    Share_price_by_PE_mean = eps_stock * mean_pe
+    Share_price_by_PE_median = eps_stock * median_pe
+    Share_price_by_PE_max = eps_stock * max_pe
+    Share_price_by_PE_range = [Share_price_by_PE_min, Share_price_by_PE_mean, Share_price_by_PE_median, Share_price_by_PE_max]
+    print(Share_price_by_PE_range)
+    
+    
+    
+    
+    
+    
+CCA_Valuation_of_stock('ITC.NS')
 
-# print(pull_attribute_from_yahoo('AAPL', 'enterpriseValue'))
-# print(pull_attribute_from_yahoo('AAPL', 'enterpriseValue'))
-# print(pull_attribute_from_yahoo('AAPL', 'regularMarketPrice'))
-# print(pull_attribute_from_yahoo('AAPL', 'trailingPE'))
-# print(pull_attribute_from_yahoo('AAPL', 'enterpriseToEbitda'))
     
-    
+def Valuation_of_stock(stock_ticker, excel_path = EXCEL_PATH):
+    """
+    This is the main function for the valuation. 
+    The valuations will include:
+    1. DCF Discounted Cash Flow
+    1.a. perpetual growth model
+    1.b. rate of return with wacc
+    1.c. fixed rate of return
+    2. DDM Dividend Discount model
+    2.b grodon growth model
+    After calculating the valuation, will write to an xlsx
+    """
+    import pandas as pd
+    from openpyxl import load_workbook
+    from datetime import date
+    today                             = date.today()
+    current_year                      = today.year
+    writer                            = pd.ExcelWriter(excel_path, engine = 'openpyxl')
+    writer.book                       = load_workbook(excel_path)
+    writer.sheets                     = dict((ws.title, ws) for ws in writer.book.worksheets)
+    df_actual_financials_of_stock     = Create_Financial_Statements_DataFrame_for_DCF(stock_ticker)
+    df_financial_projection_of_stock  = Create_Financial_Estimation_DataFrame_for_DCF(stock_ticker,
+                                                                                      df_actual_financials_of_stock)
+    df_DCF_valuation                  = DCF_valuation_of_stock(stock_ticker,
+                                                               df_actual_financials_of_stock,
+                                                               df_financial_projection_of_stock)
+    df_DDM_valuation                  = DDM_Valuation_of_stock(stock_ticker)
+    df_stock_details                  = Stock_details(stock_ticker)
+    df_stock_details.to_excel(writer                 , sheet_name=stock_ticker,float_format="%.2f",index=False)
+    df_DCF_valuation.to_excel(writer                 , sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=5)
+    df_DDM_valuation.to_excel(writer                 , sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=12)
+    df_actual_financials_of_stock.to_excel(writer    , sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=18)
+    df_financial_projection_of_stock.to_excel(writer , sheet_name=stock_ticker,float_format="%.2f",index=False, startrow=25)
+    writer.save()
+    writer.close()
     
