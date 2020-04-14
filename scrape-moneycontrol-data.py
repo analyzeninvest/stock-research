@@ -159,7 +159,7 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     df_historical_stock_performance.index = years
     print(df_historical_stock_performance)
     sheet_name  = stock_ticker + ".NS"
-    df_historical_stock_performance.to_excel(writer , sheet_name=sheet_name,float_format="%.2f",index=True, startrow=45)
+    df_historical_stock_performance.to_excel(writer , sheet_name=sheet_name,float_format="%.2f",index=True, startrow=200)
     writer.save()
     writer.close()
     

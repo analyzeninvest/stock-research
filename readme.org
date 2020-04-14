@@ -601,7 +601,7 @@ g = (1 - dividend payout ratio) * ROE
 ROE = Net Income / Total Shareholder's Equity
 dividend payout ratio = Dividend Paid / Net Income  
 
-* TODO Comparable Company Analysis
+* DONE Comparable Company Analysis
 
 ** DONE features
    - [2/2] Pre downloaded equity csv containing all stock names with industry
@@ -626,15 +626,15 @@ dividend payout ratio = Dividend Paid / Net Income
      - [X] mean share valuation
      - [X] median share valuation
 
-** TODO write a df output
+** DONE write a df output
 
-* TODO make a valuation function
+* DONE make a valuation function
 
 ** DONE DCF Valuation
 
 ** DONE DDM Valuation
 
-** TODO Comparable Company Analysis
+** DONE Comparable Company Analysis
 
 
 ** DONE Write to xlsx

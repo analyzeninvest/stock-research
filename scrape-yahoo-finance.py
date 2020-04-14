@@ -899,6 +899,7 @@ def create_peer_dataframe_from_stock(stock_ticker):
     ev_peers = []
     pe_ratio_peers = []
     ev_ebitda_peers = []
+    revenue_peers = []
     for stock_name in stock_peer:
         stock = stock_name + stock_end
         marketCap_from_yahoo = pull_attribute_from_yahoo(stock, 'marketCap')
@@ -916,16 +917,23 @@ def create_peer_dataframe_from_stock(stock_ticker):
         enterpriseToEbitda_from_yahoo = pull_attribute_from_yahoo(stock, 'enterpriseToEbitda')
         enterpriseToEbitda = float(enterpriseToEbitda_from_yahoo.get(str(current_year)))
         ev_ebitda_peers.append(enterpriseToEbitda)
+        total_revenue_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalRevenue')
+        revenue = int(total_revenue_from_yahoo.get(str(current_year -1)))
+        revenue_peers.append(revenue)
     df_peer_list_of_industry["Current Share Price"] = price_peers
     df_peer_list_of_industry["Market Cap"] = market_cap_peers
     df_peer_list_of_industry["Enterprice Value"] = ev_peers
     df_peer_list_of_industry["P/E"] = pe_ratio_peers
     df_peer_list_of_industry["EV/EBITDA"] = ev_ebitda_peers
-    df_peer_list_of_industry = df_peer_list_of_industry[df_peer_list_of_industry["Market Cap"] > 0].reset_index()
+    df_peer_list_of_industry["Revenue"] = revenue_peers
+    df_peer_list_of_industry = df_peer_list_of_industry[df_peer_list_of_industry["Market Cap"] > 0].reset_index(drop=True)
+    df_peer_list_of_industry["EV/Revenue"] = df_peer_list_of_industry["Enterprice Value"]/df_peer_list_of_industry["Revenue"]
+    df_peer_list_of_industry["Price/Revenue"] = df_peer_list_of_industry["Current Share Price"]/df_peer_list_of_industry["Revenue"]
+    df_peer_list_of_industry = df_peer_list_of_industry.sort_values(by="Market Cap")
     print(df_peer_list_of_industry)
     return(df_peer_list_of_industry)
     
-def CCA_Valuation_of_stock(stock_ticker):
+def CCA_Valuation_of_stock(stock_ticker, df_stock_with_peer):
     """
     This function will make the comparable company analysis.
     This will be based on :
@@ -934,74 +942,115 @@ def CCA_Valuation_of_stock(stock_ticker):
     """
     import pandas  as pd
     from datetime import date
-    today = date.today()
-    current_year = today.year
-    df_stock_with_peer = create_peer_dataframe_from_stock(stock_ticker)
-    mean_pe = df_stock_with_peer["P/E"].mean()
-    min_pe = df_stock_with_peer["P/E"].min()
-    max_pe = df_stock_with_peer["P/E"].max()
-    median_pe = df_stock_with_peer["P/E"].median()
-    pe_range = [min_pe, mean_pe, median_pe, max_pe]
-    print(pe_range)
-    mean_ev_ebitda = df_stock_with_peer["EV/EBITDA"].mean()
-    min_ev_ebitda = df_stock_with_peer["EV/EBITDA"].min()
-    max_ev_ebitda = df_stock_with_peer["EV/EBITDA"].max()
-    median_ev_ebitda = df_stock_with_peer["EV/EBITDA"].median()
-    ev_ebitda_range = [min_ev_ebitda, mean_ev_ebitda, median_ev_ebitda, max_ev_ebitda]
-    print(ev_ebitda_range)
-    cash_from_yahoo = pull_attribute_from_yahoo(stock_ticker, "cash")
-    cash = float(cash_from_yahoo.get(str(current_year -1)))
-    debt_from_yahoo = pull_attribute_from_yahoo(stock_ticker, "longTermDebt")
-    debt = float(debt_from_yahoo.get(str(current_year -1)))
-    depreciation_year_from_yahoo             = pull_attribute_from_yahoo(stock_ticker, 'depreciation')
+    today                             = date.today()
+    current_year                      = today.year
+    mean_pe                           = df_stock_with_peer["P/E"].mean()
+    min_pe                            = df_stock_with_peer["P/E"].min()
+    max_pe                            = df_stock_with_peer["P/E"].max()
+    median_pe                         = df_stock_with_peer["P/E"].median()
+    pe_range                          = [min_pe, mean_pe, median_pe, max_pe]
+    mean_ev_revenue                   = df_stock_with_peer["EV/Revenue"].mean()
+    min_ev_revenue                    = df_stock_with_peer["EV/Revenue"].min()
+    max_ev_revenue                    = df_stock_with_peer["EV/Revenue"].max()
+    median_ev_revenue                 = df_stock_with_peer["EV/Revenue"].median()
+    ev_revenue_range                  = [min_ev_revenue, mean_ev_revenue, median_ev_revenue, max_ev_revenue]
+    mean_ps                           = df_stock_with_peer["Price/Revenue"].mean()
+    min_ps                            = df_stock_with_peer["Price/Revenue"].min()
+    max_ps                            = df_stock_with_peer["Price/Revenue"].max()
+    median_ps                         = df_stock_with_peer["Price/Revenue"].median()
+    ps_range                          = [min_ps, mean_ps, median_ps, max_ps]
+    mean_ev_ebitda                    = df_stock_with_peer["EV/EBITDA"].mean()
+    min_ev_ebitda                     = df_stock_with_peer["EV/EBITDA"].min()
+    max_ev_ebitda                     = df_stock_with_peer["EV/EBITDA"].max()
+    median_ev_ebitda                  = df_stock_with_peer["EV/EBITDA"].median()
+    ev_ebitda_range                   = [min_ev_ebitda, mean_ev_ebitda, median_ev_ebitda, max_ev_ebitda]
+    cash_from_yahoo                   = pull_attribute_from_yahoo(stock_ticker, "cash")
+    cash                              = float(cash_from_yahoo.get(str(current_year -1)))
+    debt_from_yahoo                   = pull_attribute_from_yahoo(stock_ticker, "longTermDebt")
+    debt                              = float(debt_from_yahoo.get(str(current_year -1)))
+    depreciation_year_from_yahoo      = pull_attribute_from_yahoo(stock_ticker, 'depreciation')
     D_n_A                             = abs(int(depreciation_year_from_yahoo.get(str(current_year -1))))
-    netIncome_year_from_yahoo                = pull_attribute_from_yahoo(stock_ticker, 'netIncome')
+    netIncome_year_from_yahoo         = pull_attribute_from_yahoo(stock_ticker, 'netIncome')
     netIncome                         = abs(int(netIncome_year_from_yahoo.get(str(current_year -1))))
-    incomeTaxExpense_year_from_yahoo         = pull_attribute_from_yahoo(stock_ticker, 'incomeTaxExpense')
+    incomeTaxExpense_year_from_yahoo  = pull_attribute_from_yahoo(stock_ticker, 'incomeTaxExpense')
     incomeTaxExpense                  = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -1))))
-    interestExpense_year_from_yahoo          = pull_attribute_from_yahoo(stock_ticker, 'interestExpense')
+    interestExpense_year_from_yahoo   = pull_attribute_from_yahoo(stock_ticker, 'interestExpense')
     interestExpense                   = abs(int(interestExpense_year_from_yahoo.get(str(current_year -1))))
-    EBITDA = netIncome + incomeTaxExpense + interestExpense + D_n_A
-    EV_min = ev_ebitda_range[0] * EBITDA 
-    EV_mean = ev_ebitda_range[1] * EBITDA
-    EV_median = ev_ebitda_range[2] * EBITDA
-    EV_max = ev_ebitda_range[3] * EBITDA
-    Equity_min = EV_min - debt + cash
-    Equity_mean = EV_mean - debt + cash
-    Equity_median = EV_median - debt + cash
-    Equity_max = EV_max - debt + cash
-    shares_outstanding_from_yahoo       = pull_attribute_from_yahoo(stock_ticker, 'sharesOutstanding')
-    shares                              = int(shares_outstanding_from_yahoo.get(str(current_year)))
-    Share_price_by_EV_EBITDA_min = Equity_min / shares
-    Share_price_by_EV_EBITDA_mean = Equity_mean / shares
-    Share_price_by_EV_EBITDA_median = Equity_median / shares
-    Share_price_by_EV_EBITDA_max = Equity_max / shares
-    Share_price_by_EV_EBITDA_range = [Share_price_by_EV_EBITDA_min, Share_price_by_EV_EBITDA_mean, Share_price_by_EV_EBITDA_median, Share_price_by_EV_EBITDA_max]
-    print(Share_price_by_EV_EBITDA_range)
+    EBITDA                            = netIncome + incomeTaxExpense + interestExpense + D_n_A
+    EV_min                            = ev_ebitda_range[0] * EBITDA 
+    EV_mean                           = ev_ebitda_range[1] * EBITDA
+    EV_median                         = ev_ebitda_range[2] * EBITDA
+    EV_max                            = ev_ebitda_range[3] * EBITDA
+    Equity_min                        = EV_min - debt + cash
+    Equity_mean                       = EV_mean - debt + cash
+    Equity_median                     = EV_median - debt + cash
+    Equity_max                        = EV_max - debt + cash
+    shares_outstanding_from_yahoo     = pull_attribute_from_yahoo(stock_ticker, 'sharesOutstanding')
+    shares                            = int(shares_outstanding_from_yahoo.get(str(current_year)))
+    Share_price_by_EV_EBITDA_min      = Equity_min / shares
+    Share_price_by_EV_EBITDA_mean     = Equity_mean / shares
+    Share_price_by_EV_EBITDA_median   = Equity_median / shares
+    Share_price_by_EV_EBITDA_max      = Equity_max / shares
+    Share_price_by_EV_EBITDA_range    = [Share_price_by_EV_EBITDA_min,
+                                      Share_price_by_EV_EBITDA_mean,
+                                      Share_price_by_EV_EBITDA_median,
+                                      Share_price_by_EV_EBITDA_max]
     stock_end = stock_ticker.split(".")
     if len(stock_end)==2:
         if stock_end[1] == "NS" or stock_end[1] == "BO":
             stock_symbol = stock_end[0]
     else:
         stock_symbol = stock_ticker
-    df_stock_pe = df_stock_with_peer[df_stock_with_peer.Symbol.isin([stock_symbol])].reset_index()
-    pe_stock = df_stock_pe.loc[0, "P/E"]
-    df_stock_price = df_stock_with_peer[df_stock_with_peer.Symbol.isin([stock_symbol])].reset_index()
-    price_stock = df_stock_price.loc[0, "Current Share Price"]
-    eps_stock = price_stock / pe_stock
-    Share_price_by_PE_min = eps_stock * min_pe
-    Share_price_by_PE_mean = eps_stock * mean_pe
-    Share_price_by_PE_median = eps_stock * median_pe
-    Share_price_by_PE_max = eps_stock * max_pe
-    Share_price_by_PE_range = [Share_price_by_PE_min, Share_price_by_PE_mean, Share_price_by_PE_median, Share_price_by_PE_max]
-    print(Share_price_by_PE_range)
-    
-    
-    
-    
-    
-    
-CCA_Valuation_of_stock('ITC.NS')
+    df_stock_pe                      = df_stock_with_peer[df_stock_with_peer.Symbol.isin([stock_symbol])].reset_index()
+    pe_stock                         = df_stock_pe.loc[0, "P/E"]
+    df_stock_price                   = df_stock_with_peer[df_stock_with_peer.Symbol.isin([stock_symbol])].reset_index()
+    price_stock                      = df_stock_price.loc[0, "Current Share Price"]
+    eps_stock                        = price_stock / pe_stock
+    Share_price_by_PE_min            = eps_stock * min_pe
+    Share_price_by_PE_mean           = eps_stock * mean_pe
+    Share_price_by_PE_median         = eps_stock * median_pe
+    Share_price_by_PE_max            = eps_stock * max_pe
+    Share_price_by_PE_range          = [Share_price_by_PE_min,
+                                        Share_price_by_PE_mean,
+                                        Share_price_by_PE_median,
+                                        Share_price_by_PE_max]
+    df_stock_pe                      = df_stock_with_peer[df_stock_with_peer.Symbol.isin([stock_symbol])].reset_index()
+    revenue_stock                    = df_stock_pe.loc[0, "Revenue"]
+    Share_price_by_PS_min            = revenue_stock * min_ps
+    Share_price_by_PS_mean           = revenue_stock * mean_ps
+    Share_price_by_PS_median         = revenue_stock * median_ps
+    Share_price_by_PS_max            = revenue_stock * max_ps
+    Share_price_by_PS_range          = [Share_price_by_PS_min,
+                                        Share_price_by_PS_mean,
+                                        Share_price_by_PS_median,
+                                        Share_price_by_PS_max]
+    EV_revenue_min                   = ev_revenue_range[0] * revenue_stock 
+    EV_revenue_mean                  = ev_revenue_range[1] * revenue_stock
+    EV_revenue_median                = ev_revenue_range[2] * revenue_stock
+    EV_revenue_max                   = ev_revenue_range[3] * revenue_stock
+    Equity_revenue_min               = EV_revenue_min - debt + cash
+    Equity_revenue_mean              = EV_revenue_mean - debt + cash
+    Equity_revenue_median            = EV_revenue_median - debt + cash
+    Equity_revenue_max               = EV_revenue_max - debt + cash
+    Share_price_by_EV_Reveue_min     = Equity_revenue_min / shares
+    Share_price_by_EV_Reveue_mean    = Equity_revenue_min / shares
+    Share_price_by_EV_Reveue_median  = Equity_revenue_min / shares
+    Share_price_by_EV_Reveue_max     = Equity_revenue_min / shares
+    Share_price_by_EV_Reveue_range   = [Share_price_by_EV_Reveue_min,
+                                        Share_price_by_EV_Reveue_mean,
+                                        Share_price_by_EV_Reveue_median,
+                                        Share_price_by_EV_Reveue_max]
+    df_stock_CCA = pd.DataFrame(data = {"Share Price Based on P/E":Share_price_by_PE_range,
+                                        "Share Price Based on EV/EBITDA": Share_price_by_EV_EBITDA_range,
+                                        "Share Price Based on P/Revenue": Share_price_by_PS_range,
+                                        "Share Price Based on EV/Revenue": Share_price_by_EV_Reveue_range,
+                                        "P/E range":pe_range,
+                                        "EV/EBITDA range":ev_ebitda_range,
+                                        "P/S": ps_range,
+                                        "EV/Revenue": ev_revenue_range},
+                                index=["min", "mean", "median", "max"])
+    print(df_stock_CCA)
+    return(df_stock_CCA)
 
     
 def Valuation_of_stock(stock_ticker, excel_path = EXCEL_PATH):
@@ -1013,7 +1062,11 @@ def Valuation_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     1.b. rate of return with wacc
     1.c. fixed rate of return
     2. DDM Dividend Discount model
-    2.b grodon growth model
+    2.a grodon growth model
+    2.b H model
+    3. CCA Comparable Company Analysis
+    3.a CCA based on P/E
+    3.b CCA basec on EV/EBITDA
     After calculating the valuation, will write to an xlsx
     """
     import pandas as pd
@@ -1032,11 +1085,17 @@ def Valuation_of_stock(stock_ticker, excel_path = EXCEL_PATH):
                                                                df_financial_projection_of_stock)
     df_DDM_valuation                  = DDM_Valuation_of_stock(stock_ticker)
     df_stock_details                  = Stock_details(stock_ticker)
-    df_stock_details.to_excel(writer                 , sheet_name=stock_ticker,float_format="%.2f",index=False)
-    df_DCF_valuation.to_excel(writer                 , sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=5)
-    df_DDM_valuation.to_excel(writer                 , sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=12)
-    df_actual_financials_of_stock.to_excel(writer    , sheet_name=stock_ticker,float_format="%.2f",index=True, startrow=18)
-    df_financial_projection_of_stock.to_excel(writer , sheet_name=stock_ticker,float_format="%.2f",index=False, startrow=25)
+    df_stock_with_peer                = create_peer_dataframe_from_stock(stock_ticker)
+    df_CCA_valuation                  = CCA_Valuation_of_stock(stock_ticker, df_stock_with_peer)
+    df_stock_details.to_excel(writer                  , sheet_name = stock_ticker,float_format="%.2f",index=False, startrow=0)
+    df_DCF_valuation.to_excel(writer                  , sheet_name = stock_ticker,float_format="%.2f",index=True,  startrow=5)
+    df_DDM_valuation.to_excel(writer                  , sheet_name = stock_ticker,float_format="%.2f",index=True,  startrow=12)
+    df_CCA_valuation.to_excel(writer                  , sheet_name = stock_ticker,float_format="%.2f",index=True,  startrow=16)
+    df_actual_financials_of_stock.to_excel(writer     , sheet_name = stock_ticker,float_format="%.2f",index=True,  startrow=22)
+    df_financial_projection_of_stock.to_excel(writer  , sheet_name = stock_ticker,float_format="%.2f",index=False, startrow=30)
+    df_stock_with_peer.to_excel(writer                , sheet_name = stock_ticker,float_format="%.2f",index=False, startrow=50)
     writer.save()
     writer.close()
     
+Valuation_of_stock('HEG.NS')
+
