@@ -163,4 +163,4 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     writer.save()
     writer.close()
     
-Historical_Performance_of_stock('ITC')
+#Historical_Performance_of_stock('ITC')

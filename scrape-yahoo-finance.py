@@ -1097,5 +1097,13 @@ def Valuation_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     writer.save()
     writer.close()
     
-Valuation_of_stock('HEG.NS')
+#Valuation_of_stock('HEG.NS')
+#Valuation_of_stock('ITC.NS')
+#Valuation_of_stock('COALINDIA.NS')
+#Valuation_of_stock('NMDC.NS')
+#Valuation_of_stock('GRAPHITE.NS')
+#Valuation_of_stock('TCS.NS')
+#Valuation_of_stock('INFY.NS')
+#Valuation_of_stock('VEDL.NS')
+
 
