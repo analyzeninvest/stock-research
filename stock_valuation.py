@@ -3,9 +3,9 @@
 EXCEL_PATH = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
 
 def stock_research(stock_ticker, us_or_india, excel_path = EXCEL_PATH):
-    moneycontrol = __import__(scrape-moneycontrol-data)
-    yahoo = __import__(scrape-yahoo-finance)
     import pandas as pd
+    import scrape_moneycontrol_data as moneycontrol
+    import scrape_yahoo_finance as yahoo
     """ 
     This function calculates the valuation of a stock based on the
     yahoo finance. Then it also prints the max past 20 years of the
@@ -16,17 +16,11 @@ def stock_research(stock_ticker, us_or_india, excel_path = EXCEL_PATH):
     else:
         stock_end = ""
     stock_name = stock_ticker + stock_end
+    print("Staring the Valuation for " + stock_name)
     yahoo.Valuation_of_stock(stock_name)
     moneycontrol.Historical_Performance_of_stock(stock_ticker)
 
-stock_research('SBI', True)    
-stock_research('CDNS', False)    
-
-
-def stock_research_GUI():
-    import tkinter as tk
-    root = tk.Tk()
-    root.title('Stock Research')
-#stock_research_GUI()
+stock_research('SBIN', True)    
+#stock_research('CDNS', False)    
 
 

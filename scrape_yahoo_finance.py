@@ -916,23 +916,44 @@ def create_peer_dataframe_from_stock(stock_ticker):
         pe_ratio_peers.append(trailingPE)
         enterpriseToEbitda_from_yahoo = pull_attribute_from_yahoo(stock, 'enterpriseToEbitda')
         enterpriseToEbitda = float(enterpriseToEbitda_from_yahoo.get(str(current_year)))
+        if enterpriseToEbitda == 0:
+            #'EBITDA'= ['Net Income'] + ['Income Tax Expenses'] + ['Interest Expenses'] + ['D & A']
+            netIncome_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'netIncome')
+            netIncome_year = abs(int(netIncome_year_from_yahoo.get(str(current_year -1))))
+            interestExpense_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'interestExpense')
+            interestExpense_year = abs(int(interestExpense_year_from_yahoo.get(str(current_year -1))))
+            incomeTaxExpense_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'incomeTaxExpense')
+            incomeTaxExpense_year = abs(int(incomeTaxExpense_year_from_yahoo.get(str(current_year -4))))
+            depreciation_year_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'depreciation')
+            D_n_A_year = abs(int(depreciation_year_from_yahoo.get(str(current_year -1))))
+            EBITDA = netIncome_year + incomeTaxExpense_year + interestExpense_year + D_n_A_year
+            enterpriseToEbitda = enterpriseValue / EBITDA
         ev_ebitda_peers.append(enterpriseToEbitda)
-        total_revenue_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalRevenue')
+        total_revenue_from_yahoo = pull_attribute_from_yahoo(stock, 'totalRevenue')
         revenue = int(total_revenue_from_yahoo.get(str(current_year -1)))
         revenue_peers.append(revenue)
-    df_peer_list_of_industry["Current Share Price"] = price_peers
-    df_peer_list_of_industry["Market Cap"] = market_cap_peers
-    df_peer_list_of_industry["Enterprice Value"] = ev_peers
-    df_peer_list_of_industry["P/E"] = pe_ratio_peers
-    df_peer_list_of_industry["EV/EBITDA"] = ev_ebitda_peers
-    df_peer_list_of_industry["Revenue"] = revenue_peers
+    df_peer_list_of_industry["Current Share Price"]  = price_peers
+    df_peer_list_of_industry["Market Cap"]           = market_cap_peers
+    df_peer_list_of_industry["Enterprice Value"]     = ev_peers
+    df_peer_list_of_industry["P/E"]                  = pe_ratio_peers
+    df_peer_list_of_industry["EV/EBITDA"]            = ev_ebitda_peers
+    df_peer_list_of_industry["Revenue"]              = revenue_peers
+    df_stock = df_peer_list_of_industry[:1]
     df_peer_list_of_industry = df_peer_list_of_industry[df_peer_list_of_industry["Market Cap"] > 0].reset_index(drop=True)
-    df_peer_list_of_industry["EV/Revenue"] = df_peer_list_of_industry["Enterprice Value"]/df_peer_list_of_industry["Revenue"]
-    df_peer_list_of_industry["Price/Revenue"] = df_peer_list_of_industry["Current Share Price"]/df_peer_list_of_industry["Revenue"]
-    df_peer_list_of_industry = df_peer_list_of_industry.sort_values(by="Market Cap")
+    df_peer_list_of_industry = df_peer_list_of_industry[df_peer_list_of_industry["P/E"] > 0].reset_index(drop=True)
+    df_peer_list_of_industry = df_peer_list_of_industry[df_peer_list_of_industry["EV/EBITDA"] > 0].reset_index(drop=True)
+    df_peer_list_of_industry = df_peer_list_of_industry[df_peer_list_of_industry["Revenue"] > 0].reset_index(drop=True)
+    if not df_peer_list_of_industry["Symbol"].str.contains(stock_ticker).any():
+        df_peer_list_of_industry.append(df_stock, ignore_index=True)
+    df_peer_list_of_industry["EV/Revenue"]           = df_peer_list_of_industry["Enterprice Value"]/df_peer_list_of_industry["Revenue"]
+    df_peer_list_of_industry["Price/Revenue"]        = df_peer_list_of_industry["Current Share Price"]/df_peer_list_of_industry["Revenue"]
+    df_peer_list_of_industry                         = df_peer_list_of_industry.sort_values(by="Market Cap", ascending=False)
+    df_peer_list_of_industry                         = df_peer_list_of_industry.reset_index(drop=True)
     print(df_peer_list_of_industry)
     return(df_peer_list_of_industry)
-    
+
+create_peer_dataframe_from_stock('SBIN.NS')
+
 def CCA_Valuation_of_stock(stock_ticker, df_stock_with_peer):
     """
     This function will make the comparable company analysis.
