@@ -952,7 +952,7 @@ def create_peer_dataframe_from_stock(stock_ticker):
     print(df_peer_list_of_industry)
     return(df_peer_list_of_industry)
 
-create_peer_dataframe_from_stock('SBIN.NS')
+# create_peer_dataframe_from_stock('SBIN.NS')
 
 def CCA_Valuation_of_stock(stock_ticker, df_stock_with_peer):
     """
