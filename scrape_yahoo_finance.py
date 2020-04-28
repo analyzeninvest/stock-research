@@ -880,7 +880,8 @@ def create_peer_dataframe_from_stock(stock_ticker):
     """
     This function will make the peer dataframe from stock.
     The peer dataframe will include:
-    Symbol, Name, Industry, Current Price, Market Cap, EV, P/E, EV/EBITDA
+    Symbol, Name, Industry, Current Price, Market Cap, EV, P/E, EV/EBITDA, EV/ Revenue, P/Revenue
+    The peer list is sorted by Market Cap.
     """
     import pandas as pd
     from datetime import date
@@ -960,6 +961,8 @@ def CCA_Valuation_of_stock(stock_ticker, df_stock_with_peer):
     This will be based on :
     1. P/E ratio
     2. EV/EBITDA
+    3. P/Revenue
+    4. EV/Revenue
     """
     import pandas  as pd
     from datetime import date
@@ -1067,8 +1070,8 @@ def CCA_Valuation_of_stock(stock_ticker, df_stock_with_peer):
                                         "Share Price Based on EV/Revenue": Share_price_by_EV_Reveue_range,
                                         "P/E range":pe_range,
                                         "EV/EBITDA range":ev_ebitda_range,
-                                        "P/S": ps_range,
-                                        "EV/Revenue": ev_revenue_range},
+                                        "P/S range": ps_range,
+                                        "EV/Revenue range": ev_revenue_range},
                                 index=["min", "mean", "median", "max"])
     print(df_stock_CCA)
     return(df_stock_CCA)

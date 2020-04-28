@@ -2,6 +2,26 @@
 
 EXCEL_PATH = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
 
+def google_moneycontrol_base_sitename(stock_ticker):
+    """
+    This function will search the base name for the moneycontrol site of the stock_ticker. 
+    """
+    from googlesearch import search
+    import re
+    query_string = "moneycontrol fianacial ratio of " + stock_ticker
+    ratio_url = ""
+    google_search_op_string = search(query = query_string, stop =20 )
+    for url in google_search_op_string:
+        match = re.match("(.*moneycontrol.*)ratio.*?[/]([0-9A-Z]+)[/#]", url)
+        if match:
+            ratio_url = match.group(1)
+            MC_ticker = match.group(2)
+            break
+    return [ratio_url, MC_ticker]
+        
+
+#print(google_moneycontrol_base_sitename("SBIN"))
+
 def pull_ratio_from_moneycontrol(stock_ticker, ratio):
     """
     This function will pull the historical ratios for a stock_ticker
@@ -9,27 +29,52 @@ def pull_ratio_from_moneycontrol(stock_ticker, ratio):
     pulled data:
     1. eps
     2. current ratio
-    3. debt to equity ratio
-    Example :
-    https://www.moneycontrol.com/financials/itc/ratiosVI/ITC#ITC
-    https://www.moneycontrol.com/financials/itc/ratiosVI/ITC/2#ITC
-    https://www.moneycontrol.com/financials/itc/ratiosVI/ITC/3#ITC
-    https://www.moneycontrol.com/financials/itc/ratiosVI/ITC/4#ITC
-    https://www.moneycontrol.com/financials/itc/consolidated-ratiosVI/ITC#ITC
-    https://www.moneycontrol.com/financials/itc/consolidated-ratiosVI/ITC/2#ITC
-    https://www.moneycontrol.com/financials/itc/consolidated-ratiosVI/ITC/3#ITC
-    https://www.moneycontrol.com/financials/itc/consolidated-ratiosVI/ITC/4#ITC
+    3. price / book value
+    4. dividend payout ratio
+    5. net profit margin
+    6. EV/EBITDA
+    7. debt to equity ratio
+
+    In moneycontrol the ratios are listed as old and new format. 
+    Old Format:
+    url https://www.moneycontrol.com/financials/statebankofindia/ratios/SBI#SBI
+    ratios: 
+    current ratio
+    dividend payout ratio net profit
+    net profit margin
+
+    New Format:
+    url https://www.moneycontrol.com/financials/statebankofindia/ratiosVI/SBI#SBI
+    ratios:
+    eps
+    price / book value
+    
+    not found:
+    debt / equity
+    EV/EBITDA
+
     """
     import requests, re
     from bs4 import BeautifulSoup
-    ratio_consolidated_url1 = 'https://www.moneycontrol.com/financials/itc/consolidated-ratiosVI/'+stock_ticker+'#'+stock_ticker
-    ratio_consolidated_url2 = 'https://www.moneycontrol.com/financials/itc/consolidated-ratiosVI/'+stock_ticker+'/2#'+stock_ticker
-    ratio_consolidated_url3 = 'https://www.moneycontrol.com/financials/itc/consolidated-ratiosVI/'+stock_ticker+'/3#'+stock_ticker
-    ratio_consolidated_url4 = 'https://www.moneycontrol.com/financials/itc/consolidated-ratiosVI/'+stock_ticker+'/4#'+stock_ticker
-    ratio_url1 = 'https://www.moneycontrol.com/financials/itc/ratiosVI/'+stock_ticker+'#'+stock_ticker
-    ratio_url2 = 'https://www.moneycontrol.com/financials/itc/ratiosVI/'+stock_ticker+'/2#'+stock_ticker
-    ratio_url3 = 'https://www.moneycontrol.com/financials/itc/ratiosVI/'+stock_ticker+'/3#'+stock_ticker
-    ratio_url4 = 'https://www.moneycontrol.com/financials/itc/ratiosVI/'+stock_ticker+'/4#'+stock_ticker
+    base_url, MC_ticker = google_moneycontrol_base_sitename(stock_ticker)
+    if ratio == "Basic EPS" or ratio == "Price To Book Value":
+        ratio_consolidated_url1 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'#'+MC_ticker
+        ratio_consolidated_url2 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'/2#'+MC_ticker
+        ratio_consolidated_url3 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'/3#'+MC_ticker
+        ratio_consolidated_url4 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'/4#'+MC_ticker
+        ratio_url1 = base_url + 'ratiosVI/'+MC_ticker+'#'+MC_ticker
+        ratio_url2 = base_url + 'ratiosVI/'+MC_ticker+'/2#'+MC_ticker
+        ratio_url3 = base_url + 'ratiosVI/'+MC_ticker+'/3#'+MC_ticker
+        ratio_url4 = base_url + 'ratiosVI/'+MC_ticker+'/4#'+MC_ticker
+    elif ratio == "Current Ratio" or ratio == "Dividend Payout Ratio Net Profit" or ratio == "Net Profit Margin":
+        ratio_consolidated_url1 = base_url + 'ratios/'+MC_ticker+'#'+MC_ticker
+        ratio_consolidated_url2 = base_url + 'ratios/'+MC_ticker+'/2#'+MC_ticker
+        ratio_consolidated_url3 = base_url + 'ratios/'+MC_ticker+'/3#'+MC_ticker
+        ratio_consolidated_url4 = base_url + 'ratios/'+MC_ticker+'/4#'+MC_ticker
+        ratio_url1 = base_url + 'ratios/'+MC_ticker+'#'+MC_ticker
+        ratio_url2 = base_url + 'ratios/'+MC_ticker+'/2#'+MC_ticker
+        ratio_url3 = base_url + 'ratios/'+MC_ticker+'/3#'+MC_ticker
+        ratio_url4 = base_url + 'ratios/'+MC_ticker+'/4#'+MC_ticker
     standalone_ratio = []
     consolidated_ratio = []
     ratio_values = {}
@@ -38,35 +83,36 @@ def pull_ratio_from_moneycontrol(stock_ticker, ratio):
         page          = requests.get(url)
         soup          = BeautifulSoup(page.text, 'html.parser')
         td_all  = soup.find_all('td')
+        ratio_name = ratio
         for td in td_all:
             if td.find(text=re.compile(ratio)):
                 ratio_name = td.text.strip()
                 year1_ratio = td.find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+", year1_ratio):
+                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year1_ratio):
                     break
                 else:
                     consolidated_ratio.append(year1_ratio)
                 year2_ratio = td.find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+", year2_ratio):
+                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year2_ratio):
                     break
                 else:
                     consolidated_ratio.append(year2_ratio)
                 year3_ratio = td.find_next('td').find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+", year3_ratio):
+                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year3_ratio):
                     break
                 else:
                     consolidated_ratio.append(year3_ratio)
                 year4_ratio = td.find_next('td').find_next('td').find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+", year4_ratio):
+                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year4_ratio):
                     break
                 else:
                     consolidated_ratio.append(year4_ratio)
                 year5_ratio = td.find_next('td').find_next('td').find_next('td').find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+", year5_ratio):
+                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year5_ratio):
                     break
                 else:
                     consolidated_ratio.append(year5_ratio)
-    consolidated_ratio_name = "consolidated " + ratio_name 
+    consolidated_ratio_name = "consolidated " + ratio_name
     ratio_values.update({consolidated_ratio_name:consolidated_ratio})
     print(consolidated_ratio)
     print("Standalone " + ratio)
@@ -78,44 +124,43 @@ def pull_ratio_from_moneycontrol(stock_ticker, ratio):
             if td.find(text=re.compile(ratio)):
                 ratio_name = td.text.strip()
                 year1_ratio = td.find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+", year1_ratio):
+                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year1_ratio):
                     break
                 else:
                     standalone_ratio.append(year1_ratio)
                 year2_ratio = td.find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+", year2_ratio):
+                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year2_ratio):
                     break
                 else:
                     standalone_ratio.append(year2_ratio)
                 year3_ratio = td.find_next('td').find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+", year3_ratio):
+                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year3_ratio):
                     break
                 else:
                     standalone_ratio.append(year3_ratio)
                 year4_ratio = td.find_next('td').find_next('td').find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+", year4_ratio):
+                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year4_ratio):
                     break
                 else:
                     standalone_ratio.append(year4_ratio)
                 year5_ratio = td.find_next('td').find_next('td').find_next('td').find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+", year5_ratio):
+                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year5_ratio):
                     break
                 else:
                     standalone_ratio.append(year5_ratio)
     print(consolidated_ratio)
-    standalone_ratio_name = "standalone " + ratio_name 
+    standalone_ratio_name = "standalone " + ratio_name
     ratio_values.update({"Standalone "+ratio_name:standalone_ratio})
+    print(len(standalone_ratio))
     return(ratio_values)
                     
 
     
-# pull_ratio_from_moneycontrol('ITC', 'Basic EPS')
-# pull_ratio_from_moneycontrol('ITC', 'EV/EBITDA')
-# pull_ratio_from_moneycontrol('ITC', 'Total Debt/Equity')
-# pull_ratio_from_moneycontrol('ITC', 'Current Ratio')
-# pull_ratio_from_moneycontrol('ITC', 'Price/BV')
-# print(pull_ratio_from_moneycontrol('ITC', 'Dividend Payout Ratio .NP.'))
-# pull_ratio_from_moneycontrol('ITC', 'Net Profit Margin')
+#pull_ratio_from_moneycontrol('SBI', 'Basic EPS')
+#pull_ratio_from_moneycontrol('SBI', 'Current Ratio')
+#pull_ratio_from_moneycontrol('SBI', 'Price/BV')
+#pull_ratio_from_moneycontrol('SBI', 'Dividend Payout Ratio .NP.')
+#pull_ratio_from_moneycontrol('SBI', 'Net Profit Margin')
 
 
 def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
@@ -134,33 +179,45 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     import pandas as pd
     from openpyxl import load_workbook
     from datetime import date
-    today                              = date.today()
-    current_year                       = today.year
-    writer                             = pd.ExcelWriter(excel_path, engine = 'openpyxl')
-    writer.book                        = load_workbook(excel_path)
-    writer.sheets                      = dict((ws.title, ws) for ws in writer.book.worksheets)
-    historical_data                    = {}
-    eps_from_moneycontrol              = pull_ratio_from_moneycontrol(stock_ticker, 'Basic EPS')
-    ev_ebitda_from_moneycontrol        = pull_ratio_from_moneycontrol(stock_ticker, 'EV/EBITDA')
-    debt_equity_from_moneycontrol      = pull_ratio_from_moneycontrol(stock_ticker, 'Total Debt/Equity')
-    price_to_book_from_moneycontrol    = pull_ratio_from_moneycontrol(stock_ticker, 'Price/BV')
-    dividend_payout_from_moneycontrol  = pull_ratio_from_moneycontrol(stock_ticker, 'Dividend Payout Ratio .NP.')
+    today                                = date.today()
+    current_year                         = today.year
+    writer                               = pd.ExcelWriter(excel_path, engine = 'openpyxl')
+    writer.book                          = load_workbook(excel_path)
+    writer.sheets                        = dict((ws.title, ws) for ws in writer.book.worksheets)
+    historical_data                      = {}
+    eps_from_moneycontrol                = pull_ratio_from_moneycontrol(stock_ticker, 'Basic EPS')
+    current_ratio_from_moneycontrol      = pull_ratio_from_moneycontrol(stock_ticker, 'Current Ratio')
+    net_profit_margin_from_moneycontrol  = pull_ratio_from_moneycontrol(stock_ticker, 'Net Profit Margin')
+    price_to_book_from_moneycontrol      = pull_ratio_from_moneycontrol(stock_ticker, 'Price To Book Value')
+    dividend_payout_from_moneycontrol    = pull_ratio_from_moneycontrol(stock_ticker, 'Dividend Payout Ratio Net Profit')
     historical_data.update(eps_from_moneycontrol)
-    historical_data.update(ev_ebitda_from_moneycontrol)
-    historical_data.update(debt_equity_from_moneycontrol)
+    historical_data.update(current_ratio_from_moneycontrol)
+    historical_data.update(net_profit_margin_from_moneycontrol)
     historical_data.update(price_to_book_from_moneycontrol)
     historical_data.update(dividend_payout_from_moneycontrol)
-    df_historical_stock_performance    = pd.DataFrame(data=historical_data)
-    row_nums = df_historical_stock_performance.shape[0]
-    years = []
+    min_length = False
+    for key in historical_data:
+        length = len(historical_data[key])
+        if min_length == False or min_length > length:
+            min_length = length
+    print(historical_data)
+    for key in historical_data:
+        historical_data[key] = historical_data[key][0:min_length]
+    print(historical_data)
+    df_historical_stock_performance  = pd.DataFrame(data=historical_data)
+    row_nums                         = df_historical_stock_performance.shape[0]
+    years                            = []
     for i in range(row_nums):
         current_year = current_year-1
         years.append(current_year)
     df_historical_stock_performance.index = years
+    df_historical_stock_performance.fillna(0)
     print(df_historical_stock_performance)
     sheet_name  = stock_ticker + ".NS"
     df_historical_stock_performance.to_excel(writer , sheet_name=sheet_name,float_format="%.2f",index=True, startrow=200)
     writer.save()
     writer.close()
     
+Historical_Performance_of_stock('SAIL')
 Historical_Performance_of_stock('SBIN')
+
