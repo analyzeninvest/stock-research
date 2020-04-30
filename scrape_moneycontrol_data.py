@@ -198,6 +198,9 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     min_length = False
     for key in historical_data:
         length = len(historical_data[key])
+        if length == 0:
+            historical_data[key] = [0] * 20
+        length = len(historical_data[key])
         if min_length == False or min_length > length:
             min_length = length
     print(historical_data)
@@ -219,5 +222,5 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     writer.close()
     
 Historical_Performance_of_stock('SAIL')
-Historical_Performance_of_stock('SBIN')
+#Historical_Performance_of_stock('SBIN')
 
