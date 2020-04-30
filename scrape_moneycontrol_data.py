@@ -148,10 +148,10 @@ def pull_ratio_from_moneycontrol(stock_ticker, ratio):
                     break
                 else:
                     standalone_ratio.append(year5_ratio)
-    print(consolidated_ratio)
+    print(standalone_ratio)
     standalone_ratio_name = "standalone " + ratio_name
     ratio_values.update({"Standalone "+ratio_name:standalone_ratio})
-    print(len(standalone_ratio))
+    #print(len(standalone_ratio))
     return(ratio_values)
                     
 
@@ -203,10 +203,10 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
         length = len(historical_data[key])
         if min_length == False or min_length > length:
             min_length = length
-    print(historical_data)
+    #print(historical_data)
     for key in historical_data:
         historical_data[key] = historical_data[key][0:min_length]
-    print(historical_data)
+    #print(historical_data)
     df_historical_stock_performance  = pd.DataFrame(data=historical_data)
     row_nums                         = df_historical_stock_performance.shape[0]
     years                            = []
@@ -221,6 +221,6 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     writer.save()
     writer.close()
     
-Historical_Performance_of_stock('SAIL')
+#Historical_Performance_of_stock('SAIL')
 #Historical_Performance_of_stock('SBIN')
 

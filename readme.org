@@ -639,6 +639,19 @@ dividend payout ratio = Dividend Paid / Net Income
 
 ** DONE Write to xlsx
 
+
+* DONE get Standalone & Consolidated data from moneycontrol for at most 20 years
+
+** DONE EPS
+
+** DONE current ratio
+
+** DONE price to book ratio
+
+** DONE Dividend yield
+
+** DONE net profit margin
+
 * long term growth potential
 [[https://www.youtube.com/watch?v=fGVtypWv04Y][learn to invest: 8 steps]]
 ** company filing report
