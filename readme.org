@@ -1,4 +1,3 @@
-
 * select stock using the screener
 currently this can be done using the tradingview screener or the yahoo finance screener or msn money screener.
 https://in.tradingview.com/screener/
@@ -555,7 +554,6 @@ https://www.msn.com/en-in/money/stockscreener
     - [X] dividends paid
     - [X] dividend per share
 
-
 * DONE calculate the following for DCF
 
 1. EBITDA = Net Income + Tax + Interest Expenses + Depreciation and Amortization 
@@ -639,7 +637,6 @@ dividend payout ratio = Dividend Paid / Net Income
 
 ** DONE Write to xlsx
 
-
 * DONE get Standalone & Consolidated data from moneycontrol for at most 20 years
 
 ** DONE EPS
@@ -652,6 +649,7 @@ dividend payout ratio = Dividend Paid / Net Income
 
 ** DONE net profit margin
 
+* TODO make a function for plotting the equity with factor in x/y
 * long term growth potential
 [[https://www.youtube.com/watch?v=fGVtypWv04Y][learn to invest: 8 steps]]
 ** company filing report
@@ -727,7 +725,6 @@ current market price is lower than fair value
 4. Trade Secrets
 5. The stickiness of Product (Think Microsoft Office)
 
-
 * List of Shares from trendlyne
 
 ** broker recomendation
@@ -779,7 +776,6 @@ current market price is lower than fair value
  4. Engineers India Ltd.
  5. Huhtamaki PPL Ltd.
  6. Kaveri Seed Company Ltd.
-
 
 * List of Shares from ticker tape
 

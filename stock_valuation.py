@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 EXCEL_PATH = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
+COMPANY_LISTED_INDIA        = '/home/aritra/analyzeninvest-projects/stock-research/Equity-India-filtered.csv'
+COMPANY_LISTED_US           = '/home/aritra/analyzeninvest-projects/stock-research/Equity-US-filtered.csv'
 
 def stock_research(stock_ticker, us_or_india, excel_path = EXCEL_PATH):
     import pandas as pd
@@ -20,7 +22,80 @@ def stock_research(stock_ticker, us_or_india, excel_path = EXCEL_PATH):
     yahoo.Valuation_of_stock(stock_name)
     moneycontrol.Historical_Performance_of_stock(stock_ticker)
 
-stock_research('SBIN', True)    
+#stock_research('SBIN', True)    
 #stock_research('CDNS', False)    
+    
+def get_factor_of_the_stock(stock_ticker, factor):
+    """
+    This function will get the factor of the stock. The factor may be
+    calculated or directly obtained from yahoo finanace.
+    Supported Factors:
+    1. ROE = Net Income / Total Shareholder's Equity
+    2. Revenue
+    """
+    from scrape_yahoo_finance import pull_attribute_from_yahoo 
+    from datetime import date
+    today = date.today()
+    current_year = today.year
+    if factor == 'ROE':
+        netIncome_paid_year_from_yahoo      = pull_attribute_from_yahoo(stock_ticker, 'netIncome')
+        net_income                          = float(netIncome_paid_year_from_yahoo.get(str(current_year -1)))
+        shareholder_equity_year_from_yahoo  = pull_attribute_from_yahoo(stock_ticker, 'totalStockholderEquity')
+        shareholder_equity                  = float(shareholder_equity_year_from_yahoo.get(str(current_year -1)))
+        if shareholder_equity == 0:
+            roe = 0
+        else:
+            roe                                 = net_income / shareholder_equity
+        print(roe)
+        return(roe)
+    elif factor == "Revenue":
+        total_revenue_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'totalRevenue')
+        revenue = int(total_revenue_from_yahoo.get(str(current_year -1)))
+        print(revenue)
+        return(revenue)
+
+#get_factor_of_the_stock("ITC.NS", "ROE")
+#get_factor_of_the_stock("ITC.NS", "Revenue")
+
+
+def plot_sector_by_factor(sector, factor_x, factor_y, us_or_india):
+    """
+    This is a function that will plot the equity of the sector by
+    factor_x and factor_y.  
+    This is a good way of evaluating all the
+    equities from a given sector & find the stocks which are
+    overvalued or undervalued.
+    """
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    if us_or_india:
+        stock_end                = ".NS"
+        stock_name_industry_csv  = COMPANY_LISTED_INDIA
+    else:
+        stock_end                = ""
+        stock_name_industry_csv  = COMPANY_LISTED_US
+    df_company_list    = pd.read_csv(stock_name_industry_csv)
+    df_stock_industry  = df_company_list[df_company_list.Industry.isin([sector])].reset_index(drop=True)
+    factor_x_array = []
+    factor_y_array = []    
+    for stock in df_stock_industry.Symbol:
+        stock_name = stock + stock_end
+        factor_x_array.append(get_factor_of_the_stock(stock_name, factor_x))
+        factor_y_array.append(get_factor_of_the_stock(stock_name, factor_y))
+    df_stock_industry[factor_x] = factor_x_array
+    df_stock_industry[factor_y] = factor_y_array
+    print(df_stock_industry)
+    df_stock_industry.plot(kind='scatter',x=factor_x,y=factor_y,color='red')
+    plt.title(sector)
+    for i,text in enumerate(df_stock_industry.Symbol):
+        plt.annotate(text, (df_stock_industry[factor_x][i],  df_stock_industry[factor_y][i]))
+    plt.show()
+    
+        
+
+
+
+plot_sector_by_factor('2/3 Wheelers', 'ROE', 'Revenue', True)
+
 
 
