@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
-EXCEL_PATH = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
-COMPANY_LISTED_INDIA        = '/home/aritra/analyzeninvest-projects/stock-research/Equity-India-filtered.csv'
-COMPANY_LISTED_US           = '/home/aritra/analyzeninvest-projects/stock-research/Equity-US-filtered.csv'
+EXCEL_PATH            = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
+COMPANY_LISTED_INDIA  = '/home/aritra/analyzeninvest-projects/stock-research/Equity-India-filtered.csv'
+COMPANY_LISTED_US     = '/home/aritra/analyzeninvest-projects/stock-research/Equity-US-filtered.csv'
+IMAGE_PATH            = '/home/aritra/analyzeninvest-projects/stock-research/images/'
 
 def stock_research(stock_ticker, us_or_india, excel_path = EXCEL_PATH):
     import pandas as pd
@@ -53,6 +54,11 @@ def get_factor_of_the_stock(stock_ticker, factor):
         revenue = int(total_revenue_from_yahoo.get(str(current_year -1)))
         print(revenue)
         return(revenue)
+    elif factor == "P/E":
+        trailingPE_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'trailingPE')
+        trailingPE = float(trailingPE_from_yahoo.get(str(current_year)))
+        print(trailingPE)
+        return(trailingPE)
 
 #get_factor_of_the_stock("ITC.NS", "ROE")
 #get_factor_of_the_stock("ITC.NS", "Revenue")
@@ -71,9 +77,11 @@ def plot_sector_by_factor(sector, factor_x, factor_y, us_or_india):
     if us_or_india:
         stock_end                = ".NS"
         stock_name_industry_csv  = COMPANY_LISTED_INDIA
+        region_name = "India"
     else:
         stock_end                = ""
         stock_name_industry_csv  = COMPANY_LISTED_US
+        region_name = "US"
     df_company_list    = pd.read_csv(stock_name_industry_csv)
     df_stock_industry  = df_company_list[df_company_list.Industry.isin([sector])].reset_index(drop=True)
     factor_x_array = []
@@ -89,13 +97,12 @@ def plot_sector_by_factor(sector, factor_x, factor_y, us_or_india):
     plt.title(sector)
     for i,text in enumerate(df_stock_industry.Symbol):
         plt.annotate(text, (df_stock_industry[factor_x][i],  df_stock_industry[factor_y][i]))
+    plt.xlabel(factor_x)
+    plt.ylabel(factor_y)
+    plt.savefig(IMAGE_PATH + sector + '_' + factor_x + '_' + factor_y + '_' + region_name + '.png', dpi=1000)
     plt.show()
-    
-        
 
-
-
-plot_sector_by_factor('2/3 Wheelers', 'ROE', 'Revenue', True)
-
+#plot_sector_by_factor('Cement & Cement Products', 'ROE', 'Revenue', True)
+#plot_sector_by_factor('Cement & Cement Products', 'P/E', 'Revenue', True)
 
 
