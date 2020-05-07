@@ -54,7 +54,7 @@ def get_factor_of_the_stock(stock_ticker, factor):
         revenue = int(total_revenue_from_yahoo.get(str(current_year -1)))
         print(revenue)
         return(revenue)
-    elif factor == "P/E":
+    elif factor == "PE":
         trailingPE_from_yahoo = pull_attribute_from_yahoo(stock_ticker, 'trailingPE')
         trailingPE = float(trailingPE_from_yahoo.get(str(current_year)))
         print(trailingPE)
@@ -103,6 +103,6 @@ def plot_sector_by_factor(sector, factor_x, factor_y, us_or_india):
     plt.show()
 
 #plot_sector_by_factor('Cement & Cement Products', 'ROE', 'Revenue', True)
-#plot_sector_by_factor('Cement & Cement Products', 'P/E', 'Revenue', True)
+plot_sector_by_factor('Cement & Cement Products', 'PE', 'Revenue', True)
 
 
