@@ -64,7 +64,59 @@ def get_factor_of_the_stock(stock_ticker, factor):
 #get_factor_of_the_stock("ITC.NS", "Revenue")
 
 
-def plot_sector_by_factor(sector, factor_x, factor_y, us_or_india):
+def plot_sector_by_3_factors(sector, factor_x, factor_y, factor_z, us_or_india):
+    """
+    This is a function that will plot the equity of the sector by
+    factor_x and factor_y.  
+    This is a good way of evaluating all the
+    equities from a given sector & find the stocks which are
+    overvalued or undervalued.
+    """
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+    if us_or_india:
+        stock_end                = ".NS"
+        stock_name_industry_csv  = COMPANY_LISTED_INDIA
+        region_name = "India"
+    else:
+        stock_end                = ""
+        stock_name_industry_csv  = COMPANY_LISTED_US
+        region_name = "US"
+    df_company_list    = pd.read_csv(stock_name_industry_csv)
+    df_stock_industry  = df_company_list[df_company_list.Industry.isin([sector])].reset_index(drop=True)
+    factor_x_array = []
+    factor_y_array = []    
+    factor_z_array = []    
+    for stock in df_stock_industry.Symbol:
+        stock_name = stock + stock_end
+        print(stock_name)
+        factor_x_array.append(get_factor_of_the_stock(stock_name, factor_x))
+        factor_y_array.append(get_factor_of_the_stock(stock_name, factor_y))
+        factor_z_array.append(get_factor_of_the_stock(stock_name, factor_z))
+    df_stock_industry[factor_x] = factor_x_array
+    df_stock_industry[factor_y] = factor_y_array
+    df_stock_industry[factor_z] = factor_z_array
+    print(df_stock_industry)
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    #df_stock_industry.plot(kind='scatter',x=factor_x,y=factor_y,color='red')
+    ax.scatter(df_stock_industry[factor_x],df_stock_industry[factor_y],df_stock_industry[factor_z])
+    ax.set_title(sector)
+    for i,text in enumerate(df_stock_industry.Symbol):
+        label = '(%d, %d, %d), %s' % (df_stock_industry[factor_x][i], df_stock_industry[factor_y][i], df_stock_industry[factor_z][i], text)
+        ax.text(df_stock_industry[factor_x][i], df_stock_industry[factor_y][i], df_stock_industry[factor_z][i], label)
+    # plt.xlabel(factor_x)
+    # plt.ylabel(factor_y)
+    # plt.ylabel(factor_z)
+    ax.set_xlabel(factor_x)
+    ax.set_ylabel(factor_y)
+    ax.set_zlabel(factor_z)
+    sector_name = sector.replace("/", "_")
+    plt.savefig(IMAGE_PATH + sector_name + '_' + factor_x + '_' + factor_y + '_' + factor_z + '_' + region_name + '.png', dpi=1000)
+    plt.show()
+
+def plot_sector_by_2_factors(sector, factor_x, factor_y, us_or_india):
     """
     This is a function that will plot the equity of the sector by
     factor_x and factor_y.  
@@ -86,23 +138,27 @@ def plot_sector_by_factor(sector, factor_x, factor_y, us_or_india):
     df_stock_industry  = df_company_list[df_company_list.Industry.isin([sector])].reset_index(drop=True)
     factor_x_array = []
     factor_y_array = []    
+    factor_z_array = []    
     for stock in df_stock_industry.Symbol:
         stock_name = stock + stock_end
+        print(stock_name)
         factor_x_array.append(get_factor_of_the_stock(stock_name, factor_x))
         factor_y_array.append(get_factor_of_the_stock(stock_name, factor_y))
     df_stock_industry[factor_x] = factor_x_array
     df_stock_industry[factor_y] = factor_y_array
     print(df_stock_industry)
     df_stock_industry.plot(kind='scatter',x=factor_x,y=factor_y,color='red')
-    plt.title(sector)
     for i,text in enumerate(df_stock_industry.Symbol):
-        plt.annotate(text, (df_stock_industry[factor_x][i],  df_stock_industry[factor_y][i]))
+        plt.annotate(text, (df_stock_industry[factor_x][i], df_stock_industry[factor_y][i]))
     plt.xlabel(factor_x)
     plt.ylabel(factor_y)
-    plt.savefig(IMAGE_PATH + sector + '_' + factor_x + '_' + factor_y + '_' + region_name + '.png', dpi=1000)
+    sector_name = sector.replace("/", "_")
+    plt.savefig(IMAGE_PATH + sector_name + '_' + factor_x + '_' + factor_y + '_' + region_name + '.png', dpi=1000)
     plt.show()
 
-#plot_sector_by_factor('Cement & Cement Products', 'ROE', 'Revenue', True)
-plot_sector_by_factor('Cement & Cement Products', 'PE', 'Revenue', True)
 
-
+    
+#plot_sector_by_2_factors('Cement & Cement Products', 'ROE', 'Revenue', True)
+#plot_sector_by_2_factors('Cement & Cement Products', 'PE', 'Revenue', True)
+#plot_sector_by_3_factors('Cement & Cement Products', 'ROE', 'PE', 'Revenue', True)
+#plot_sector_by_3_factors('2/3 Wheelers', 'ROE', 'PE', 'Revenue', True)
