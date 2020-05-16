@@ -23,7 +23,7 @@ def stock_research(stock_ticker, us_or_india, excel_path = EXCEL_PATH):
     yahoo.Valuation_of_stock(stock_name)
     moneycontrol.Historical_Performance_of_stock(stock_ticker)
 
-#stock_research('SBIN', True)    
+#stock_research('PRINCEPIPE', True)    
 #stock_research('CDNS', False)    
     
 def get_factor_of_the_stock(stock_ticker, factor):
@@ -33,6 +33,7 @@ def get_factor_of_the_stock(stock_ticker, factor):
     Supported Factors:
     1. ROE = Net Income / Total Shareholder's Equity
     2. Revenue
+    3. PE
     """
     from scrape_yahoo_finance import pull_attribute_from_yahoo 
     from datetime import date
@@ -64,10 +65,10 @@ def get_factor_of_the_stock(stock_ticker, factor):
 #get_factor_of_the_stock("ITC.NS", "Revenue")
 
 
-def plot_sector_by_3_factors(sector, factor_x, factor_y, factor_z, us_or_india):
+def plot_sector_by_3_factors(sector, factor_x, factor_y, factor_z, us_or_india, show_plot = True):
     """
     This is a function that will plot the equity of the sector by
-    factor_x and factor_y.  
+    factor_x , factor_y & factor_z.  
     This is a good way of evaluating all the
     equities from a given sector & find the stocks which are
     overvalued or undervalued.
@@ -114,9 +115,12 @@ def plot_sector_by_3_factors(sector, factor_x, factor_y, factor_z, us_or_india):
     ax.set_zlabel(factor_z)
     sector_name = sector.replace("/", "_")
     plt.savefig(IMAGE_PATH + sector_name + '_' + factor_x + '_' + factor_y + '_' + factor_z + '_' + region_name + '.png', dpi=1000)
-    plt.show()
+    if show_plot:
+        plt.show()
+    else:
+        pass
 
-def plot_sector_by_2_factors(sector, factor_x, factor_y, us_or_india):
+def plot_sector_by_2_factors(sector, factor_x, factor_y, us_or_india, show_plot = True):
     """
     This is a function that will plot the equity of the sector by
     factor_x and factor_y.  
@@ -154,11 +158,47 @@ def plot_sector_by_2_factors(sector, factor_x, factor_y, us_or_india):
     plt.ylabel(factor_y)
     sector_name = sector.replace("/", "_")
     plt.savefig(IMAGE_PATH + sector_name + '_' + factor_x + '_' + factor_y + '_' + region_name + '.png', dpi=1000)
-    plt.show()
+    if show_plot:
+        plt.show()
+    else:
+        pass
 
 
+def plot_all_sector_by_3_factors(us_or_india):
+    """
+    This will plot all the sectors of the given region in 3 factors.
+    By default it will plot PE, ROE & Revenue.
+    """
+    import pandas as pd
+    if us_or_india:
+        df_all_stocks = pd.read_csv(COMPANY_LISTED_INDIA)
+    else:
+        df_all_stocks = pd.read_csv(COMPANY_LISTED_US)
+    industry_all = df_all_stocks['Industry'].unique()
+    for industry in industry_all:
+        plot_sector_by_3_factors(industry, factor_x, factor_y, factor_z, us_or_india, False)
+
+        
+def plot_all_sector_by_2_factors(factor_x, factor_y, us_or_india):
+    """
+    This will plot all the sectors of the given region in 2 factors.
+    By default it will plot PE, ROE & Revenue.
+    """
+    import pandas as pd
+    if us_or_india:
+        df_all_stocks = pd.read_csv(COMPANY_LISTED_INDIA)
+    else:
+        df_all_stocks = pd.read_csv(COMPANY_LISTED_US)
+    industry_all = df_all_stocks['Industry'].unique()
+    for industry in industry_all:
+        plot_sector_by_2_factors(industry, factor_x, factor_y, us_or_india, False)
+
+        
     
+#plot_all_sector_by_3_factors('ROE', 'PE', 'Revenue', True)
+#plot_all_sector_by_2_factors('PE', 'Revenue', True)
 #plot_sector_by_2_factors('Cement & Cement Products', 'ROE', 'Revenue', True)
 #plot_sector_by_2_factors('Cement & Cement Products', 'PE', 'Revenue', True)
 #plot_sector_by_3_factors('Cement & Cement Products', 'ROE', 'PE', 'Revenue', True)
 #plot_sector_by_3_factors('2/3 Wheelers', 'ROE', 'PE', 'Revenue', True)
+#plot_sector_by_2_factors('Plastic Products', 'PE', 'Revenue', True)
