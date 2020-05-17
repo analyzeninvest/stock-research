@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 
-EXCEL_PATH            = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
-COMPANY_LISTED_INDIA  = '/home/aritra/analyzeninvest-projects/stock-research/Equity-India-filtered.csv'
-COMPANY_LISTED_US     = '/home/aritra/analyzeninvest-projects/stock-research/Equity-US-filtered.csv'
-IMAGE_PATH            = '/home/aritra/analyzeninvest-projects/stock-research/images/'
+# get the global variables from the configure.py file
+
+from config import EXCEL_PATH            
+from config import COMPANY_LISTED_INDIA  
+from config import COMPANY_LISTED_US     
+from config import IMAGE_PATH            
+
+# EXCEL_PATH            = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
+# COMPANY_LISTED_INDIA  = '/home/aritra/analyzeninvest-projects/stock-research/Equity-India-filtered.csv'
+# COMPANY_LISTED_US     = '/home/aritra/analyzeninvest-projects/stock-research/Equity-US-filtered.csv'
+# IMAGE_PATH            = '/home/aritra/analyzeninvest-projects/stock-research/images/'
 
 def stock_research(stock_ticker, us_or_india, excel_path = EXCEL_PATH):
     import pandas as pd

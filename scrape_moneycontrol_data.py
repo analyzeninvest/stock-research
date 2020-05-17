@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-EXCEL_PATH = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
+from config import EXCEL_PATH
+
+#EXCEL_PATH = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
 
 def google_moneycontrol_base_sitename(stock_ticker):
     """

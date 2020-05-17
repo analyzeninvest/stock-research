@@ -1,17 +1,31 @@
 #!/usr/bin/env python
 
-MAX_TAX_RATE                = 0.35
-LONG_TERM_GROWTH_RATE       = 0.025
-BOND_RATE_10Y_US            = 0.0188
-FD_RATE_INDIA               = 0.07
-AVG_RETURN_OF_MARKET_US     = 0.10
-AVG_RETURN_OF_MARKET_INDIA  = 0.12
-DISCOUNT_FACTOR_INDIA       = 0.15
-DISCOUNT_FACTOR_US          = 0.075
-YEARS_TILL_STABLE_GROWTH    = 10
-EXCEL_PATH                  = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
-COMPANY_LISTED_INDIA        = '/home/aritra/analyzeninvest-projects/stock-research/Equity-India-filtered.csv'
-COMPANY_LISTED_US           = '/home/aritra/analyzeninvest-projects/stock-research/Equity-US-filtered.csv'
+from config import MAX_TAX_RATE                
+from config import LONG_TERM_GROWTH_RATE       
+from config import BOND_RATE_10Y_US            
+from config import FD_RATE_INDIA               
+from config import AVG_RETURN_OF_MARKET_US     
+from config import AVG_RETURN_OF_MARKET_INDIA  
+from config import DISCOUNT_FACTOR_INDIA       
+from config import DISCOUNT_FACTOR_US          
+from config import YEARS_TILL_STABLE_GROWTH    
+from config import EXCEL_PATH                  
+from config import COMPANY_LISTED_INDIA        
+from config import COMPANY_LISTED_US           
+
+
+# MAX_TAX_RATE                = 0.35
+# LONG_TERM_GROWTH_RATE       = 0.025
+# BOND_RATE_10Y_US            = 0.0188
+# FD_RATE_INDIA               = 0.07
+# AVG_RETURN_OF_MARKET_US     = 0.10
+# AVG_RETURN_OF_MARKET_INDIA  = 0.12
+# DISCOUNT_FACTOR_INDIA       = 0.15
+# DISCOUNT_FACTOR_US          = 0.075
+# YEARS_TILL_STABLE_GROWTH    = 10
+# EXCEL_PATH                  = '/home/aritra/analyzeninvest-projects/stock-research/save_valuation.xlsx'
+# COMPANY_LISTED_INDIA        = '/home/aritra/analyzeninvest-projects/stock-research/Equity-India-filtered.csv'
+# COMPANY_LISTED_US           = '/home/aritra/analyzeninvest-projects/stock-research/Equity-US-filtered.csv'
 
 
 def pull_attribute_from_yahoo(stock_ticker, attribute):
