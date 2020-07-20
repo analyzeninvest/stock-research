@@ -29,6 +29,7 @@ from config import COMPANY_LISTED_US
 
 
 def pull_attribute_from_yahoo(stock_ticker, attribute):
+    
     """
     This function is for pulling the data_range from yahoo finance.
     Idea is to pass the argument & find it from the website.
@@ -53,6 +54,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
     | Estimated total Revenue | Analysis         |
     |-------------------------+------------------|
     """
+    
     import requests, re
     from bs4 import BeautifulSoup
     from datetime import date
@@ -69,6 +71,7 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
     current_year          = today.year
     if attribute in ['beta', 'marketCap', 'sharesOutstanding', 'enterpriseValue', 'trailingPE', 'enterpriseToEbitda']:
         page          = requests.get(statistics_url)
+        print(statistics_url)
         soup          = BeautifulSoup(page.text, 'html.parser')
         match_string  = '"'+attribute+'":{"raw":([-]?[0-9.]+),"fmt":"[0-9.]*[A-Z]*.*"}'
         pattern       = re.compile(match_string, re.MULTILINE )
@@ -269,11 +272,11 @@ def pull_attribute_from_yahoo(stock_ticker, attribute):
 #print(pull_attribute_from_yahoo('RECLTD.NS', 'dividendsPaid'))
 #print(pull_attribute_from_yahoo('RECLTD.NS', 'netIncome'))
 
-#print(pull_attribute_from_yahoo('AAPL', 'totalStockholderEquity'))
+# print(pull_attribute_from_yahoo('CSBBANK.NS', 'totalStockholderEquity'))
 # print(pull_attribute_from_yahoo('AAPL', 'longName'))
 # print(pull_attribute_from_yahoo('AAPL', 'sector'))
 # print(pull_attribute_from_yahoo('AAPL', 'industry'))
-# print(pull_attribute_from_yahoo('AAPL', 'regularMarketPrice'))
+# print(pull_attribute_from_yahoo('CSBBANK.NS', 'regularMarketPrice'))
 # print(pull_attribute_from_yahoo('LT.NS', 'longTermDebt'))
 # print(pull_attribute_from_yahoo('AAPL', 'marketCap'))
 # print(pull_attribute_from_yahoo('AAPL', 'enterpriseValue'))
@@ -299,7 +302,7 @@ def print_yahoo_financials_for_DCF(stock_ticker):
     print(pull_attribute_from_yahoo(stock_ticker, 'capitalExpenditures'))
     print(pull_attribute_from_yahoo(stock_ticker, 'revenueEstimate'))
 
-# print_yahoo_financials_for_DCF('LT.NS')
+print_yahoo_financials_for_DCF('CSBBANK.NS')
 
 def Create_Financial_Statements_DataFrame_for_DCF(stock_ticker):
     """

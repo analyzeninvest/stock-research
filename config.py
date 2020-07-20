@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 # Path to save files
-
-PROJECT_PATH = '/home/aritra/analyzeninvest-projects/stock-research/'
+USER_PATH             = '/home/arnashree/'
+PROJECT_PATH          = USER_PATH + 'analyzeninvest-projects/stock-research/'
 EXCEL_PATH            = PROJECT_PATH + 'save_valuation.xlsx'
 COMPANY_LISTED_INDIA  = PROJECT_PATH + 'Equity-India-filtered.csv'
 COMPANY_LISTED_US     = PROJECT_PATH + 'Equity-US-filtered.csv'

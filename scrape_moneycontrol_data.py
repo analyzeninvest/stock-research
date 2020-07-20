@@ -14,7 +14,8 @@ def google_moneycontrol_base_sitename(stock_ticker):
     ratio_url = ""
     google_search_op_string = search(query = query_string, stop =20 )
     for url in google_search_op_string:
-        match = re.match("(.*moneycontrol.*)ratio.*?[/]([0-9A-Z]+)[/#]", url)
+        print(url)
+        match = re.match("(.*moneycontrol.*)ratio.*?[/]([0-9A-Z]+)", url)
         if match:
             ratio_url = match.group(1)
             MC_ticker = match.group(2)
@@ -37,6 +38,18 @@ def pull_ratio_from_moneycontrol(stock_ticker, ratio):
     6. EV/EBITDA
     7. debt to equity ratio
 
+    Need: 
+    1. D/E 
+    2. EPS 
+    3. ROCE
+    4. ROA
+    5. EV
+    6. EV/EBITDA
+    7. P/BV 
+    8. Net Profit Margin  
+    9. Book Value
+    10. P/E (Calculated from xlsx)
+
     In moneycontrol the ratios are listed as old and new format. 
     Old Format:
     url https://www.moneycontrol.com/financials/statebankofindia/ratios/SBI#SBI
@@ -44,22 +57,24 @@ def pull_ratio_from_moneycontrol(stock_ticker, ratio):
     current ratio
     dividend payout ratio net profit
     net profit margin
+    ROCE
 
     New Format:
     url https://www.moneycontrol.com/financials/statebankofindia/ratiosVI/SBI#SBI
     ratios:
     eps
     price / book value
-    
-    not found:
-    debt / equity
+    ROCE
+    ROA
+    EV
+    Book Value
+    D/E
     EV/EBITDA
-
     """
     import requests, re
     from bs4 import BeautifulSoup
     base_url, MC_ticker = google_moneycontrol_base_sitename(stock_ticker)
-    if ratio == "Basic EPS" or ratio == "Price To Book Value":
+    if ratio == "Basic EPS" or ratio == "Price/BV" or ratio == "Return on Capital Employed" or ratio == "Return on Assets" or ratio == "Enterprise Value" or ratio == "Book Value .ExclRevalReserve..Share" or ratio == "Total Debt.Equity" or ratio == "EV.EBITDA":
         ratio_consolidated_url1 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'#'+MC_ticker
         ratio_consolidated_url2 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'/2#'+MC_ticker
         ratio_consolidated_url3 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'/3#'+MC_ticker
@@ -175,8 +190,21 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     2. Current Ratio
     3. Debt/ Equity Ratio
     4. Dividend Payout Ratio
-    5. EV/EBITDA
-    Then the details are store in the xls. The XLS is same as the valuation. 
+    
+    1. D/E 
+    2. EPS 
+    3. ROCE
+    4. ROA
+    5. EV
+    6. EV/EBITDA
+    7. P/BV 
+    8. Net Profit Margin  
+    9. Book Value
+    10. P/E (Calculated from xlsx)
+
+    Then the details are store in the xls. The XLS is same as the valuation.
+    Need to seperate the standalone & consolidated dataframes & print in xlsx.
+
     """
     import pandas as pd
     from openpyxl import load_workbook
@@ -190,13 +218,25 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     eps_from_moneycontrol                = pull_ratio_from_moneycontrol(stock_ticker, 'Basic EPS')
     current_ratio_from_moneycontrol      = pull_ratio_from_moneycontrol(stock_ticker, 'Current Ratio')
     net_profit_margin_from_moneycontrol  = pull_ratio_from_moneycontrol(stock_ticker, 'Net Profit Margin')
-    price_to_book_from_moneycontrol      = pull_ratio_from_moneycontrol(stock_ticker, 'Price To Book Value')
+    price_to_book_from_moneycontrol      = pull_ratio_from_moneycontrol(stock_ticker, 'Price/BV')
     dividend_payout_from_moneycontrol    = pull_ratio_from_moneycontrol(stock_ticker, 'Dividend Payout Ratio Net Profit')
+    ROCE_from_moneycontrol               = pull_ratio_from_moneycontrol(stock_ticker, 'Return on Capital Employed')
+    ROA_from_moneycontrol                = pull_ratio_from_moneycontrol(stock_ticker, 'Return on Assets')
+    EV_from_moneycontrol                 = pull_ratio_from_moneycontrol(stock_ticker, 'Enterprise Value')
+    BV_from_moneycontrol                 = pull_ratio_from_moneycontrol(stock_ticker, 'Book Value .ExclRevalReserve..Share')
+    DE_from_moneycontrol                 = pull_ratio_from_moneycontrol(stock_ticker, 'Total Debt.Equity')
+    EVEBITDA_from_moneycontrol           = pull_ratio_from_moneycontrol(stock_ticker, 'EV.EBITDA')
     historical_data.update(eps_from_moneycontrol)
     historical_data.update(current_ratio_from_moneycontrol)
     historical_data.update(net_profit_margin_from_moneycontrol)
     historical_data.update(price_to_book_from_moneycontrol)
     historical_data.update(dividend_payout_from_moneycontrol)
+    historical_data.update(ROCE_from_moneycontrol)
+    historical_data.update(ROA_from_moneycontrol)
+    historical_data.update(EV_from_moneycontrol)
+    historical_data.update(BV_from_moneycontrol)
+    historical_data.update(DE_from_moneycontrol)
+    historical_data.update(EVEBITDA_from_moneycontrol)
     min_length = False
     for key in historical_data:
         length = len(historical_data[key])
@@ -223,6 +263,6 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     writer.save()
     writer.close()
     
-#Historical_Performance_of_stock('SAIL')
+Historical_Performance_of_stock('RADIOCITY')
 #Historical_Performance_of_stock('SBIN')
 
