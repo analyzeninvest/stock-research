@@ -14,7 +14,7 @@ def google_moneycontrol_base_sitename(stock_ticker):
     ratio_url = ""
     google_search_op_string = search(query = query_string, stop =20 )
     for url in google_search_op_string:
-        print(url)
+        #print(url)
         match = re.match("(.*moneycontrol.*)ratio.*?[/]([0-9A-Z]+)", url)
         if match:
             ratio_url = match.group(1)
@@ -95,6 +95,7 @@ def pull_ratio_from_moneycontrol(stock_ticker, ratio):
     standalone_ratio = []
     consolidated_ratio = []
     ratio_values = {}
+    regex_pattern = "[-]?[0-9]+[,]?[0-9]*?[.]?[0-9]+|[-][-]"
     print("Consolidated " + ratio)
     for url in [ratio_consolidated_url1, ratio_consolidated_url2, ratio_consolidated_url3, ratio_consolidated_url4]:
         page          = requests.get(url)
@@ -105,27 +106,27 @@ def pull_ratio_from_moneycontrol(stock_ticker, ratio):
             if td.find(text=re.compile(ratio)):
                 ratio_name = td.text.strip()
                 year1_ratio = td.find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year1_ratio):
+                if not re.match(regex_pattern, year1_ratio):
                     break
                 else:
                     consolidated_ratio.append(year1_ratio)
                 year2_ratio = td.find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year2_ratio):
+                if not re.match(regex_pattern, year2_ratio):
                     break
                 else:
                     consolidated_ratio.append(year2_ratio)
                 year3_ratio = td.find_next('td').find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year3_ratio):
+                if not re.match(regex_pattern, year3_ratio):
                     break
                 else:
                     consolidated_ratio.append(year3_ratio)
                 year4_ratio = td.find_next('td').find_next('td').find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year4_ratio):
+                if not re.match(regex_pattern, year4_ratio):
                     break
                 else:
                     consolidated_ratio.append(year4_ratio)
                 year5_ratio = td.find_next('td').find_next('td').find_next('td').find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year5_ratio):
+                if not re.match(regex_pattern, year5_ratio):
                     break
                 else:
                     consolidated_ratio.append(year5_ratio)
@@ -141,27 +142,27 @@ def pull_ratio_from_moneycontrol(stock_ticker, ratio):
             if td.find(text=re.compile(ratio)):
                 ratio_name = td.text.strip()
                 year1_ratio = td.find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year1_ratio):
+                if not re.match(regex_pattern, year1_ratio):
                     break
                 else:
                     standalone_ratio.append(year1_ratio)
                 year2_ratio = td.find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year2_ratio):
+                if not re.match(regex_pattern, year2_ratio):
                     break
                 else:
                     standalone_ratio.append(year2_ratio)
                 year3_ratio = td.find_next('td').find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year3_ratio):
+                if not re.match(regex_pattern, year3_ratio):
                     break
                 else:
                     standalone_ratio.append(year3_ratio)
                 year4_ratio = td.find_next('td').find_next('td').find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year4_ratio):
+                if not re.match(regex_pattern, year4_ratio):
                     break
                 else:
                     standalone_ratio.append(year4_ratio)
                 year5_ratio = td.find_next('td').find_next('td').find_next('td').find_next('td').find_next('td').text.strip()
-                if not re.match("[-]?[0-9]+[.]?[0-9]+|[-][-]", year5_ratio):
+                if not re.match(regex_pattern, year5_ratio):
                     break
                 else:
                     standalone_ratio.append(year5_ratio)
@@ -237,17 +238,18 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     historical_data.update(BV_from_moneycontrol)
     historical_data.update(DE_from_moneycontrol)
     historical_data.update(EVEBITDA_from_moneycontrol)
-    min_length = False
+    print(historical_data)
     for key in historical_data:
         length = len(historical_data[key])
         if length == 0:
-            historical_data[key] = [0] * 20
+            historical_data[key] = ["--"] * 20
         length = len(historical_data[key])
-        if min_length == False or min_length > length:
-            min_length = length
+        if length < 20:
+            filler = ["--"] * (20 - length)
+            historical_data[key].extend(filler)
     #print(historical_data)
     for key in historical_data:
-        historical_data[key] = historical_data[key][0:min_length]
+        historical_data[key] = historical_data[key][0:20]
     #print(historical_data)
     df_historical_stock_performance  = pd.DataFrame(data=historical_data)
     row_nums                         = df_historical_stock_performance.shape[0]
@@ -263,6 +265,6 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     writer.save()
     writer.close()
     
-Historical_Performance_of_stock('RADIOCITY')
+#Historical_Performance_of_stock('BDL')
 #Historical_Performance_of_stock('SBIN')
 
