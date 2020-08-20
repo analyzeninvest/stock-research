@@ -74,24 +74,24 @@ def pull_ratio_from_moneycontrol(stock_ticker, ratio):
     import requests, re
     from bs4 import BeautifulSoup
     base_url, MC_ticker = google_moneycontrol_base_sitename(stock_ticker)
-    if ratio == "Basic EPS" or ratio == "Price/BV" or ratio == "Return on Capital Employed" or ratio == "Return on Assets" or ratio == "Enterprise Value" or ratio == "Book Value .ExclRevalReserve..Share" or ratio == "Total Debt.Equity" or ratio == "EV.EBITDA":
-        ratio_consolidated_url1 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'#'+MC_ticker
-        ratio_consolidated_url2 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'/2#'+MC_ticker
-        ratio_consolidated_url3 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'/3#'+MC_ticker
-        ratio_consolidated_url4 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'/4#'+MC_ticker
-        ratio_url1 = base_url + 'ratiosVI/'+MC_ticker+'#'+MC_ticker
-        ratio_url2 = base_url + 'ratiosVI/'+MC_ticker+'/2#'+MC_ticker
-        ratio_url3 = base_url + 'ratiosVI/'+MC_ticker+'/3#'+MC_ticker
-        ratio_url4 = base_url + 'ratiosVI/'+MC_ticker+'/4#'+MC_ticker
-    elif ratio == "Current Ratio" or ratio == "Dividend Payout Ratio Net Profit" or ratio == "Net Profit Margin":
-        ratio_consolidated_url1 = base_url + 'ratios/'+MC_ticker+'#'+MC_ticker
-        ratio_consolidated_url2 = base_url + 'ratios/'+MC_ticker+'/2#'+MC_ticker
-        ratio_consolidated_url3 = base_url + 'ratios/'+MC_ticker+'/3#'+MC_ticker
-        ratio_consolidated_url4 = base_url + 'ratios/'+MC_ticker+'/4#'+MC_ticker
-        ratio_url1 = base_url + 'ratios/'+MC_ticker+'#'+MC_ticker
-        ratio_url2 = base_url + 'ratios/'+MC_ticker+'/2#'+MC_ticker
-        ratio_url3 = base_url + 'ratios/'+MC_ticker+'/3#'+MC_ticker
-        ratio_url4 = base_url + 'ratios/'+MC_ticker+'/4#'+MC_ticker
+    # if ratio == "Basic EPS" or ratio == "Price/BV" or ratio == "Return on Capital Employed" or ratio == "Return on Assets" or ratio == "Enterprise Value" or ratio == "Book Value .ExclRevalReserve..Share" or ratio == "Total Debt.Equity" or ratio == "EV.EBITDA" or ratio == "Current Ratio" or ratio == "Dividend Payout Ratio Net Profit" or ratio == "Net Profit Margin":
+    ratio_consolidated_url1 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'#'+MC_ticker
+    ratio_consolidated_url2 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'/2#'+MC_ticker
+    ratio_consolidated_url3 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'/3#'+MC_ticker
+    ratio_consolidated_url4 = base_url + 'consolidated-ratiosVI/'+MC_ticker+'/4#'+MC_ticker
+    ratio_url1 = base_url + 'ratiosVI/'+MC_ticker+'#'+MC_ticker
+    ratio_url2 = base_url + 'ratiosVI/'+MC_ticker+'/2#'+MC_ticker
+    ratio_url3 = base_url + 'ratiosVI/'+MC_ticker+'/3#'+MC_ticker
+    ratio_url4 = base_url + 'ratiosVI/'+MC_ticker+'/4#'+MC_ticker
+    # elif ratio == "Current Ratio" or ratio == "Dividend Payout Ratio Net Profit" or ratio == "Net Profit Margin":
+    #     ratio_consolidated_url1 = base_url + 'ratios/'+MC_ticker+'#'+MC_ticker
+    #     ratio_consolidated_url2 = base_url + 'ratios/'+MC_ticker+'/2#'+MC_ticker
+    #     ratio_consolidated_url3 = base_url + 'ratios/'+MC_ticker+'/3#'+MC_ticker
+    #     ratio_consolidated_url4 = base_url + 'ratios/'+MC_ticker+'/4#'+MC_ticker
+    #     ratio_url1 = base_url + 'ratios/'+MC_ticker+'#'+MC_ticker
+    #     ratio_url2 = base_url + 'ratios/'+MC_ticker+'/2#'+MC_ticker
+    #     ratio_url3 = base_url + 'ratios/'+MC_ticker+'/3#'+MC_ticker
+    #     ratio_url4 = base_url + 'ratios/'+MC_ticker+'/4#'+MC_ticker
     standalone_ratio = []
     consolidated_ratio = []
     ratio_values = {}
@@ -179,7 +179,7 @@ def pull_ratio_from_moneycontrol(stock_ticker, ratio):
 #pull_ratio_from_moneycontrol('SBI', 'Price/BV')
 #pull_ratio_from_moneycontrol('SBI', 'Dividend Payout Ratio .NP.')
 #pull_ratio_from_moneycontrol('SBI', 'Net Profit Margin')
-
+#pull_ratio_from_moneycontrol('HAL', 'Current Ratio')
 
 def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     """
@@ -267,4 +267,5 @@ def Historical_Performance_of_stock(stock_ticker, excel_path = EXCEL_PATH):
     
 #Historical_Performance_of_stock('BDL')
 #Historical_Performance_of_stock('SBIN')
-
+#Historical_Performance_of_stock('HAL')
+#Historical_Performance_of_stock('COCHINSHIP')
